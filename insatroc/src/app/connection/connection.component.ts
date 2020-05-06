@@ -39,10 +39,10 @@ export class ConnectionComponent implements OnInit {
 
   Login(form: FormGroup){
     this.authService.validate(form.value.email, form.value.password)
-    .then((response) => {
-      this.authService.setUserInfo({'user' : response['user']});
-      this.router.navigate(['']);
-    })
+    //.then((response) => {
+    //  this.authService.setUserInfo({'user' : response['user']});
+     // this.router.navigate(['']);
+    //})
     // this.httpService.authenticate("name");
   }
 
