@@ -22,7 +22,9 @@ export function imageValidator (control : AbstractControl) {
     case "FFD8FFE0":
     case "FFD8FFE2":
     case "FFD8DDE8":
+    case "FFD8FFE1":
       Validity = true;
+      console.log(16);
       break;
     default:
       Validity = false;
@@ -31,7 +33,10 @@ export function imageValidator (control : AbstractControl) {
   if(Validity){
     return {chocoloco: null}
   }else{
-    return {chocoloco: true}
+    return {chocoloco:{
+      reason:'Invalide MIME type',
+      value: header
+    }}
   }
   //filereader.readAsArrayBuffer(control.value);
 

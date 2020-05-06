@@ -64,6 +64,8 @@ export class PostCreateAltComponent implements OnInit {
             reader.readAsDataURL(event.target.files[i]);
             //uploadi l9lawi
           }else {
+          
+            console.log(this.form2.get('image').getError('chocoloco'));
             console.log('7chi l mok')
             //mat uploadich l9lawi
           }
