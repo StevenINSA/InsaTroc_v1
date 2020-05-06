@@ -38,12 +38,15 @@ export class ConnectionComponent implements OnInit {
   // }
 
   Login(form: FormGroup){
-    this.authService.validate(form.value.email, form.value.password)
-    .then((response) => {
-      this.authService.setUserInfo({'user' : response['user']});
+
+    this.authService.validate(form.value.email, form.value.password).subscribe((response) => {
+      console.log(response);
+      this.authService.setUserInfo({'user': response['user']});
       this.router.navigate(['']);
-    })
-    // this.httpService.authenticate("name");
+    }, (err) => {
+      console.error(err);
+    });
+
   }
 
   ngOnInit(): void {
