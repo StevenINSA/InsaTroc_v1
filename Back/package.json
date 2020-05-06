@@ -1,0 +1,17 @@
+{
+  "name": "insatrotroc",
+  "version": "1.0.0",
+  "description": "Projet WEB TC",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Noeline Migeon, Steven Gobet",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mariadb": "^2.3.1",
+    "mysql": "^2.18.1"
+  }
+}
