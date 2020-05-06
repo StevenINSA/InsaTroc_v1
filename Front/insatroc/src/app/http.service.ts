@@ -47,7 +47,14 @@ export class HttpService {
   }
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
-    return this.posts;
+    this.http.get<{response:string,postss:PostModel []}>('http://localhost:3000/posts').subscribe(
+      (data)=>{
+        console.log(data.postss);
+        this.posts=data.postss;
+        console.log(data.response);
+      }
+    )
+    return(this.posts);
   }
 
   authenticate(user: String){
