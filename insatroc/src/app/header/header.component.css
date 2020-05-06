@@ -1,0 +1,21 @@
+mat-sidenav-container {
+
+    height: 100%;
+    
+
+}
+mat-sidenav, mat-sidenav-content {
+    padding-left: 2%;
+}
+mat-sidenav {
+    background-color: crimson;
+    width: 20%;
+}
+mat-toolbar {
+}
+.spacer {
+    flex: 1 1 auto;
+}
+h1 {
+    font: italic;
+}

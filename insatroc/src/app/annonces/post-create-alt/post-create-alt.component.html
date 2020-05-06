@@ -1,0 +1,157 @@
+<mat-card>
+  <br>
+  <mat-card-header>
+    <div>
+      <mat-card-title>Ajouter une annonce :</mat-card-title>
+    </div>
+    <br>
+
+  </mat-card-header>
+  <form name="form" [formGroup]="form" (ngSubmit)="SavePost(form)">
+    <mat-horizontal-stepper [linear]="false" #stepper >
+      <!-- First step : Description de l'annonce -->
+      <mat-step [stepControl]="form">
+        <ng-template matStepLabel>Description de l'annonce</ng-template>
+
+          <!-- Titre -->
+            <mat-form-field appearance="outline">
+              <mat-label>Titre de l'annonce</mat-label>
+                <mat-placeholder class="placeholder">Titre de l'annonce</mat-placeholder>
+                <input matInput type="text" required formControlName="title">
+                <mat-error *ngIf="form.get('title').hasError('required')">Veuillez saisir un titre</mat-error>
+                <mat-error *ngIf="form.get('title').hasError('minlength')">Le titre doit être suffisamment indicatif</mat-error>
+            </mat-form-field>
+
+            <!-- Catégorie -->
+            <mat-form-field class="Test1" appearance="outline">
+              <mat-label>Catégorie</mat-label>
+              <mat-select matNativeControl name="category" required  formControlName="category" [(value)]="selected" multiple>
+                <mat-select-trigger>{{selected}}</mat-select-trigger>
+                <mat-option value="Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
+                <mat-option value="Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
+                <mat-option value="Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
+                <mat-option value="Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
+                <mat-option value="Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
+                <mat-option value="Autres"><mat-icon>category</mat-icon>Autres</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('category').invalid">Veuillez choisir une catégorie</mat-error>
+            </mat-form-field>
+            <br>
+
+              <!-- Prix -->
+              <mat-form-field *ngIf="!free" class="Test1" appearance="outline">
+                <mat-label>Prix</mat-label>
+                <input matInput type="number" name="price" required min="0" formControlName="price">
+                <span matSuffix><mat-icon>euro_symbol</mat-icon></span>
+                <mat-error *ngIf="form.get('price').hasError('required')">Veuillez saisir un prix</mat-error>
+                <mat-error *ngIf="form.get('price').hasError('min')">Veuillez saisir un prix valide</mat-error>
+            </mat-form-field>
+            <!-- <span *ngIf="free" class="spacer2"></span> -->
+            <mat-checkbox labelPosition="before" (change)="HidePrice()" style="float: right">S'agit-il d'un don ?</mat-checkbox>
+
+
+              <!-- Description -->
+            <mat-form-field appearance="outline">
+                <mat-label class="placeholder">Description de l'annonce</mat-label>
+                <textarea matInput
+
+                formControlName="description"
+                name="Description"
+                required
+                rows="15"
+                placeholder="Donnez une description de l'objet, précisez son état">
+                </textarea>
+                <mat-error *ngIf="form.get('description').hasError('minlength')">Veuillez écrire au moins une phrase pour décrire précisément votre annonce</mat-error>
+                <mat-error *ngIf="form.get('description').hasError('required')">Veullez saisir une description de l'annonce</mat-error>
+            </mat-form-field>
+            <div>
+              <button mat-stroked-button matStepperNext color="primary" [disabled]="form.invalid" type="button" style="float: right;">Suivant</button>
+            </div>
+    </mat-step>
+
+    <!-- Second step : Images -->
+    <mat-step [stepControl]="form">
+        <ng-template matStepLabel>Ajouter des images</ng-template>
+          <div class="container">
+            <!-- <mat-form-field> -->
+              <input style="display: none" type='file' (change)="onSelectFile($event)" multiple #fileInput>
+              <button type="button" mat-raised-button (click)="fileInput.click()">
+                <mat-icon>vertical_align_top</mat-icon>
+                Choisir
+              </button>
+
+            <!-- </mat-form-field> -->
+            <br>
+          </div>
+          <div *ngIf="urls.length>5">
+            <br>
+            <span style="color:red">Le nombre d'images est limité à 5 maximum. Veuillez en retirer.</span>
+          </div>
+          <br>
+          <div  *ngFor='let url of urls; let i = index' class="thumbnail">
+            <img  [src]="url">
+            <button mat-icon-button color="warn" (click)="DeletePicture(i)" type="button">
+              <mat-icon>highlight_off</mat-icon>
+            </button>
+          </div>
+
+        <br>
+        <div>
+          <button mat-stroked-button matStepperPrevious color="primary" style="float: left;" type="button">Précédent</button>
+          <button mat-stroked-button matStepperNext color="primary" style="float: right;" type="button" [disabled]="urls.length>5">Suivant</button>
+        </div>
+    </mat-step>
+
+    <!-- Third step : Voir mon annonce -->
+    <mat-step>
+      <ng-template matStepLabel>Voir mon annonce</ng-template>
+
+      <div>
+        <br>
+        <h1 style="float: left">{{form.value.title}}</h1>
+        <h2 align="right" style= "color: crimson;" *ngIf="!free && form.value.price!=''">{{form.value.price}} €</h2>
+        <h2 align="right" style= "color: crimson;" *ngIf="free && form.value.title!=''">Gratuit</h2>
+        <h4 style="color: darkgray;" *ngIf="form.value.category!=''">Catégorie : {{form.value.category}}</h4>
+
+        <div class="container2" *ngIf="urls.length>0">
+           <!-- Full-width images with number text -->
+          <div class="mySlides">
+            <div class="numbertext">{{slideIndex+1}} / {{urls.length}}</div>
+            <img [src]="urls[slideIndex]" style="width:100%">
+          </div>
+          <!-- Next and previous buttons -->
+          <a class="prev" (click)="PlusSlides(-1)" *ngIf="slideIndex>0">&#10094;</a>
+          <a class="next" (click)="PlusSlides(1)" *ngIf="slideIndex<urls.length-1">&#10095;</a>
+          <!-- Thumbnail images -->
+          <div class="row">
+            <div class="column" *ngFor='let url of urls; let i = index'>
+              <img [className]="(i==slideIndex) ? 'demo cursor active' : 'demo cursor'" [src]="url" style="width:100%" (click)="currentSlide(i)">
+            </div>
+          </div>
+        </div>
+
+        <br>
+        <h2 *ngIf="form.value.description!=''">Description</h2>
+        <p>{{form.value.description}}</p>
+        <br>
+      </div>
+
+
+      <mat-card-actions>
+        <div class="container">
+          <button mat-raised-button type="submit" color="warn" [class.spinner]="loading" [disabled]="loading">Sauvegarder l'annonce !</button>
+        </div>
+      </mat-card-actions>
+      <div>
+        <button mat-stroked-button matStepperPrevious color="primary" type="button">Précédent</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</form>
+
+  <br>
+
+
+
+
+</mat-card>
