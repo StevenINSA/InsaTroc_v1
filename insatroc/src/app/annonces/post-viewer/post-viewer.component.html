@@ -91,6 +91,7 @@
       </mat-card>
 
     </ng-container>
+    <mat-paginator [length]="npages" [pageSize]="pPerPages" (page)="pageChanged($event)"></mat-paginator>
     {{ResetFiltrage()}}
     <p class="Nocontent" *ngIf="Annoncesv2.length==0">Rien à signaler</p>
 

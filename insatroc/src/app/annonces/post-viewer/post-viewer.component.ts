@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PostModel } from '../post_model';
 import {HttpService } from '../../http.service'
+import { PageEvent } from '@angular/material/paginator';
 
 
 @Component({
@@ -24,6 +25,8 @@ export class PostViewerComponent implements OnInit {
   Annoncesv2 :PostModel[]= [];
   activeImage = null;
   para = 0;
+  npages = 30;
+  pPerPages = 10;
 
 
 
@@ -63,6 +66,9 @@ export class PostViewerComponent implements OnInit {
       console.log(this.Annonces[i].urls)
     }
 
+  }
+  pageChanged (event : PageEvent){
+    console.log(event);
   }
 
   PostInFilteredCategory(annonce: PostModel){
