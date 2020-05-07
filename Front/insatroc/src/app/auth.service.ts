@@ -22,7 +22,10 @@ export class AuthService {
 
   public validate(email, password) {
 
-    return this.http.post('http://localhost:3000/authenticate/', {'username' : email, 'password' : password});
+    this.http.post('http://localhost:3000/authenticate', {'username' : email, 'password' : password}).subscribe(
+      (response) => {return response},
+      (error) => {console.log(error)},
+    );
 
   }
 }
