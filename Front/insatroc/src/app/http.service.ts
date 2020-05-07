@@ -57,13 +57,6 @@ export class HttpService {
     return(this.posts);
   }
 
-  authenticate(user: String){
-    console.log(user);
-    this.http.post('http://localhost:3000/authenticate/', user).subscribe(
-      (response) => {console.log(response)},
-      (error) => {console.log(error)},
-    );
-  }
 
   onThemeUpdate(){
     return(this.themeUpdater.asObservable())
