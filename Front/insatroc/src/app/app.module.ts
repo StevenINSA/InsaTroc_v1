@@ -32,6 +32,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {HttpClientModule} from '@angular/common/http';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 
@@ -70,7 +71,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatSliderModule,
     HttpClientModule,
     MatStepperModule,
-    MatBadgeModule
+    MatBadgeModule,
+    MatPaginatorModule
 
   ],
   providers: [],
