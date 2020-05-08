@@ -167,11 +167,21 @@ app.post('/addPost', (req, res, next) => {
 	console.log("Price : ",req.body.price);
 	console.log("Urls : ",req.body.urls);
 
-	var catID = attributeID(req.body.category);
+  var objet = req.body.category;
+  var catID = attributeID(objet.toString());
+  console.log(catID);
+
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = yyyy + '-' + mm + '-' + dd;
 
 	conn=pool.getConnection()
-    .then(conn => 
-      conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','2','1','23-01-20')")
+    .then(conn =>
+      conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','"+catID+"','1','"+today+"')")
+      //conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','2','1','23-01-20')")
     });
 
 	res.status(201).json({  //statut "ressource créée"
