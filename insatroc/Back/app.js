@@ -60,6 +60,14 @@ passport.use(new LocalStrategy({
   usernameField: 'email'
 },
 function(username, password, done) {
+
+  /* A la place de ce qui suit dans cette fonction,
+  il faut vérifier si la BD contient un utilisateur dont l'email est "username"
+  et si le mot de passe correspondant est bien "password".
+  Si oui, alors : return(done, null, username);
+  Sinon : return("unauthorized access", false);
+  */
+
   if(username === "admin@admin.com" && password === "admin"){
     console.log("username & password ok");
     return done(null, username);
@@ -102,14 +110,15 @@ done(null, id);
 app.use(passport.initialize());
 app.use(passport.session());
 
+/***************** Authentification**************** */
 
 // middleware that intercepts the authentication request and makes the Passport authentication call
 const auth = () => {
 return (req, res, next) => {
-  console.log("blablabla");
+  console.log("requête d'authentification reçue dans auth :");
   console.log(req.body);
   passport.authenticate('local', (error, user, info) => {
-    console.log("requête d'authentification reçue dans auth :");
+    console.log("utilisateur :");
     console.log(user);
     console.log(info);
     // if Passport catches an error
@@ -117,8 +126,6 @@ return (req, res, next) => {
     // if a user is found
     else if(user){
       res.status(200).json({"user" : user});
-      // res.status(200);
-      // res.json({"token": token});
     }
     // if user is not found
     else{
@@ -130,8 +137,7 @@ return (req, res, next) => {
     //   next();
     // });
   })(req, res, next);
-}
-}
+}}
 
 // passport.authenticate('local', (error, user, info) => {})(req, res);
 
@@ -140,6 +146,34 @@ app.post('/authenticate/', auth(), (req, res) => {
 console.log("requête d\'authentification reçue");
 console.log(req.body);
 res.status(200).json({"statusCode" : 200, "message" : "hello"});
+});
+
+
+/***************** Création de compte **************** */
+
+// middleware that intercepts the register request and creates a new user
+const register = () => {
+  return (req, res, next) => {
+    console.log("requête de création de compte reçue dans register :");
+    console.log(req.body);
+
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var email = req.body.email;
+
+    /* Ici, il faut créer crypter le mot de passe donné par l'utilisateur (req.body.password)
+    et créer un nouvel utilisateur dans la BD, avec son prénom, nom, email et mot de passe
+    */
+
+    res.status(200).json({"user" : email});
+
+  }}
+
+// requête http POST pour se créer un compte
+app.post('/register/', register(), (req, res) => {
+  console.log("requête de création de compte reçue");
+  console.log(req.body);
+  res.status(200).json({"statusCode" : 200, "message" : "hello"});
 });
 
 const isLoggedIn = (req, res, next) => {
@@ -222,10 +256,10 @@ app.get('/getPost/:id', (req, res, next) => {
 });
 
 
-app.use((req, res) => {
-  console.log("coucou");
-  res.json({message:'coucou'});
-});
+// app.use((req, res) => {
+//   console.log("coucou");
+//   res.json({message:'coucou'});
+// });
 
 
 /*

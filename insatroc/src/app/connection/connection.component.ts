@@ -40,19 +40,11 @@ export class ConnectionComponent implements OnInit {
   Login(form: FormGroup){
 
     this.authService.validate(form.value.email, form.value.password).subscribe(
-      (response) => {console.log("response");
-                    console.log(response);
-                    console.log("after reponse");
+      (response) => {console.log(response);
                     this.authService.setUserInfo({'user' : response['user']});
                     this.router.navigate(['']);},
       (error) => {console.log(error)},
     );
-
-    // this.authService.validate(form.value.email, form.value.password)
-    // .then((response) => {
-    //  this.authService.setUserInfo({'user' : response['user']});
-    //  this.router.navigate(['']);
-    // })
 
   }
 

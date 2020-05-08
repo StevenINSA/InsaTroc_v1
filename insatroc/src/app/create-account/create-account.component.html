@@ -3,7 +3,7 @@
   <mat-card class="card">
     <div class="container">
 
-      <form (submit)="Login(userForm)" #userForm="ngForm">
+      <form name="form" [formGroup]="form" (ngSubmit)="Register(form)">
         <br>
         <h4 style="color: crimson; font-family: cursive; font-size: 200%; align-content: center;" class="container">Se créer un compte</h4>
         <p class="container">Vous avez déjà un compte ? &nbsp; <a routerLink="/connexion"> Connectez-vous</a></p>
@@ -11,37 +11,33 @@
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Prénom</mat-label>
-          <input matInput placeholder="Marie" ngModel [formControl]="first_name"  required>
-          <mat-error *ngIf="first_name.invalid">{{getFirstNameErrorMessage()}}</mat-error>
+          <input matInput placeholder="Marie" required formControlName="first_name">
+          <mat-error *ngIf="form.get('first_name').hasError('required')">Veuillez remplir ce champ</mat-error>
+
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Nom</mat-label>
-          <input matInput placeholder="Dupont" ngModel [formControl]="last_name"  required>
-          <mat-error *ngIf="last_name.invalid">{{getLastNameErrorMessage()}}</mat-error>
+          <input matInput placeholder="Dupont" formControlName="last_name"  required>
+          <mat-error *ngIf="form.get('last_name').hasError('required')">Veuillez remplir ce champ</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Email</mat-label>
-          <input matInput placeholder="pat@example.com" ngModel [formControl]="email"  required>
-          <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+          <input matInput placeholder="pat@example.com" formControlName="email"  required>
+          <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
+          <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Mot de passe</mat-label>
-          <input matInput type="{{hide ? 'password' : 'text'}}"
-          placeholder="******"
-          name="password"
-          size="1"
-          ngModel
-          [formControl]="password"
-          required
-          minlength=5
-          maxlength=25>
+          <input matInput type="{{hide ? 'password' : 'text'}}" placeholder="******" size="1" formControlName="password"required minlength=5 maxlength=25>
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
-          <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+          <mat-error *ngIf="form.get('password').hasError('required')">Veuillez remplir ce champ</mat-error>
+          <mat-error *ngIf="form.get('password').hasError('minlength')">Doit contenir au moins 5 caractères</mat-error>
+          <mat-error *ngIf="form.get('password').hasError('maxlength')">Ne doit pas contenir plus de 25 caractères</mat-error>
         </mat-form-field>
 
         <mat-card-actions>
