@@ -4,8 +4,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var id=0;
 
-const mariadb = require('mariadb');
-const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
+// const mariadb = require('mariadb');
+// const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
 
 const app = express();
 
@@ -216,10 +216,10 @@ app.post('/addPost', (req, res, next) => {
     .then(conn =>
       conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','"+catID+"','1','"+today+"')")
       //conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','2','1','23-01-20')")
-    });
+    );
 
 	res.status(201).json({  //statut "ressource créée"
-		message: 'Objet ajouté dans la BD';
+		message: 'Objet ajouté dans la BD'
 	});
 
 });
