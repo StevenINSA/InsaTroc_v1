@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {NgForm, FormControl, Validators, FormGroup} from '@angular/forms';
-import { HeaderComponent } from '../header/header.component';
-import {HttpService } from '../http.service';
-import { AuthService } from '../auth.service';
+import { HeaderComponent } from '../../header/header.component';
+import {HttpService } from '../../http.service';
+import { AuthService } from '../../auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,30 +12,10 @@ import { Router } from '@angular/router';
 })
 export class ConnectionComponent implements OnInit {
   form: FormGroup;
-  // email = new FormControl('', [Validators.email]);
-  // password = new FormControl('', []);
+  login_validated = true;
   hide=true;
 
   constructor(public httpService:HttpService, private authService: AuthService, private router: Router) { }
-
-  // getEmailErrorMessage() {
-  //   if (this.form.value.email.hasError('required')) {
-  //     return 'Veuillez remplir ce champ';
-  //   }
-  //   return this.form.value.email.hasError('email') ? 'Email non valide' : '';
-  // }
-  // getPasswordErrorMessage() {
-  //   if (this.form.value.password.hasError('required')) {
-  //     return 'Veuillez remplir ce champ';
-  //   }
-  //   if (this.form.value.password.hasError('minlength')) {
-  //     return 'Doit contenir au moins 5 caractères';
-  //   }
-  //   if (this.form.value.password.hasError('maxlength')) {
-  //     return 'Ne doit pas contenir plus de 25 caractères';
-  //   }
-
-  // }
 
   Login(form: FormGroup){
 
@@ -43,7 +23,10 @@ export class ConnectionComponent implements OnInit {
       (response) => {console.log(response);
                     this.authService.setUserInfo({'user' : response['user']});
                     this.router.navigate(['']);},
-      (error) => {console.log(error)},
+      (error) => {console.log(error);
+                  this.login_validated = false;
+                  this.form.reset();
+                },
     );
 
   }

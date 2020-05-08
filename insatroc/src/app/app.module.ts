@@ -6,9 +6,10 @@ import { PostViewerComponent } from './annonces/post-viewer/post-viewer.componen
 import { HeaderComponent } from './header/header.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { PostCreateAltComponent } from './annonces/post-create-alt/post-create-alt.component';
-import { ConnectionComponent} from './connection/connection.component';
-import { CreateAccountComponent} from './create-account/create-account.component';
+import { ConnectionComponent} from './user/connection/connection.component';
+import { CreateAccountComponent} from './user/create-account/create-account.component';
 import { PostViewerByIdComponent } from './annonces/post-viewer-by-id/post-viewer-by-id.component';
+import { UserPostsComponent } from './user/user-posts/user-posts.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,6 +34,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
 
 
 
@@ -46,6 +48,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     ConnectionComponent,
     CreateAccountComponent,
     PostViewerByIdComponent,
+    UserPostsComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,
