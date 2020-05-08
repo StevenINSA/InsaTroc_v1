@@ -21,8 +21,10 @@ export class AuthService {
   }
 
   public validate(email, password) {
-
     return this.http.post('http://localhost:3000/authenticate', {'email' : email, 'password' : password});
+  }
 
+  public register(firstname, lastname, email, password){
+    return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'email' : email, 'password' : password});
   }
 }
