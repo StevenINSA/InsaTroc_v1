@@ -4,8 +4,8 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var id=0;
 
-// const mariadb = require('mariadb');
-// const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
+const mariadb = require('mariadb');
+const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
 
 const app = express();
 
@@ -168,45 +168,14 @@ app.post('/addPost', (req, res, next) => {
 	console.log("Urls : ",req.body.urls);
 
 	var catID = attributeID(req.body.category);
-	console.log("Category id : ",catID);
 
-  var title = req.body.title;
-  console.log("titre =",title);
-  console.log(typeof req.body.title);
-
-  var price = req.body.price.toString();
-  console.log("prix =",price);
-  console.log(typeof req.body.price);
-  console.log(typeof price);
-
-  var description = req.body.description;
-  console.log("description =",description);
-  console.log(typeof req.body.description);
-
-	//enlever AnnounceID -> défini dans la DB
-	//dans la BD : clé primaire entière qui s'auto incrémente
-  conn=pool.getConnection()
-    .then(conn => {
-      //conn.query("INSERT INTO Announce value ('+req.body.title+','+req.body.price+','+req.body.description+','+catID+')", [1, "mariadb"])
-      conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID) VALUES ('\title\','\price\','\description\','\catID\')")
-      //conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID) VALUES ('chat','32', 'dsdsncsjc', '3')")
-        .then((rows) => {
-          console.log(rows); //[ {val: 1}, meta: ... ]
-                //Table must have been created before
-                // " CREATE TABLE myTable (id int, val varchar(255)) "
-          return conn.query("SELECT * FROM Announce");
-         })
-        .catch(err => {
-          //handle error
-        })
-      }).catch(err => {
-      //not connected
+	conn=pool.getConnection()
+    .then(conn => 
+      conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','2','1','23-01-20')")
     });
-	id++;
-
 
 	res.status(201).json({  //statut "ressource créée"
-		message: 'objet créé'
+		message: 'Objet ajouté dans la BD';
 	});
 
 });
@@ -248,5 +217,3 @@ app.use('/addPost', (req, res) => {
 
 
 module.exports = app;
-
-
