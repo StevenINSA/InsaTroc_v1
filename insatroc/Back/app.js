@@ -3,10 +3,15 @@ const bodyParser = require('body-parser'); //permet de formater les données en 
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var id=0;
-
-// const mariadb = require('mariadb');
-// const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-
+/*
+const mysql = require('mysql')
+const con = mysql.createConnection({
+  database: "insatroc",
+  host: "localhost",
+  user: "steven",
+  password: "insa"
+});onst pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
+*/
 const app = express();
 
 function attributeID(category){
@@ -200,53 +205,38 @@ app.post('/addPost', (req, res, next) => {
 	console.log(req.body);  //affiche les éléments de la requête
 	req.body._id = id;
 
-	console.log("id : ",req.body._id);
-	console.log("Title : ",req.body.title);
-	console.log("Description : ",req.body.description);
-	console.log("Category : ",req.body.category);
-	console.log("Price : ",req.body.price);
-	console.log("Urls : ",req.body.urls);
-
-  var objet = req.body.category;
+  var objet = req.body.category; //convertion de l'objet category pour que la fonction marche
   var catID = attributeID(objet.toString());
-  console.log(catID);
 
-  var today = new Date();
+  var today = new Date(); //formater la date
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
   var yyyy = today.getFullYear();
 
   today = yyyy + '-' + mm + '-' + dd;
 
-  var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux 
+  var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les érreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-	conn=pool.getConnection()
-    .then(conn =>
-      conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','"+catID+"','1','"+today+"')")
-    );
-
-	res.status(201).json({  //statut "ressource créée"
-		message: 'Objet ajouté dans la BD'
-	});
-
+  con.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+catID+"','1','"+today+"')",
+    function (err, result, fields){
+      if (err) throw err;
+      res.status(201).json({  //statut "ressource créée"
+        message: 'objet créé'
+      });
+  });
 });
 
 
 // requête http GET pour afficher une annonce spécifique
 app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
-  //con.connect(function(err){
-  //  if (err) throw err;
-    con.query("SELECT * FROM Announce WHERE AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
-      if (err) throw err;
-      console.log(result);
-      //res.status(200).json(result);
-    });
-//  });
+  con.query("SELECT * FROM Announce WHERE AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+    res.status(200).json(result);
+  });
   res.json({message: 'voilà l\'annonce'});
-  // return res.json({post: post});
-  // retourner l'annonce au front end
 });
 
 
