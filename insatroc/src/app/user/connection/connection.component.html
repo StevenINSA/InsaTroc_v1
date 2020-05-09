@@ -38,7 +38,14 @@
             <br>
             <br>
             <button mat-raised-button color="accent" type="submit">Se connecter</button>
+            <br>
           </div>
+          <br>
+          <div class="container">
+              <br>
+              <mat-error *ngIf="login_validated==false" style="color:red">L'authentification a échoué, veuillez réessayer.</mat-error>
+            </div>
+
         </mat-card-actions>
 
       </form>
