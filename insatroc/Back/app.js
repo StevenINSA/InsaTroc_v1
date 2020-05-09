@@ -39,6 +39,12 @@ function attributeID(category){
     }
   return categoryID;
 }
+function addslashes(ch) { //fonction pour échapper les apostrophes et autres qui créaient des erreurs
+  ch = ch.replace(/\\/g,"\\\\");
+  ch = ch.replace(/\'/g,"\\'");
+  ch = ch.replace(/\"/g,"\\\"");
+  return ch;
+}
 
 app.use((req, res, next) => { //header permettant de communiquer entre les deux serveurs
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -212,10 +218,12 @@ app.post('/addPost', (req, res, next) => {
 
   today = yyyy + '-' + mm + '-' + dd;
 
+  var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux 
+  var descriptionEchape = addslashes(req.body.description);
+
 	conn=pool.getConnection()
     .then(conn =>
       conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','"+catID+"','1','"+today+"')")
-      //conn.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+req.body.title+"','"+req.body.price+"','"+req.body.description+"','2','1','23-01-20')")
     );
 
 	res.status(201).json({  //statut "ressource créée"
@@ -228,7 +236,14 @@ app.post('/addPost', (req, res, next) => {
 // requête http GET pour afficher une annonce spécifique
 app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
-  // aller chercher l'annonce dans la base de données
+  //con.connect(function(err){
+  //  if (err) throw err;
+    con.query("SELECT * FROM Announce WHERE AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
+      if (err) throw err;
+      console.log(result);
+      //res.status(200).json(result);
+    });
+//  });
   res.json({message: 'voilà l\'annonce'});
   // return res.json({post: post});
   // retourner l'annonce au front end
