@@ -239,6 +239,15 @@ app.get('/getPost/:id', (req, res, next) => {
   res.json({message: 'voilà l\'annonce'});
 });
 
+// requête http GET pour afficher toutes les annonces
+app.get('/posts', (req, res, next) => {
+  con.query("SELECT * FROM Announce", function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+    res.status(200).json(result);
+  });
+});
+
 
 // app.use((req, res) => {
 //   console.log("coucou");
