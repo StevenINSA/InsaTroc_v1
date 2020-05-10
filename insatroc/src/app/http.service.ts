@@ -36,7 +36,8 @@ export class HttpService {
 
   addPost(post:PostModel){
     //requete post http vers backend pour stocker post dans BD
-    this.posts.push(post);
+    // this.posts.push(post);
+    console.log(post);
     this.http.post<{response:string}>('http://localhost:3000/addPost',post).subscribe(
       (response) => { console.log(response)},
       (error) => {console.log(error)},
@@ -47,10 +48,12 @@ export class HttpService {
   }
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
-    this.http.get<{response:string,postss:PostModel []}>('http://localhost:3000/posts').subscribe(
+    this.http.get<{response:string,posts:PostModel []}>('http://localhost:3000/posts').subscribe(
       (data)=>{
-        console.log(data.postss);
-        this.posts=data.postss;
+        console.log("data.posts");
+        console.log(data.posts);
+        this.posts=data.posts;
+        console.log("data.response");
         console.log(data.response);
       }
     )

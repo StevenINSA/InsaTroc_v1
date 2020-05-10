@@ -18,11 +18,11 @@ export class PostViewerComponent implements OnInit {
   maxprice=0;
 
 
-  Annonces :PostModel[] = [{_id: null, title: "Vends un sac ", description: "je vends un sac pour venir sac si sac alors sac sac", category: ["Autres"], price: 50, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg','../../../assets/images/pileofcolorpencils.jpg'], date: new Date(), views: 30},
+  AnnoncesV :PostModel[] = [{_id: null, title: "Vends un sac ", description: "je vends un sac pour venir sac si sac alors sac sac", category: ["Autres"], price: 50, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg','../../../assets/images/pileofcolorpencils.jpg'], date: new Date(), views: 30},
                            {_id: null, title: "Vends un sac de couchage ", description: "je vends un sac de couchage , trs inconfortable mais c'est mieux que rien", category: ["Loisirs/Sport", "Bureau"], price: 10, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg'], date: new Date(), views: 15}
   ]
+  Annonces :PostModel[]= [];
   annoncesFiltrees = this.Annonces.length;
-  Annoncesv2 :PostModel[]= [];
   activeImage = null;
   para = 0;
   npages = 30;
@@ -37,11 +37,10 @@ export class PostViewerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.Annonces)
     console.log(this.selected)
     console.log(this.maxprice)
-    this.Annoncesv2 = this.httpservice.getAllPosts();
-    console.log(this.Annoncesv2);
+    this.Annonces = this.httpservice.getAllPosts();
+    console.log(this.Annonces);
   }
 
   AddAnnounce(annonce : PostModel){}

@@ -93,7 +93,7 @@
     </ng-container>
     <mat-paginator [length]="npages" [pageSize]="pPerPages" (page)="pageChanged($event)"></mat-paginator>
     {{ResetFiltrage()}}
-    <p class="Nocontent" *ngIf="Annoncesv2.length==0">Rien à signaler</p>
+    <p class="Nocontent" *ngIf="Annonces.length==0">Rien à signaler</p>
 
   </mat-sidenav-content>
 </mat-sidenav-container>
