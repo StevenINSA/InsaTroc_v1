@@ -139,7 +139,9 @@ return (req, res, next) => {
     if(error) res.status(400).json({"statusCode" : 200, "message" : error});
     // if a user is found
     else if(user){
-      res.status(200).json({"user" : user});
+      // get username in database
+      var username = "Penelope"
+      res.status(200).json({"user" : user, "username" : username});
     }
     // if user is not found
     else{
@@ -186,7 +188,7 @@ const register = () => {
       });
 
 
-    res.status(200).json({"user" : email});
+    res.status(200).json({"user" : email, "username" : username});
 
   }}
 
@@ -195,6 +197,12 @@ app.post('/register/', register(), (req, res) => {
   console.log("requête de création de compte reçue");
   console.log(req.body);
   res.status(200).json({"statusCode" : 200, "message" : "hello"});
+});
+
+app.get('/logout/', (req, res) => {
+  console.log("requête de déconnexion reçue")
+  req.logout();
+  res.redirect('/');
 });
 
 const isLoggedIn = (req, res, next) => {

@@ -46,10 +46,10 @@
   <input mat-clearable-input placeholder="Rechercher une annonce">
   <span class="spacer"></span>
 
-  <ng-container *ngIf="loggedin">
+  <ng-container *ngIf="authService.isAuthenticated()">
     <button mat-button [matMenuTriggerFor]="profile">
       <mat-icon>account_circle</mat-icon>
-      Username
+      {{authService.getUsername()}}
     </button>
     <mat-menu #profile="matMenu">
       <button mat-menu-item routerLink="/mon-profil">Mon profil</button>
@@ -58,7 +58,7 @@
     </mat-menu>
   </ng-container>
 
-  <ng-container *ngIf="!loggedin">
+  <ng-container *ngIf="!authService.isAuthenticated()">
     <button mat-button routerLink="/connexion">
       <mat-icon>account_circle</mat-icon>
       Connexion
