@@ -179,6 +179,12 @@ const register = () => {
     /* Ici, il faut créer crypter le mot de passe donné par l'utilisateur (req.body.password)
     et créer un nouvel utilisateur dans la BD, avec son prénom, nom, email et mot de passe
     */
+    con.query("INSERT INTO Student (Username,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+      if (err) throw err;
+      //res.status(201).json({  //statut "ressource créée"
+        message: 'compte créé'
+      });
+
 
     res.status(200).json({"user" : email});
 
