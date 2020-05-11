@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser'); //permet de formater les données en JSON
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 var id=0;
 
 const mysql = require('mysql')
@@ -11,10 +13,10 @@ const con = mysql.createConnection({
   user: "toto2",
   password: "pwdtoto"
 });
-/*
+
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-*/
+
 const app = express();
 
 function attributeID(category){
@@ -81,6 +83,9 @@ function(username, password, done) {
   Si oui, alors : return(done, null, username);
   Sinon : return("unauthorized access", false);
   */
+
+  /*con.query("SELECT Username FROM Student where Username = '"+username+ "'",function (err, result, fields) {
+    if (err) throw err;*/
 
   if(username === "admin@admin.com" && password === "admin"){
     console.log("username & password ok");
@@ -177,11 +182,22 @@ const register = () => {
     var last_name = req.body.last_name;
     var username = req.body.username;
     var email = req.body.email;
+    var password;
+
+    bcrypt
+        .genSalt(saltRounds)
+        .then(salt => {
+
+          password = bcrypt.hash(req.body.password, salt);
+        })
+        .then(hash => {
+          return password;
+        })
 
     /* Ici, il faut créer crypter le mot de passe donné par l'utilisateur (req.body.password)
     et créer un nouvel utilisateur dans la BD, avec son prénom, nom, email et mot de passe
     */
-    con.query("INSERT INTO Student (Username,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+    con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+password+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
       if (err) throw err;
       //res.status(201).json({  //statut "ressource créée"
         message: 'compte créé'
@@ -237,18 +253,12 @@ app.post('/addPost', (req, res, next) => {
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les érreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-  con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','1','"+today+"')",
+  con.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+catID+"','1','"+today+"')",
     function (err, result, fields){
       if (err) throw err;
       res.status(201).json({  //statut "ressource créée"
-    	message: 'objet créé'
+        message: 'objet créé'
       });
-      con.query("INSERT INTO AnnounceCategories (CategoryID, AnnounceID) VALUES ('"+catID+"','"+result.insertId+"')",
-        function (err, result, fields){
-          if (err) throw err;
-          console.log(result);
-    });
-
   });
 });
 
@@ -271,8 +281,8 @@ app.get('/posts', (req, res, next) => {
   console.log("requête d'affichage de toutes les annonces reçue :")
   con.query("SELECT * FROM Announce", function (err, result, fields) {
     if (err) throw err;
-    //var data = JSON.stringify(result);
-    console.log(result);
+    var data = JSON.stringify(result);
+    console.log(data);
     res.status(200).json(result);
   });
 });
