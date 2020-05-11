@@ -8,8 +8,8 @@ const mysql = require('mysql')
 const con = mysql.createConnection({
   database: "insatroc",
   host: "localhost",
-  user: "steven",
-  password: "insa"
+  user: "toto2",
+  password: "pwdtoto"
 });
 /*
 const mariadb = require('mariadb');
@@ -239,10 +239,7 @@ app.get('/getPost/:id', (req, res, next) => {
     if (err) throw err;
     //if (result.toString().length == 0){
       //res.json("pas d'annonce correspondante"); //si l'id n'existe plus dans la bd
-    //}
-    console.log(typeof result);
-    console.log(typeof result.toString());
-    console.log(result.toString().length);
+    //} marche pas, bug à cause du deuxième res.json
     res.status(200).json(result);
   });
   //res.json({message: 'voilà l\'annonce'});
