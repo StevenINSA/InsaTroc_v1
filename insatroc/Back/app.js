@@ -3,15 +3,17 @@ const bodyParser = require('body-parser'); //permet de formater les données en 
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 var id=0;
-/*
+
 const mysql = require('mysql')
 const con = mysql.createConnection({
   database: "insatroc",
   host: "localhost",
-  user: "steven",
-  password: "insa"
-});onst pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-*/
+  user: "toto2",
+  password: "pwdtoto"
+});
+const mariadb = require('mariadb');
+const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
+
 const app = express();
 
 function attributeID(category){
@@ -202,6 +204,7 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 
 // requête http POST pour ajouter une nouvelle annonce dans la DB
 app.post('/addPost', (req, res, next) => {
+  console.log("requête de création d'annonce reçue :")
 	console.log(req.body);  //affiche les éléments de la requête
 	req.body._id = id;
 
