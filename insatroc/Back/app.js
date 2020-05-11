@@ -229,12 +229,18 @@ app.post('/addPost', (req, res, next) => {
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les érreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-  con.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+catID+"','1','"+today+"')",
+  con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','1','"+today+"')",
     function (err, result, fields){
       if (err) throw err;
       res.status(201).json({  //statut "ressource créée"
-        message: 'objet créé'
+    	message: 'objet créé'
       });
+      con.query("INSERT INTO AnnounceCategories (CategoryID, AnnounceID) VALUES ('"+catID+"','"+result.insertId+"')",
+        function (err, result, fields){
+          if (err) throw err;
+          console.log(result);
+    });
+
   });
 });
 
@@ -257,8 +263,8 @@ app.get('/posts', (req, res, next) => {
   console.log("requête d'affichage de toutes les annonces reçue :")
   con.query("SELECT * FROM Announce", function (err, result, fields) {
     if (err) throw err;
-    var data = JSON.stringify(result);
-    console.log(data);
+    //var data = JSON.stringify(result);
+    console.log(result);
     res.status(200).json(result);
   });
 });
