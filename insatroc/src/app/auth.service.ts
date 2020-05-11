@@ -16,15 +16,18 @@ export class AuthService {
     return false;
   }
 
+  // localStorage ou sessionStorage
+
   public setUserInfo(user){
     localStorage.setItem('userInfo', JSON.stringify(user));
   }
 
   public validate(email, password) {
     return this.http.post('http://localhost:3000/authenticate', {'email' : email, 'password' : password});
+    // stocker la valeur de retour (token) pour le mettre
   }
 
-  public register(firstname, lastname, email, password){
-    return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'email' : email, 'password' : password});
+  public register(firstname, lastname, username, email, password){
+    return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password});
   }
 }

@@ -4,6 +4,30 @@ import {PostModel} from './annonces/post_model';
 import { Subject } from 'rxjs';
 import { stringify } from 'querystring';
 
+// injecter auth.service dedans
+// pour demander à l'auth le token à rajouter au header
+// le token doit être présent dans toutes les requêtes au backend
+// mettre en place le service d'auth que là où il faut être authentifié
+// un champ du header http contient le token
+// rajouter http header aux requêtes
+// rajouter ça dans les options de la méthode get et post du http client
+
+
+
+// créer une fonction dans auth.service pour renvoyer le token vers les autres composants
+// utiliser LocalStorage
+
+
+// pour se déconnecter ?
+
+// est-ce que le backend sait déchiffrer le token pour savoir quel utilisateur c'est ?
+
+// c'est quoi exactement un token ?
+// chaine de caractère aléatoire : hash -> infos de l'utilisateur
+
+// dans node : utiliser un routeur pour vérifier ?
+// déclarer une route publique et une route privée
+// installer le middleware passport que sur les routes privées
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +73,7 @@ export class HttpService {
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
     // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
+      this.posts = [];
       this.http.get('http://localhost:3000/posts').subscribe(
       (data)=>{
         console.log("data");
