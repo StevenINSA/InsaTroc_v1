@@ -8,12 +8,13 @@ const mysql = require('mysql')
 const con = mysql.createConnection({
   database: "insatroc",
   host: "localhost",
-  user: "toto2",
-  password: "pwdtoto"
+  user: "steven",
+  password: "insa"
 });
+/*
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-
+*/
 const app = express();
 
 function attributeID(category){
@@ -236,10 +237,15 @@ app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
   con.query("SELECT * FROM Announce WHERE AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
     if (err) throw err;
-    console.log(result);
+    //if (result.toString().length == 0){
+      //res.json("pas d'annonce correspondante"); //si l'id n'existe plus dans la bd
+    //}
+    console.log(typeof result);
+    console.log(typeof result.toString());
+    console.log(result.toString().length);
     res.status(200).json(result);
   });
-  res.json({message: 'voilà l\'annonce'});
+  //res.json({message: 'voilà l\'annonce'});
 });
 
 // requête http GET pour afficher toutes les annonces
@@ -252,10 +258,10 @@ app.get('/posts', (req, res, next) => {
 });
 
 
-// app.use((req, res) => {
-//   console.log("coucou");
-//   res.json({message:'coucou'});
-// });
+app.use((req, res, next) => {
+ console.log("coucou");
+ res.json({message:'coucou'});
+});
 
 
 /*
