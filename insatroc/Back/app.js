@@ -13,10 +13,10 @@ const con = mysql.createConnection({
   user: "toto2",
   password: "pwdtoto"
 });
-/*
+
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-*/
+
 const app = express();
 
 function attributeID(category){
