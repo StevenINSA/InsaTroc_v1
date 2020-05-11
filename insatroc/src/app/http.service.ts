@@ -44,17 +44,19 @@ export class HttpService {
       // rediriger vers "/annonce/:id", id "étant l'ID de l'annonce qui est renvoyé par le serveur une fois qu'il l'a mise dans la DB"
 
     );
-    console.log(this.posts.length);
+    // console.log(this.posts.length);
   }
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
-    this.http.get<{response:string,posts:PostModel []}>('http://localhost:3000/posts').subscribe(
+    // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
+      this.http.get('http://localhost:3000/posts').subscribe(
       (data)=>{
-        console.log("data.posts");
-        console.log(data.posts);
-        this.posts=data.posts;
-        console.log("data.response");
-        console.log(data.response);
+        console.log("data");
+        console.log(data);
+        for(var i in data){
+          this.posts.push({_id: data[i].AnnounceID, title: data[i].Title, description: data[i].Description, category: this.attributeCategory(data[i].CategoryID), price: data[i].Price, urls: null, date: data[i].PublicationDate, views: data[i].NbViews})
+        }
+        console.log(this.posts);
       }
     )
     return(this.posts);
@@ -67,5 +69,38 @@ export class HttpService {
   changetheme(theme?:String){
     this.themeUpdater.next(theme)
 
+  }
+
+  attributeCategory(categoryID: number){
+    var category = [];
+
+    // for(let i in categoryID){
+      switch (categoryID){
+        case 1:
+        category.push("Chambre");
+        break;
+
+        case 2:
+        category.push("Cuisine");
+        break;
+
+        case 3:
+        category.push("Salle de bain");
+        break;
+
+        case 4:
+        category.push("Bureau");
+        break;
+
+        case 5:
+        category.push("Loisirs/Sport");
+        break;
+
+        case 6:
+        category.push("Autre");
+        break;
+        }
+    // }
+    return category;
   }
 }

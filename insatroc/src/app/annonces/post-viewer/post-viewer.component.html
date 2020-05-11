@@ -68,7 +68,7 @@
             <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
         </mat-card-header>
         <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
-        <mat-card-content class="sliderr">
+        <!-- <mat-card-content class="sliderr">
         <img mat-card-image class='image{{i}} ' id={{i}}  src={{annonce.urls[0]}}>
         <button class="prev" mat-stroked-button (click)="slideIt(i,2)">
           <mat-icon>keyboard_arrow_left</mat-icon>
@@ -76,7 +76,10 @@
         <button class="next" mat-stroked-button color="primary" (click)="slideIt(i,1)">
           <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
-        </mat-card-content>
+        </mat-card-content> -->
+        <mat-card-content>
+        <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
+      </mat-card-content>
 
 
         <mat-card-content>
