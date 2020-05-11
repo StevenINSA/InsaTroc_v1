@@ -173,6 +173,7 @@ const register = () => {
 
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
+    var username = req.body.username;
     var email = req.body.email;
 
     /* Ici, il faut créer crypter le mot de passe donné par l'utilisateur (req.body.password)
