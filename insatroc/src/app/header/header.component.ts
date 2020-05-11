@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpService} from '../http.service';
+import {AuthService} from '../auth.service';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -12,7 +14,7 @@ export class HeaderComponent implements OnInit {
   themetoggle = false;
 
 
-  constructor(public httpService: HttpService) { }
+  constructor(public httpService: HttpService, public authService: AuthService, private router: Router) { }
 
   log (status) {
     console.log(status)
@@ -20,6 +22,13 @@ export class HeaderComponent implements OnInit {
 
   Disconnect(){
     this.loggedin = false;
+    this.authService.logout().subscribe(
+      (response) => {console.log(response);
+                    this.authService.deleteUserInfo();
+                    this.router.navigate(['']);},
+      (error) => {console.log(error);},
+    );
+
   }
   changetheme() {
     if (this.themetoggle) {
@@ -29,7 +38,7 @@ export class HeaderComponent implements OnInit {
       this.httpService.changetheme('alternative');
       this.themetoggle = !this.themetoggle;
     }
-    
+
   }
   test(){}
 

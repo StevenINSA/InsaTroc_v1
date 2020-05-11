@@ -18,7 +18,7 @@ export class CreateAccountComponent implements OnInit {
   Register(form: FormGroup){
     this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
       (response) => {console.log(response);
-                    this.authService.setUserInfo({'user' : response['user']});
+                    this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});
                     this.router.navigate(['']);},
       (error) => {console.log(error)},
     );

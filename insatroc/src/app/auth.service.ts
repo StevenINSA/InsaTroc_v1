@@ -9,8 +9,8 @@ export class AuthService {
   constructor(private http : HttpClient) { }
 
   public isAuthenticated() : Boolean {
-    let userData = localStorage.getItem('userInfo')
-    if(userData && JSON.parse(userData)){
+    let userEmail = localStorage.getItem('userEmail');
+    if(userEmail && JSON.parse(userEmail)){
       return true;
     }
     return false;
@@ -18,8 +18,28 @@ export class AuthService {
 
   // localStorage ou sessionStorage
 
-  public setUserInfo(user){
-    localStorage.setItem('userInfo', JSON.stringify(user));
+  public setUserInfo(user, username){
+    localStorage.setItem('userEmail', JSON.stringify(user));
+    localStorage.setItem('username', JSON.stringify(username));
+  }
+
+  public deleteUserInfo(){
+    localStorage.clear();
+  }
+
+  public getUsername(){
+    if(this.isAuthenticated()){
+      return (JSON.parse(localStorage.getItem('username')).username);
+    }
+    else{
+      return null;
+    }
+  }
+
+  public getUserInfo(){
+    if(this.isAuthenticated()){
+      return this.http.get('http://localhost:3000/getUserInfo');
+    }
   }
 
   public validate(email, password) {
@@ -29,5 +49,13 @@ export class AuthService {
 
   public register(firstname, lastname, username, email, password){
     return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password});
+  }
+
+  public modifyUserInfo(firstname, lastname, username, email, password){
+
+  }
+
+  public logout(){
+    return this.http.get('http://localhost:3000/logout/');
   }
 }

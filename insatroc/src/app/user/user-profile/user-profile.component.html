@@ -1,1 +1,61 @@
-<p>user-profile works!</p>
+<div class="container">
+
+  <mat-card class="card">
+    <div class="container">
+
+      <form name="form" [formGroup]="form" (ngSubmit)="ModifyUserInfo(form)">
+        <br>
+        <h4 style="color: crimson; font-family: cursive; font-size: 200%; align-content: center;" class="container">Mon profil</h4>
+        <br>
+
+        <mat-form-field appearance="outline" class="container">
+          <mat-label>Prénom</mat-label>
+          <input matInput placeholder="blabla" required formControlName="first_name">
+          <mat-error *ngIf="form.get('first_name').hasError('required')">Veuillez remplir ce champ</mat-error>
+
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="container">
+          <mat-label>Nom</mat-label>
+          <input matInput placeholder="Dupont" formControlName="last_name"  required>
+          <mat-error *ngIf="form.get('last_name').hasError('required')">Veuillez remplir ce champ</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="container">
+          <mat-label>Nom d'utilisateur</mat-label>
+          <input matInput placeholder="Mdupont" formControlName="username"  required>
+          <mat-error *ngIf="form.get('username').hasError('required')">Veuillez remplir ce champ</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="container">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="pat@example.com" formControlName="email"  required>
+          <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
+          <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="container">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="{{hide ? 'password' : 'text'}}" placeholder="******" size="1" formControlName="password"required minlength=5 maxlength=25>
+          <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="form.get('password').hasError('required')">Veuillez remplir ce champ</mat-error>
+          <mat-error *ngIf="form.get('password').hasError('minlength')">Doit contenir au moins 5 caractères</mat-error>
+          <mat-error *ngIf="form.get('password').hasError('maxlength')">Ne doit pas contenir plus de 25 caractères</mat-error>
+        </mat-form-field>
+
+        <mat-card-actions>
+          <div class="container">
+            <button mat-raised-button color="accent" type="submit">Modifier</button>
+          </div>
+        </mat-card-actions>
+      </form>
+    </div>
+  </mat-card>
+
+
+
+
+
+</div>

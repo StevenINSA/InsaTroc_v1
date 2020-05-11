@@ -3,6 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import {PostModel} from './annonces/post_model';
 import { Subject } from 'rxjs';
 import { stringify } from 'querystring';
+import { HttpHeaders } from '@angular/common/http';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': 'my-auth-token'
+  })
+};
 
 // injecter auth.service dedans
 // pour demander à l'auth le token à rajouter au header
@@ -17,8 +25,6 @@ import { stringify } from 'querystring';
 // créer une fonction dans auth.service pour renvoyer le token vers les autres composants
 // utiliser LocalStorage
 
-
-// pour se déconnecter ?
 
 // est-ce que le backend sait déchiffrer le token pour savoir quel utilisateur c'est ?
 
