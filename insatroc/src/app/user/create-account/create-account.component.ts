@@ -18,8 +18,8 @@ export class CreateAccountComponent implements OnInit {
   Register(form: FormGroup){
     this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
       (response) => {console.log(response);
-                    this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});
-                    this.router.navigate(['']);},
+                    this.authService.setUserInfo(response['user'], response['username']);
+                    this.router.navigate(['mon-profil']);},
       (error) => {console.log(error)},
     );
   }

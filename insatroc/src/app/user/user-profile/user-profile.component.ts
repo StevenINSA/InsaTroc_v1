@@ -12,15 +12,23 @@ import { UserModel } from '../user_model';
 export class UserProfileComponent implements OnInit {
   form: FormGroup;
   user: UserModel;
+  hide = true;
+  readonly = true;
 
   constructor(public httpService:HttpService, private authService: AuthService) { }
 
   ModifyUserInfo(form: FormGroup){
-    this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
-      (response) => {console.log(response);
-                    this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});},
-      (error) => {console.log(error)},
-    );
+    if(this.readonly){
+      this.readonly = false;
+    }
+    else {
+      // this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
+      //   (response) => {console.log(response);
+      //                 this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});},
+      //   (error) => {console.log(error)},
+      // );
+      this.readonly = true;
+    }
   }
 
   ngOnInit(): void {
@@ -29,23 +37,32 @@ export class UserProfileComponent implements OnInit {
       last_name: new FormControl(),
       username: new FormControl(),
       email: new FormControl('', [Validators.email]),
+      phone_number: new FormControl(),
+      contact: new FormControl(),
       password: new FormControl('', []),
     });
 
     // this.form.disable();
 
-    // this.authService.getUserInfo().subscribe(
-    //   (response) => {this.form.value.first_name.setValue(response['first_name']);
-    //                 this.user.last_name = response['last_name'];
-    //                 this.user.email = response['email'];
-    //                 this.user.username = response['username'];
-    //                 this.user.phone_number = response['phone_number'];
-    //                 this.user.other_contact_info = response['contact_info'];},
-    //   (error) => {console.log(error)}
-    // );
+    this.authService.getUserInfo().subscribe(
+      (response) => { this.form.patchValue({
+        first_name: response['first_name'],
+        last_name: response['last_name'],
+        username: response['username'],
+        email: response['email'],
+        phone_number: response['phone_number'],
+        contact: response['contact_info'],
+      })},
+      (error) => {console.log(error)}
+    );
 
       // console.log(this.user.last_name);
-    // this.form.value.first_name.setValue("Pénélope");
+    // this.form.patchValue({
+    //   first_name: "Pénélope",
+    //   last_name: "Roullot"
+    // });
+
+    // this.form.disable();
   }
 
 }

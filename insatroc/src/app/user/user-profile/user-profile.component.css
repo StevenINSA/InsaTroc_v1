@@ -13,3 +13,16 @@
   background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
   background-size: cover;
 }
+
+mat-card {
+  margin-top: 4%;
+  width: 55%;
+  margin-left:21%;
+}
+
+.textarea {
+  /* display: flex; */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}

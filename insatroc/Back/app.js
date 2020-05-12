@@ -144,9 +144,10 @@ return (req, res, next) => {
     if(error) res.status(400).json({"statusCode" : 200, "message" : error});
     // if a user is found
     else if(user){
-      // get username in database
+      // get username and userID in database
       var username = "Penelope"
-      res.status(200).json({"user" : user, "username" : username});
+      var userID = 1;
+      res.status(200).json({"user" : userID, "username" : username});
     }
     // if user is not found
     else{
@@ -203,8 +204,11 @@ const register = () => {
         message: 'compte créé'
       });
 
+    var userID = 1;
+    // get userID of juste created user in DB
 
-    res.status(200).json({"user" : email, "username" : username});
+
+    res.status(200).json({"user" : userID, "username" : username});
 
   }}
 
@@ -235,7 +239,7 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 
 
 // requête http POST pour ajouter une nouvelle annonce dans la DB
-app.post('/addPost', (req, res, next) => {
+app.post('/addPost', isLoggedIn, (req, res, next) => {
   console.log("requête de création d'annonce reçue :")
 	console.log(req.body);  //affiche les éléments de la requête
 	req.body._id = id;
@@ -286,6 +290,11 @@ app.get('/posts', (req, res, next) => {
     res.status(200).json(result);
   });
 });
+
+app.get('/getUserInfo', (req, res, next) => {
+  console.log("requête des infos d'utilisateur reçue :");
+  res.status(200).json({first_name: 'Pénélope', last_name: 'Roullot', username: 'proullot', email: 'p.r@gmail.com'})
+})
 
 
 app.use((req, res, next) => {

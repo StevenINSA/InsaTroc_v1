@@ -10,33 +10,44 @@
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Prénom</mat-label>
-          <input matInput placeholder="blabla" required formControlName="first_name">
-          <mat-error *ngIf="form.get('first_name').hasError('required')">Veuillez remplir ce champ</mat-error>
-
+          <input matInput required formControlName="first_name" readonly = {{readonly}}>
+          <mat-error *ngIf="form.get('first_name').hasError('required') && !readonly">Veuillez remplir ce champ</mat-error>
         </mat-form-field>
+
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Nom</mat-label>
-          <input matInput placeholder="Dupont" formControlName="last_name"  required>
+          <input matInput formControlName="last_name" required readonly = {{readonly}}>
           <mat-error *ngIf="form.get('last_name').hasError('required')">Veuillez remplir ce champ</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Nom d'utilisateur</mat-label>
-          <input matInput placeholder="Mdupont" formControlName="username"  required>
+          <input matInput formControlName="username" required readonly = {{readonly}}>
           <mat-error *ngIf="form.get('username').hasError('required')">Veuillez remplir ce champ</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
           <mat-label>Email</mat-label>
-          <input matInput placeholder="pat@example.com" formControlName="email"  required>
+          <input matInput formControlName="email" required readonly = {{readonly}}>
           <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
           <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
+          <mat-label>Numéro de téléphone</mat-label>
+          <input matInput formControlName="phone_number" readonly = {{readonly}}>
+          <!-- <mat-error *ngIf="form.get('phone_number').hasError('length')">Numéro de téléphone non valide</mat-error> -->
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="textarea">
+          <mat-label>Autres informations de contact</mat-label>
+          <textarea matInput formControlName="contact" rows=7 placeholder="Entrez les informations de contact que vous voulez voir apparaître sur vos annonces." readonly = {{readonly}}></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="container">
           <mat-label>Mot de passe</mat-label>
-          <input matInput type="{{hide ? 'password' : 'text'}}" placeholder="******" size="1" formControlName="password"required minlength=5 maxlength=25>
+          <input matInput type="{{hide ? 'password' : 'text'}}" size="1" formControlName="password"required minlength=5 maxlength=25 readonly = {{readonly}}>
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
@@ -47,7 +58,8 @@
 
         <mat-card-actions>
           <div class="container">
-            <button mat-raised-button color="accent" type="submit">Modifier</button>
+            <button mat-raised-button *ngIf="readonly" color="accent" type="submit">Modifier mes informations</button>
+            <button mat-raised-button *ngIf="!readonly" color="accent" type="submit">Enregistrer</button>
           </div>
         </mat-card-actions>
       </form>

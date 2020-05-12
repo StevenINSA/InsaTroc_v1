@@ -9,8 +9,8 @@ export class AuthService {
   constructor(private http : HttpClient) { }
 
   public isAuthenticated() : Boolean {
-    let userEmail = localStorage.getItem('userEmail');
-    if(userEmail && JSON.parse(userEmail)){
+    let userID = localStorage.getItem('userID');
+    if(userID && JSON.parse(userID)){
       return true;
     }
     return false;
@@ -18,9 +18,9 @@ export class AuthService {
 
   // localStorage ou sessionStorage
 
-  public setUserInfo(user, username){
-    localStorage.setItem('userEmail', JSON.stringify(user));
-    localStorage.setItem('username', JSON.stringify(username));
+  public setUserInfo(userID, username){
+    localStorage.setItem('userID', userID);
+    localStorage.setItem('username', username);
   }
 
   public deleteUserInfo(){
@@ -29,7 +29,7 @@ export class AuthService {
 
   public getUsername(){
     if(this.isAuthenticated()){
-      return (JSON.parse(localStorage.getItem('username')).username);
+      return (localStorage.getItem('username'));
     }
     else{
       return null;
@@ -37,9 +37,7 @@ export class AuthService {
   }
 
   public getUserInfo(){
-    if(this.isAuthenticated()){
-      return this.http.get('http://localhost:3000/getUserInfo');
-    }
+    return this.http.get('http://localhost:3000/getUserInfo');
   }
 
   public validate(email, password) {
@@ -48,6 +46,7 @@ export class AuthService {
   }
 
   public register(firstname, lastname, username, email, password){
+    this.deleteUserInfo();
     return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password});
   }
 

@@ -21,7 +21,7 @@ export class ConnectionComponent implements OnInit {
 
     this.authService.validate(form.value.email, form.value.password).subscribe(
       (response) => {console.log(response);
-                    this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});
+                    this.authService.setUserInfo(response['user'], response['username']);
                     this.router.navigate(['']);},
       (error) => {console.log(error);
                   this.login_validated = false;

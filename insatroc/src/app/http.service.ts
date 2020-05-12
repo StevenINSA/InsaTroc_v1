@@ -12,28 +12,6 @@ const httpOptions = {
   })
 };
 
-// injecter auth.service dedans
-// pour demander à l'auth le token à rajouter au header
-// le token doit être présent dans toutes les requêtes au backend
-// mettre en place le service d'auth que là où il faut être authentifié
-// un champ du header http contient le token
-// rajouter http header aux requêtes
-// rajouter ça dans les options de la méthode get et post du http client
-
-
-
-// créer une fonction dans auth.service pour renvoyer le token vers les autres composants
-// utiliser LocalStorage
-
-
-// est-ce que le backend sait déchiffrer le token pour savoir quel utilisateur c'est ?
-
-// c'est quoi exactement un token ?
-// chaine de caractère aléatoire : hash -> infos de l'utilisateur
-
-// dans node : utiliser un routeur pour vérifier ?
-// déclarer une route publique et une route privée
-// installer le middleware passport que sur les routes privées
 
 @Injectable({
   providedIn: 'root'
