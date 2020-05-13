@@ -13,7 +13,7 @@ const con = mysql.createConnection({
   password: "pwdtoto"
 });
 
-var pwdhash;
+
 /*
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
@@ -90,29 +90,32 @@ function(username, password, done) {
     if (err) {
       throw err;
     } else if (!user){
-      console.log("User not found")
+      console.log("User not found");
+      return done("User not found", false);
     } else {
-      console.log("Correct user")
+      console.log("Correct user");
       con.query("SELECT Password FROM Student where Email = '"+username+"'", function (err, result, fields){
         if (err) {
           throw err;
-        } else{
-          pwdhash = result;
+        } else {
+          bcrypt.compare (password, String(result), function(err, isMatch){
+            if (err) {
+              throw err;
+            } else if (!isMatch){
+              console.log("The password doesn't match!");
+              return done("Incorrect Email/Password credentials", false);
+            } else {
+              console.log("Correct password");
+              return done(null, username);
+            }
+          })
         }
       });
     }
   });
 
 
-  bcrypt.compare (password, pwdhash, function(err, isMatch){
-    if(err){
-      throw(err)
-    } else if (!isMatch){
-      console.log("The password doesn't match!")
-    } else {
-      console.log("Correct password")
-    }
-  })
+  
 
 
 
