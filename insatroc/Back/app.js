@@ -4,7 +4,6 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-var id=0;
 
 const mysql = require('mysql')
 const con = mysql.createConnection({
@@ -185,28 +184,29 @@ const register = () => {
     var email = req.body.email;
     var password;
 
-    bcrypt
-        .genSalt(saltRounds)
-        .then(salt => {
-
-          password = bcrypt.hash(req.body.password, salt);
+    //création de l'utilisateur avec mot de passe crypté
+    bcrypt.genSalt(saltRounds, function (err, salt) {
+      if (err) {
+        throw err
+      } else {
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+          if (err) {
+            throw err
+          } else {
+            console.log(hash)
+            //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
+            con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+              if (err) throw err;
+              //res.status(201).json({  //statut "ressource créée"
+                message: 'compte créé'
+              });
+          }
         })
-        .then(hash => {
-          return password;
-        })
-
-    /* Ici, il faut créer crypter le mot de passe donné par l'utilisateur (req.body.password)
-    et créer un nouvel utilisateur dans la BD, avec son prénom, nom, email et mot de passe
-    */
-    con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+password+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
-      if (err) throw err;
-      //res.status(201).json({  //statut "ressource créée"
-        message: 'compte créé'
-      });
+      }
+    })
 
     var userID = 1;
     // get userID of juste created user in DB
-
 
     res.status(200).json({"user" : userID, "username" : username});
 
