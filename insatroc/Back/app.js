@@ -86,14 +86,14 @@ function(username, password, done) {
   */
 
 
-  con.query("SELECT Username FROM Student where Username = '"+username+ "'",function (err, user, fields) {
+  con.query("SELECT Email FROM Student where Email = '"+username+ "'",function (err, user, fields) {
     if (err) {
       throw err;
     } else if (!user){
       console.log("User not found")
     } else {
       console.log("Correct user")
-      con.query("SELECT Password FROM Student where Username = '"+username+"'", function (err, result, fields){
+      con.query("SELECT Password FROM Student where Email = '"+username+"'", function (err, result, fields){
         if (err) {
           throw err;
         } else{
@@ -102,7 +102,6 @@ function(username, password, done) {
       });
     }
   });
-
 
 
   bcrypt.compare (password, pwdhash, function(err, isMatch){
@@ -229,9 +228,10 @@ const register = () => {
             console.log(hash)
             //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
             con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
-              if (err) throw err;
-              res.status(200).json({"user" : result.insertId, "username" : username});
-              });
+              if (err) {
+                throw err;
+                res.status(200).json({"user" : result.insertId, "username" : username});
+            }});
           }
         })
       }
