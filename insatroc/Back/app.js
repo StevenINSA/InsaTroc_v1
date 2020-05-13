@@ -13,10 +13,10 @@ const con = mysql.createConnection({
   user: "toto2",
   password: "pwdtoto"
 });
-
+/*
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-
+*/
 const app = express();
 
 function attributeID(category){
@@ -145,7 +145,7 @@ return (req, res, next) => {
     // if a user is found
     else if(user){
       // get username and userID in database
-      var username = "Penelope"
+      var username = "stevy"
       var userID = 1;
       res.status(200).json({"user" : userID, "username" : username});
     }
@@ -239,13 +239,16 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 
 
 // requête http POST pour ajouter une nouvelle annonce dans la DB
-app.post('/addPost', isLoggedIn, (req, res, next) => {
+app.post('/addPost', (req, res, next) => {
   console.log("requête de création d'annonce reçue :")
 	console.log(req.body);  //affiche les éléments de la requête
 	req.body._id = id;
 
-  var objet = req.body.category; //convertion de l'objet category pour que la fonction marche
-  var catID = attributeID(objet.toString());
+  var catID=[];
+  for (let i=0; i< req.body.category.length; i++){
+    var objet = req.body.category[i];
+    catID[i] = attributeID(objet.toString()); //convertion de l'objet en string
+  }
 
   var today = new Date(); //formater la date
   var dd = String(today.getDate()).padStart(2, '0');
@@ -257,12 +260,21 @@ app.post('/addPost', isLoggedIn, (req, res, next) => {
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les érreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-  con.query("INSERT INTO Announce (Title, Price, Description, CategoryID,StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+catID+"','1','"+today+"')",
+  con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','1','"+today+"')",
     function (err, result, fields){
       if (err) throw err;
+      console.log(result.insertId);
       res.status(201).json({  //statut "ressource créée"
-        message: 'objet créé'
+      message: 'objet créé'
       });
+      for (let i=0; i<req.body.category.length; i++){
+
+        con.query("INSERT INTO AnnounceCategories (CategoryID, AnnounceID) VALUES ('"+catID[i]+"','"+result.insertId+"')",
+          function (err, result, fields){
+            if (err) throw err;
+            console.log(result);
+        });
+      }
   });
 });
 
@@ -277,7 +289,6 @@ app.get('/getPost/:id', (req, res, next) => {
     //} marche pas, bug à cause du deuxième res.json
     res.status(200).json(result);
   });
-  //res.json({message: 'voilà l\'annonce'});
 });
 
 // requête http GET pour afficher toutes les annonces
@@ -285,17 +296,17 @@ app.get('/posts', (req, res, next) => {
   console.log("requête d'affichage de toutes les annonces reçue :")
   con.query("SELECT * FROM Announce", function (err, result, fields) {
     if (err) throw err;
-    var data = JSON.stringify(result);
-    console.log(data);
+    //var data = JSON.stringify(result);
+    console.log(result);
     res.status(200).json(result);
   });
 });
-
+/*
 app.get('/getUserInfo', (req, res, next) => {
   console.log("requête des infos d'utilisateur reçue :");
   res.status(200).json({first_name: 'Pénélope', last_name: 'Roullot', username: 'proullot', email: 'p.r@gmail.com'})
 })
-
+*/
 
 app.use((req, res, next) => {
  console.log("coucou");
@@ -303,21 +314,6 @@ app.use((req, res, next) => {
 });
 
 
-/*
-app.use('/addPost', (req, res) => {
-  const annonce = [
-    {
-		_id: string,
-      title: string,
-      category: string,
-      price: number,
-      description: string,
-      urls : []
-
-    },
-  ];
-  res.status(200).json(stuff);
-});*/
 
 
 
