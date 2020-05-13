@@ -347,6 +347,11 @@ app.post('/modifyUserInfo', (req, res, next) => {
   // et répondre avec l'ID et l'username (au cas où il a changé)
 })
 
+app.get('/getUserPosts', (req, res, next) => {
+  console.log("requête pour les annonces d'un utilisateur reçue :");
+   // aller chercher dans la BD les annonces de l'utilisateur (dont l'ID et username sont dans le header http)
+})
+
 
 app.use((req, res, next) => {
  console.log("coucou");
