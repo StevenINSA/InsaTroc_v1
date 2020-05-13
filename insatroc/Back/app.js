@@ -242,7 +242,6 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 app.post('/addPost', (req, res, next) => {
   console.log("requête de création d'annonce reçue :")
 	console.log(req.body);  //affiche les éléments de la requête
-	req.body._id = id;
 
   var catID=[];
   for (let i=0; i< req.body.category.length; i++){
