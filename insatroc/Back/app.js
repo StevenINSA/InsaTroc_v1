@@ -98,7 +98,13 @@ function(username, password, done) {
         if (err) {
           throw err;
         } else {
-          bcrypt.compare (password, String(result), function(err, isMatch){
+          var string = JSON.stringify(result); //converti le result en JSON
+          console.log(string);
+          var json = JSON.parse(string); //sépare les éléments du JSON
+          console.log(json);
+          console.log("selection : ", json[0].Password);
+          var Cequejveux = json[0].Password;
+          bcrypt.compare (password, Cequejveux, function(err, isMatch){
             if (err) {
               throw err;
             } else if (!isMatch){
@@ -115,7 +121,7 @@ function(username, password, done) {
   });
 
 
-  
+
 
 
 
@@ -340,9 +346,11 @@ app.get('/posts', (req, res, next) => {
 
 app.get('/getUserInfo', (req, res, next) => {
   console.log("requête des infos d'utilisateur reçue :");
-
-  // aller chercher dans la BD les infos de l'utilisateur (dont l'ID et username sont dans le header http)
-  res.status(200).json({first_name: 'Pénélope', last_name: 'Roullot', username: 'proullot', email: 'p.r@gmail.com'})
+  con.query("SELECT * FROM Student WHERE StudentID = '"+req.params.id+"'", function (err, result, fields) {
+    if (err) throw err;
+    console.log(result);
+    res.status(200).json(result);
+  });
 })
 
 app.post('/modifyUserInfo', (req, res, next) => {
