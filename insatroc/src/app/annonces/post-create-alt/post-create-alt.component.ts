@@ -64,7 +64,7 @@ export class PostCreateAltComponent implements OnInit {
             reader.readAsDataURL(event.target.files[i]);
             //uploadi l9lawi
           }else {
-          
+
             console.log(this.form2.get('image').getError('chocoloco'));
             console.log('7chi l mok')
             //mat uploadich l9lawi
@@ -93,7 +93,7 @@ export class PostCreateAltComponent implements OnInit {
   SavePost (form: FormGroup) {
     if (form.invalid || this.urls.length>5) {
       console.log("Invalid form");
-      this._snackBar.open("Annonce invalide !","x")
+      this._snackBar.open("Annonce invalide !","x", {duration: 3});
       return;
     }
 
