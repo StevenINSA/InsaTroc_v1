@@ -161,6 +161,8 @@ app.use(passport.session());
 
 /***************** Authentification**************** */
 
+// créer un token d'authentification pour le renvoyer à angular ?
+
 // middleware that intercepts the authentication request and makes the Passport authentication call
 const auth = () => {
 return (req, res, next) => {
@@ -345,6 +347,11 @@ app.post('/modifyUserInfo', (req, res, next) => {
 
   // modifier dans la BD les infos de l'utilisateur (dont l'ID et username sont dans le header http)
   // et répondre avec l'ID et l'username (au cas où il a changé)
+})
+
+app.get('/getUserPosts', (req, res, next) => {
+  console.log("requête pour les annonces d'un utilisateur reçue :");
+   // aller chercher dans la BD les annonces de l'utilisateur (dont l'ID et username sont dans le header http)
 })
 
 
