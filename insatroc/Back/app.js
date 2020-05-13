@@ -300,12 +300,22 @@ app.get('/posts', (req, res, next) => {
     res.status(200).json(result);
   });
 });
-/*
+
+
 app.get('/getUserInfo', (req, res, next) => {
   console.log("requête des infos d'utilisateur reçue :");
+
+  // aller chercher dans la BD les infos de l'utilisateur (dont l'ID et username sont dans le header http)
   res.status(200).json({first_name: 'Pénélope', last_name: 'Roullot', username: 'proullot', email: 'p.r@gmail.com'})
 })
-*/
+
+app.post('/modifyUserInfo', (req, res, next) => {
+  console.log("requête de modification des infos d'utilisateur reçue :");
+
+  // modifier dans la BD les infos de l'utilisateur (dont l'ID et username sont dans le header http)
+  // et répondre avec l'ID et l'username (au cas où il a changé)
+})
+
 
 app.use((req, res, next) => {
  console.log("coucou");
