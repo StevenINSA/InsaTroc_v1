@@ -162,6 +162,8 @@ app.use(passport.session());
 
 /***************** Authentification**************** */
 
+// créer un token d'authentification pour le renvoyer à angular ?
+
 // middleware that intercepts the authentication request and makes the Passport authentication call
 const auth = () => {
 return (req, res, next) => {
