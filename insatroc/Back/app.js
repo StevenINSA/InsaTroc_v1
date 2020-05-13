@@ -98,13 +98,13 @@ function(username, password, done) {
           throw err;
         } else{
           pwdhash = result;
-        }  
+        }
       });
     }
   });
 
-  
-  
+
+
   bcrypt.compare (password, pwdhash, function(err, isMatch){
     if(err){
       throw(err)
@@ -115,7 +115,7 @@ function(username, password, done) {
     }
   })
 
-  
+
 
 
   //if(username === "admin@admin.com" && password === "admin"){
@@ -215,6 +215,7 @@ const register = () => {
     var username = req.body.username;
     var email = req.body.email;
     var password;
+    var userID;
 
     //création de l'utilisateur avec mot de passe crypté
     bcrypt.genSalt(saltRounds, function (err, salt) {
@@ -229,18 +230,16 @@ const register = () => {
             //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
             con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
               if (err) throw err;
-              //res.status(201).json({  //statut "ressource créée"
-                message: 'compte créé'
+              res.status(200).json({"user" : result.insertId, "username" : username});
               });
           }
         })
       }
     })
 
-    var userID = 1;
-    // get userID of juste created user in DB
 
-    res.status(200).json({"user" : userID, "username" : username});
+
+
 
   }}
 
