@@ -12,6 +12,8 @@ const con = mysql.createConnection({
   user: "toto2",
   password: "pwdtoto"
 });
+
+var pwdhash;
 /*
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
@@ -83,16 +85,46 @@ function(username, password, done) {
   Sinon : return("unauthorized access", false);
   */
 
-  /*con.query("SELECT Username FROM Student where Username = '"+username+ "'",function (err, result, fields) {
-    if (err) throw err;*/
 
-  if(username === "admin@admin.com" && password === "admin"){
-    console.log("username & password ok");
-    return done(null, username);
-  } else {
-    console.log("unauthorized acces");
-    return done("unauthorized access", false);
-  }
+  con.query("SELECT Username FROM Student where Username = '"+username+ "'",function (err, user, fields) {
+    if (err) {
+      throw err;
+    } else if (!user){
+      console.log("User not found")
+    } else {
+      console.log("Correct user")
+      con.query("SELECT Password FROM Student where Username = '"+username+"'", function (err, result, fields){
+        if (err) {
+          throw err;
+        } else{
+          pwdhash = result;
+        }  
+      });
+    }
+  });
+
+  
+  
+  bcrypt.compare (password, pwdhash, function(err, isMatch){
+    if(err){
+      throw(err)
+    } else if (!isMatch){
+      console.log("The password doesn't match!")
+    } else {
+      console.log("Correct password")
+    }
+  })
+
+  
+
+
+  //if(username === "admin@admin.com" && password === "admin"){
+  //  console.log("username & password ok");
+  //  return done(null, username);
+  //} else {
+  //  console.log("unauthorized acces");
+  //  return done("unauthorized access", false);
+  //}
 }
 
 // function(username, password, done) {
