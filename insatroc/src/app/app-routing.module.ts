@@ -21,7 +21,7 @@ const routes: Routes = [
   {path: 'connexion', component: ConnectionComponent},
   {path: 'creer-un-compte', component: CreateAccountComponent},
   {path: '', component: HomepageComponent},
-  {path: 'annonce/:id', component: PostViewerByIdComponent},
+  {path: 'annonce', component: PostViewerByIdComponent},
   {path: 'mes-annonces', component: UserPostsComponent},
   {path: 'mon-profil', component: UserProfileComponent},
 ];

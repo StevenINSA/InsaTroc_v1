@@ -64,7 +64,11 @@
       <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" >
           {{Filtrage()}}
         <mat-card-header style="float:left;">
-            <mat-card-title>{{annonce.title}}</mat-card-title>
+            <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
+            <mat-card-subtitle class="views">
+              <mat-icon>touch_app</mat-icon>
+              {{annonce.views}}
+            </mat-card-subtitle>
             <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
         </mat-card-header>
         <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>

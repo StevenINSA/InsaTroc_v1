@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PostModel } from '../post_model';
 import {HttpService } from '../../http.service'
 import { PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class PostViewerComponent implements OnInit {
 
 
 
-  constructor(public httpservice: HttpService) { }
+  constructor(public httpservice: HttpService, private router:Router) { }
 
   log (status) {
     console.log(status)
@@ -69,6 +70,15 @@ export class PostViewerComponent implements OnInit {
   pageChanged (event : PageEvent){
     console.log(event);
   }
+  onDisplayPost(id){
+    for (let k=0 ; k<this.Annonces.length;k++){
+      if(id == this.Annonces[k]._id){
+        console.log("indeed");
+        this.router.navigate(['/annonce'],{queryParams:{bid:id as string}});
+      }
+    }
+  }
+
 
   PostInFilteredCategory(annonce: PostModel){
     return(this.selected.some((val) => annonce.category.includes(val)));

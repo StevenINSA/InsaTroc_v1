@@ -35,6 +35,14 @@ mat-card {
   width: 50%;
   margin-left: 24%;
 }
+mat-card-subtitle.views{
+  margin-left: auto;
+}
+mat-card-title.cardlink:hover{
+  cursor: hand;
+  cursor: pointer;
+  color: rgb(111, 0, 255);
+}
 .image {
 
   max-height: 90%;

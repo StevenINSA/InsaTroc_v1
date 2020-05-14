@@ -26,8 +26,11 @@ export class PostViewerByIdComponent implements OnInit {
   constructor(public httpService:HttpService,private router :Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    console.log(this.route.params['_value'].id);
-    this.httpService.getPost(this.route.params['_value'].id);
+    this.route.queryParams.subscribe(params => {
+      this.post=this.httpService.getPost2(params.bid);
+      console.log(this.post);
+      //incr v
+    })
 
   }
 

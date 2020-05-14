@@ -32,6 +32,13 @@ export class HttpService {
 
     );
   }
+  getPost2(id){
+    for(let k =0; k<this.posts.length; k++){
+      if (id == this.posts[k]._id){
+        return this.posts[k];
+      }
+    }
+  }
 
   getPost(id: number){
     //return this.http.get('https://api.openbrewerydb.org/breweries')
