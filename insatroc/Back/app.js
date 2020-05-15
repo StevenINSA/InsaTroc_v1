@@ -241,8 +241,9 @@ const register = () => {
             con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
               if (err) {
                 throw err;
-                res.status(200).json({"user" : result.insertId, "username" : username});
-            }});
+              }
+              res.status(200).json({"user" : result.insertId, "username" : username});
+            });
           }
         })
       }

@@ -1,0 +1,15 @@
+Back :
+- getAllPosts :
+renvoyer aussi un array avec les ID de catégories (en allant chercher dans la table AnnounceCategory)
+- créer un authentication token et le renvoyer au front
+- déchiffrer les headers http
+- faire getUserInfo
+- faire modifyUserInfo
+- faire deleteUserAccount
+
+Front :
+- récupérer le token d'authentification (le déchiffrer ?)
+- le mettre dans les headers http
+- faire le html pour post-viewer-by-id
+- faire le html pour mes-annonces
+- ajouter option pour supprimer son compte
