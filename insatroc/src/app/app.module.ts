@@ -10,6 +10,8 @@ import { ConnectionComponent} from './user/connection/connection.component';
 import { CreateAccountComponent} from './user/create-account/create-account.component';
 import { PostViewerByIdComponent } from './annonces/post-viewer-by-id/post-viewer-by-id.component';
 import { UserPostsComponent } from './user/user-posts/user-posts.component';
+import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { DeleteAccountDialog } from './user/user-profile/user-profile.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,8 +36,8 @@ import {HttpClientModule} from '@angular/common/http';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import { UserProfileComponent } from './user/user-profile/user-profile.component';
-
+import {MatDialogModule} from '@angular/material/dialog';
+import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -50,6 +52,7 @@ import { UserProfileComponent } from './user/user-profile/user-profile.component
     PostViewerByIdComponent,
     UserPostsComponent,
     UserProfileComponent,
+    DeleteAccountDialog,
   ],
   imports: [
     BrowserModule,
@@ -76,10 +79,15 @@ import { UserProfileComponent } from './user/user-profile/user-profile.component
     HttpClientModule,
     MatStepperModule,
     MatBadgeModule,
-    MatPaginatorModule
-
+    MatPaginatorModule,
+    MatDialogModule,
   ],
-  providers: [],
+  entryComponents: [
+    DeleteAccountDialog,
+  ],
+  providers: [
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

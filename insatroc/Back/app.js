@@ -4,6 +4,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
 const mysql = require('mysql')
 const con = mysql.createConnection({
@@ -12,7 +13,7 @@ const con = mysql.createConnection({
   user: "toto2",
   password: "pwdtoto"
 });
-
+const jwtKey = "privateKey";
 
 /*
 const mariadb = require('mariadb');
@@ -50,6 +51,47 @@ function attributeID(category){
     }
   return categoryID;
 }
+function attributeCategory(categoryID){
+  var category = [];
+
+  // for(let i in categoryID){
+    switch (categoryID){
+      case 1:
+      category.push("Chambre");
+      break;
+
+      case 2:
+      category.push("Cuisine");
+      break;
+
+      case 3:
+      category.push("Salle de bain");
+      break;
+
+      case 4:
+      category.push("Bureau");
+      break;
+
+      case 5:
+      category.push("Loisirs/Sport");
+      break;
+
+      case 6:
+      category.push("Autre");
+      break;
+      }
+  // }
+  return category;
+}
+
+function getUsernameFromID(studentID){
+  con.query("SELECT Username FROM Student WHERE StudentID = '"+studentID+"'", function(err, result, fields){
+    if(err) throw err;
+    return result;
+  })
+}
+
+
 function addslashes(ch) { //fonction pour échapper les apostrophes et autres qui créaient des erreurs
   ch = ch.replace(/\\/g,"\\\\");
   ch = ch.replace(/\'/g,"\\'");
@@ -84,8 +126,6 @@ function(username, password, done) {
   Si oui, alors : return(done, null, username);
   Sinon : return("unauthorized access", false);
   */
-
-
   con.query("SELECT Email FROM Student where Email = '"+username+ "'",function (err, user, fields) {
     if (err) {
       throw err;
@@ -120,12 +160,6 @@ function(username, password, done) {
     }
   });
 
-
-
-
-
-
-
   //if(username === "admin@admin.com" && password === "admin"){
   //  console.log("username & password ok");
   //  return done(null, username);
@@ -133,29 +167,7 @@ function(username, password, done) {
   //  console.log("unauthorized acces");
   //  return done("unauthorized access", false);
   //}
-}
-
-// function(username, password, done) {
-//   User.findOne({ email: username }, function (err, user) {
-//     if (err) { return done(err); }
-//     // Return if user not found in database
-//     if (!user) {
-//       return done(null, false, {
-//         message: 'User not found'
-//       });
-//     }
-//     // Return if password is wrong
-//     if (!user.validPassword(password)) {
-//       return done(null, false, {
-//         message: 'Password is wrong'
-//       });
-//     }
-//     // If credentials are correct, return the user object
-//     return done(null, user);
-//   });
-// }
-
-));
+}));
 
 // to facilitate user data storage in the session and retrieving the data on subsequent requests
 passport.serializeUser(function(user, done) {
@@ -177,6 +189,8 @@ const auth = () => {
 return (req, res, next) => {
   console.log("requête d'authentification reçue dans auth :");
   console.log(req.body);
+  var username;
+  var userID;
   passport.authenticate('local', (error, user, info) => {
     console.log("utilisateur :");
     console.log(user);
@@ -185,10 +199,13 @@ return (req, res, next) => {
     if(error) res.status(400).json({"statusCode" : 200, "message" : error});
     // if a user is found
     else if(user){
-      // get username and userID in database
-      var username = "stevy"
-      var userID = 1;
-      res.status(200).json({"user" : userID, "username" : username});
+      con.query("SELECT * FROM Student WHERE Email = '"+user+"'", function (err, result, fields) {
+        if (err) throw err;
+        username = result[0].Username;
+        userID = result[0].StudentID;
+        const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
+        res.status(200).json({"token" : token, "username" : username});
+      });
     }
     // if user is not found
     else{
@@ -201,8 +218,6 @@ return (req, res, next) => {
     // });
   })(req, res, next);
 }}
-
-// passport.authenticate('local', (error, user, info) => {})(req, res);
 
 // requête http POST pour l'authentification
 app.post('/authenticate/', auth(), (req, res) => {
@@ -227,30 +242,38 @@ const register = () => {
     var password;
     var userID;
 
-    //création de l'utilisateur avec mot de passe crypté
-    bcrypt.genSalt(saltRounds, function (err, salt) {
-      if (err) {
-        throw err
-      } else {
-        bcrypt.hash(req.body.password, salt, function(err, hash) {
+    con.query("SELECT * FROM Student WHERE Username = '"+username+"' OR Email = '"+email+"'", function (err, result, fields) {
+      if (err) throw err;
+      if(result.length!=0){
+        console.log("username or email already exists")
+        res.status(401).json({"message" : "username or password already exists"});
+      }
+      else{
+        //création de l'utilisateur avec mot de passe crypté
+        bcrypt.genSalt(saltRounds, function (err, salt) {
           if (err) {
             throw err
           } else {
-            console.log(hash)
-            //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
-            con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+            bcrypt.hash(req.body.password, salt, function(err, hash) {
               if (err) {
-                throw err;
+                throw err
+              } else {
+                console.log(hash)
+                //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
+                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+                  if (err) {
+                    throw err;
+                  }
+                  var userID = result.insertID;
+                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
+                  res.status(200).json({"token" : token, "username" : username});
+                });
               }
-              res.status(200).json({"user" : result.insertId, "username" : username});
-            });
+            })
           }
-        })
+        });
       }
-    })
-
-
-
+    });
 
 
   }}
@@ -262,6 +285,7 @@ app.post('/register/', register(), (req, res) => {
   res.status(200).json({"statusCode" : 200, "message" : "hello"});
 });
 
+// requête http GET pour se déconnecter
 app.get('/logout/', (req, res) => {
   console.log("requête de déconnexion reçue")
   req.logout();
@@ -299,15 +323,18 @@ app.post('/addPost', (req, res, next) => {
 
   today = yyyy + '-' + mm + '-' + dd;
 
-  var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les érreurs dans la BD
+  var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les erreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-  con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','1','"+today+"')",
+  con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
+    if(err) throw err;
+    con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"')",
     function (err, result, fields){
       if (err) throw err;
       console.log(result.insertId);
+      var postID = result.insertId;
       res.status(201).json({  //statut "ressource créée"
-      message: 'objet créé'
+      message: 'objet créé', postID: postID
       });
       for (let i=0; i<req.body.category.length; i++){
 
@@ -319,6 +346,9 @@ app.post('/addPost', (req, res, next) => {
       }
   });
 });
+  })
+
+
 
 
 // requête http GET pour afficher une annonce spécifique
@@ -329,6 +359,7 @@ app.get('/getPost/:id', (req, res, next) => {
     //if (result.toString().length == 0){
       //res.json("pas d'annonce correspondante"); //si l'id n'existe plus dans la bd
     //} marche pas, bug à cause du deuxième res.json
+
     res.status(200).json(result);
   });
 });
@@ -336,21 +367,41 @@ app.get('/getPost/:id', (req, res, next) => {
 // requête http GET pour afficher toutes les annonces
 app.get('/posts', (req, res, next) => {
   console.log("requête d'affichage de toutes les annonces reçue :")
+
+// récupérer le username du vendeur à partir du StudentID
+
   con.query("SELECT * FROM Announce", function (err, result, fields) {
     if (err) throw err;
     //var data = JSON.stringify(result);
-    console.log(result);
-    res.status(200).json(result);
+    var data = result;
+    var posts = [];
+    for(var i in data){
+      // con.query("SELECT Username FROM Student WHERE StudentID = '"+data[i].StudentID+"'", function(err, result, fields){
+        // if(err) throw err;
+        // var user = result[0].Username;
+        posts.push({'_id': data[i].AnnounceID, 'title': data[i].Title, 'description': data[i].Description, 'category': attributeCategory(data[i].CategoryID), 'price': data[i].Price, 'urls': null, 'date': data[i].PublicationDate, 'views': data[i].NbViews, 'username': "user"});
+      // })
+    }
+    console.log(posts);
+    res.status(200).json(posts);
   });
 });
 
 
-app.get('/getUserInfo', (req, res, next) => {
+app.post('/getUserInfo', (req, res, next) => {
   console.log("requête des infos d'utilisateur reçue :");
-  con.query("SELECT * FROM Student WHERE StudentID = '"+req.params.id+"'", function (err, result, fields) {
+  con.query("SELECT * FROM Student WHERE Username = '"+req.body.username+"'", function (err, result, fields) {
     if (err) throw err;
-    console.log(result);
-    res.status(200).json(result);
+    // console.log(req);
+    console.log(req.body.username);
+    var user = {"first_name" : result[0].Surname,
+                "last_name" : result[0].Name,
+                "username" : result[0].Username,
+                "email" : result[0].Email,
+                "phone_number" : result[0].TelephoneNumber,
+                "contact_info" : result[0].Address
+              }
+    res.status(200).json(user);
   });
 })
 

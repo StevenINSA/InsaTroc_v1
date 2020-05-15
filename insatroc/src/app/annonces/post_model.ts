@@ -8,5 +8,6 @@ export interface PostModel {
       urls: string[];
       date: Date;
       views: number;
+      username: string;
 
 }

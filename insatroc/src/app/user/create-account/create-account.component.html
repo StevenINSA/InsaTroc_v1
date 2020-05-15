@@ -50,6 +50,10 @@
           <div class="container">
             <button mat-raised-button color="accent" type="submit">Créer mon compte</button>
           </div>
+          <br>
+          <div>
+            <mat-error style="color:red" *ngIf="error">Ce nom d'utilisateur ou email existe déjà, veuillez réessayer.</mat-error>
+          </div>
         </mat-card-actions>
       </form>
     </div>

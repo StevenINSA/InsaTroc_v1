@@ -18,7 +18,8 @@ export class PostViewerByIdComponent implements OnInit {
     price: 0,
     urls: [],
     date: null,
-    views: null
+    views: null,
+    username: null,
   };
 
 

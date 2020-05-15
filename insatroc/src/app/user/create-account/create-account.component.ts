@@ -12,15 +12,26 @@ import { Router } from '@angular/router';
 export class CreateAccountComponent implements OnInit {
   form: FormGroup;
   hide = true;
+  error = false;
 
   constructor(public httpService:HttpService, private authService: AuthService, private router: Router) { }
 
   Register(form: FormGroup){
     this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
       (response) => {console.log(response);
-                    this.authService.setUserInfo(response['user'], response['username']);
+                    this.authService.setUserInfo(response['token'], response['username']);
                     this.router.navigate(['mon-profil']);},
-      (error) => {console.log(error)},
+      (error) => {console.log(error)
+        console.log(error.error.message);
+                  if(error.error.message == "username or password already exists"){
+                    this.error = true;
+                    this.form.patchValue({
+                      username: '',
+                      email: '',
+                      password: '',
+                    })
+                  }
+                },
     );
   }
 

@@ -4,6 +4,7 @@ import {PostModel} from './annonces/post_model';
 import { Subject } from 'rxjs';
 import { stringify } from 'querystring';
 import { HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -20,7 +21,7 @@ export class HttpService {
   private posts: PostModel[]= []
   public themeUpdater = new Subject<String>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router:Router) { }
 
   myMethod(){
     console.log('Hey, what\'s up?');
@@ -32,7 +33,9 @@ export class HttpService {
 
     );
   }
+
   getPost2(id){
+    console.log(this.posts);
     for(let k =0; k<this.posts.length; k++){
       if (id == this.posts[k]._id){
         return this.posts[k];
@@ -53,14 +56,18 @@ export class HttpService {
     //requete post http vers backend pour stocker post dans BD
     // this.posts.push(post);
     console.log(post);
-    this.http.post<{response:string}>('http://localhost:3000/addPost',post).subscribe(
-      (response) => { console.log(response)},
+    this.http.post('http://localhost:3000/addPost',post).subscribe(
+      (response) => { console.log(response)
+        // var postID = response.postID;
+        this.router.navigate(['/annonce'],{queryParams:{bid:response['postID'] as string}});
+        this.posts.push({_id: response['postID'], title: post.title, description: post.description, category: post.category, price: post.price, urls: post.urls, date: post.date, views: post.views, username: post.username});
+      },
       (error) => {console.log(error)},
       // rediriger vers "/annonce/:id", id "étant l'ID de l'annonce qui est renvoyé par le serveur une fois qu'il l'a mise dans la DB"
-
     );
     // console.log(this.posts.length);
   }
+
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
     // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
@@ -70,7 +77,7 @@ export class HttpService {
         console.log("data");
         console.log(data);
         for(var i in data){
-          this.posts.push({_id: data[i].AnnounceID, title: data[i].Title, description: data[i].Description, category: this.attributeCategory(data[i].CategoryID), price: data[i].Price, urls: null, date: data[i].PublicationDate, views: data[i].NbViews})
+          this.posts.push(data[i]);
         }
         console.log(this.posts);
       }
@@ -87,36 +94,36 @@ export class HttpService {
 
   }
 
-  attributeCategory(categoryID: number){
-    var category = [];
+  // attributeCategory(categoryID: number){
+  //   var category = [];
 
-    // for(let i in categoryID){
-      switch (categoryID){
-        case 1:
-        category.push("Chambre");
-        break;
+  //   // for(let i in categoryID){
+  //     switch (categoryID){
+  //       case 1:
+  //       category.push("Chambre");
+  //       break;
 
-        case 2:
-        category.push("Cuisine");
-        break;
+  //       case 2:
+  //       category.push("Cuisine");
+  //       break;
 
-        case 3:
-        category.push("Salle de bain");
-        break;
+  //       case 3:
+  //       category.push("Salle de bain");
+  //       break;
 
-        case 4:
-        category.push("Bureau");
-        break;
+  //       case 4:
+  //       category.push("Bureau");
+  //       break;
 
-        case 5:
-        category.push("Loisirs/Sport");
-        break;
+  //       case 5:
+  //       category.push("Loisirs/Sport");
+  //       break;
 
-        case 6:
-        category.push("Autre");
-        break;
-        }
-    // }
-    return category;
-  }
+  //       case 6:
+  //       category.push("Autre");
+  //       break;
+  //       }
+  //   // }
+  //   return category;
+  // }
 }

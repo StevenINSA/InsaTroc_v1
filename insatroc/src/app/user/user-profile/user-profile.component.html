@@ -61,6 +61,13 @@
             <button mat-raised-button *ngIf="readonly" color="accent" type="submit">Modifier mes informations</button>
             <button mat-raised-button *ngIf="!readonly" color="accent" type="submit">Enregistrer</button>
           </div>
+          <br>
+          <div class="container">
+            <button mat-stroked-button color="accent" type="button" (click)="openDialog()">
+              <mat-icon>delete</mat-icon>
+              Supprimer mon compte
+            </button>
+          </div>
         </mat-card-actions>
       </form>
     </div>
