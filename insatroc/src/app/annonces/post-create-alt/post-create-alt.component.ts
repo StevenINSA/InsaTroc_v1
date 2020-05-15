@@ -5,7 +5,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {HttpService} from '../../http.service';
 import {imageValidator} from './home-made.validator';
 import {Router} from "@angular/router";
-
+import {AuthService} from '../../auth.service';
 
 
 @Component({
@@ -15,7 +15,7 @@ import {Router} from "@angular/router";
 })
 export class PostCreateAltComponent implements OnInit {
 
-  constructor(private _snackBar: MatSnackBar, private _formBuilder: FormBuilder,public httpService:HttpService,private router :Router) { }
+  constructor(private _snackBar: MatSnackBar, private _formBuilder: FormBuilder,public httpService:HttpService,private router :Router, private authService: AuthService) { }
   Announce : PostModel;
   Announces = [];
   free : Boolean = false;
@@ -93,7 +93,7 @@ export class PostCreateAltComponent implements OnInit {
   SavePost (form: FormGroup) {
     if (form.invalid || this.urls.length>5) {
       console.log("Invalid form");
-      this._snackBar.open("Annonce invalide !","x", {duration: 3});
+      this._snackBar.open("Annonce invalide !","x", {duration: 5000});
       return;
     }
 
@@ -107,14 +107,15 @@ export class PostCreateAltComponent implements OnInit {
       price:this.form.value.price,
       urls: this.urls,
       date: new Date(),
-      views: 0
+      views: 0,
+      username: this.authService.getUsername(),
     }
     this.httpService.addPost(annonce);
     // this.form.reset();
     this.urls = [];
     // rediriger vers l'annonce quand on aura fait un composant pour voir une annonce selon l'ID
     this.router.navigate(['']);
-    this._snackBar.open("Annonce ajoutée !","X");
+    this._snackBar.open("Annonce ajoutée !","X", {duration: 2000});
 
   }
 

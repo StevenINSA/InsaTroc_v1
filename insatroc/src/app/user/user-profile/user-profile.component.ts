@@ -3,6 +3,14 @@ import {NgForm, FormControl, Validators, FormGroup} from '@angular/forms';
 import { AuthService } from '../../auth.service';
 import {HttpService } from '../../http.service';
 import { UserModel } from '../user_model';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import {Inject} from '@angular/core';
+
+export interface DialogData {
+  delete: boolean;
+  password;
+}
 
 @Component({
   selector: 'app-user-profile',
@@ -15,7 +23,19 @@ export class UserProfileComponent implements OnInit {
   hide = true;
   readonly = true;
 
-  constructor(public httpService:HttpService, private authService: AuthService) { }
+  constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog) {}
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DeleteAccountDialog, {
+      width: '250px',
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      // this.animal = result;
+    });
+  }
 
   ModifyUserInfo(form: FormGroup){
     if(this.readonly){
@@ -63,6 +83,24 @@ export class UserProfileComponent implements OnInit {
     // });
 
     // this.form.disable();
+  }
+
+}
+
+
+
+@Component({
+  selector: 'delete-account-dialog',
+  templateUrl: 'delete-account-dialog.html',
+})
+export class DeleteAccountDialog {
+
+  constructor(
+    public dialogRef: MatDialogRef<DeleteAccountDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 
 }

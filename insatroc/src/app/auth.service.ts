@@ -9,8 +9,8 @@ export class AuthService {
   constructor(private http : HttpClient) { }
 
   public isAuthenticated() : Boolean {
-    let userID = localStorage.getItem('userID');
-    if(userID && JSON.parse(userID)){
+    let token = localStorage.getItem('token');
+    if(token){
       return true;
     }
     return false;
@@ -18,8 +18,8 @@ export class AuthService {
 
   // localStorage ou sessionStorage
 
-  public setUserInfo(userID, username){
-    localStorage.setItem('userID', userID);
+  public setUserInfo(token, username){
+    localStorage.setItem('token', token);
     localStorage.setItem('username', username);
   }
 
@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   public getUserInfo(){
-    return this.http.get('http://localhost:3000/getUserInfo');
+    return this.http.post('http://localhost:3000/getUserInfo', {'username' : this.getUsername()});
   }
 
   public validate(email, password) {
