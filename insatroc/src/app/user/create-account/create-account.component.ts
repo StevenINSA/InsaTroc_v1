@@ -3,6 +3,7 @@ import {NgForm, FormControl, Validators, FormGroup} from '@angular/forms';
 import {HttpService } from '../../http.service';
 import { AuthService } from '../../auth.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-create-account',
@@ -13,11 +14,13 @@ export class CreateAccountComponent implements OnInit {
   form: FormGroup;
   hide = true;
   error = false;
+  private authSub : Subscription;
+
 
   constructor(public httpService:HttpService, private authService: AuthService, private router: Router) { }
 
   Register(form: FormGroup){
-    this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
+    this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password)/*.subscribe(
       (response) => {console.log(response);
                     this.authService.setUserInfo(response['token'], response['username']);
                     this.router.navigate(['mon-profil']);},
@@ -32,7 +35,7 @@ export class CreateAccountComponent implements OnInit {
                     })
                   }
                 },
-    );
+    );*/
   }
 
   ngOnInit(): void {
@@ -43,6 +46,23 @@ export class CreateAccountComponent implements OnInit {
       email: new FormControl('', [Validators.email]),
       password: new FormControl('', []),
     })
+    this.authSub=this.authService.onAuthUpdate().subscribe(
+      (res)=>{
+        if(!res){
+          this.error=true;
+          this.form.patchValue({
+            username:'',
+            email:'',
+            password:''
+          })
+        }
+      }
+    )
+  }
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.authSub.unsubscribe();
   }
 
 }

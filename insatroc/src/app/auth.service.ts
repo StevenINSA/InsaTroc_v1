@@ -22,7 +22,7 @@ export class AuthService {
   }
   isAuhenticated2(){
     const token = localStorage.getItem('token');
-  
+
     if(token){
       this.authUpdater.next(true)
     }else{
@@ -40,7 +40,10 @@ export class AuthService {
     localStorage.setItem('token', token);
     localStorage.setItem('username', username);
     const now = new Date();
+    console.log(now);
     const expDate = new Date(now.getTime()+(this.getTokenData(token,0)*1000));
+    console.log(this.getTokenData(token,0));
+    console.log(expDate);
     localStorage.setItem("expiration",expDate.toISOString());
   }
 
@@ -82,16 +85,61 @@ export class AuthService {
 
   public register(firstname, lastname, username, email, password){
     this.deleteUserInfo();
-    return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password});
+    this.http.post<{token:string,username:string}>('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password}).subscribe(
+      (response)=>{
+        console.log(response);
+        this.setUserInfo(response.token,response.username);
+        this.router.navigate(['mon-profil']);
+      },
+      (error)=>{
+        console.log("error register:"+error);
+        if(error.error.message =="username or password already exists"){
+          console.log(999);
+          this.authUpdater.next(false)
+        }
+
+      }
+      /*(response) => {console.log(response);
+        this.authService.setUserInfo(response['token'], response['username']);
+        this.router.navigate(['mon-profil']);},
+(error) => {console.log(error)
+console.log(error.error.message);
+      if(error.error.message == "username or password already exists"){
+        this.error = true;
+        this.form.patchValue({
+          username: '',
+          email: '',
+          password: '',
+        })
+      }
+    },
+);*/
+    );
   }
 
   public modifyUserInfo(firstname, lastname, username, email, password){
+    // this.deleteUserInfo();
 
+    this.http.post('http://localhost:3000/modifyUserInfo', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password}).subscribe(
+      (response) => {console.log(response);
+                      // localStorage.removeItem('username');
+                      localStorage.setItem('username', username);},
+      (error) => {console.log(error)},
+    );
   }
 
   public logout(){
     return this.http.get('http://localhost:3000/logout/');
   }
+
+  public deleteAccount(password){
+    this.http.post('http://localhost:3000/deleteAccount', {'password' : password}).subscribe(
+      (response) => {console.log(response);
+                      this.deleteUserInfo()},
+      (error) => {console.log(error)},
+    );
+  }
+
   //handling the token
   private getTokenData(token:string,choice:number){
     const decodedtok = JSON.parse(atob(token.split('.')[1]));

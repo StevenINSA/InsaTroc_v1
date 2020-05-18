@@ -7,7 +7,7 @@
       <!-- <form (submit)="Login(form)" #form="ngForm"> -->
       <form name="form" [formGroup]="form" (ngSubmit)="Login(form)">
         <br>
-        <h4 style="color: crimson; font-family: cursive; font-size: 200%; align-content: center;" class="container">Connexion</h4>
+        <h4 style="color: crimson; font-family: sans-serif; font-size: 200%; align-content: center;" class="container">Connexion</h4>
         <p class="container">Vous n'avez pas de compte ? &nbsp;<a href="creer-un-compte" routerLink="/creer-un-compte" >Créez-en un !</a></p>
         <br>
 
@@ -32,8 +32,12 @@
           <mat-error *ngIf="form.get('password').hasError('minlength')">Doit contenir au moins 5 caractères</mat-error>
           <mat-error *ngIf="form.get('password').hasError('maxlength')">Ne doit pas contenir plus de 25 caractères</mat-error>
         </mat-form-field>
+        <div class="container">
+          <a href="forgotten-password" routerLink="" >Mot de passe oublié ?</a>
+        </div>
 
         <mat-card-actions>
+          <br>
           <div class="container">
             <br>
             <br>

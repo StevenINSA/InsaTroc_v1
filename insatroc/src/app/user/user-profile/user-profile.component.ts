@@ -8,8 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {Inject} from '@angular/core';
 
 export interface DialogData {
-  delete: boolean;
-  password;
+  password: string;
 }
 
 @Component({
@@ -22,18 +21,22 @@ export class UserProfileComponent implements OnInit {
   user: UserModel;
   hide = true;
   readonly = true;
+  password: string;
 
   constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog) {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DeleteAccountDialog, {
       width: '250px',
-      data: {}
+      data: {password: this.password}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      // this.animal = result;
+      if(result!=undefined){
+        this.authService.deleteAccount(result);
+      }
+
     });
   }
 
@@ -47,6 +50,7 @@ export class UserProfileComponent implements OnInit {
       //                 this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});},
       //   (error) => {console.log(error)},
       // );
+      this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password);
       this.readonly = true;
     }
   }
@@ -94,10 +98,12 @@ export class UserProfileComponent implements OnInit {
   templateUrl: 'delete-account-dialog.html',
 })
 export class DeleteAccountDialog {
+  hide = true;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteAccountDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public authService: AuthService) {}
 
   onNoClick(): void {
     this.dialogRef.close();

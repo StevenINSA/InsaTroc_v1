@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Supprimer mon compte ?</h1>
+<div mat-dialog-content>
+  <p>Veuillez entrer votre mot de passe pour vérifier qu'il s'agit bien de vous :</p>
+  <mat-form-field>
+    <mat-label>Mot de passe</mat-label>
+    <input matInput type="{{hide ? 'password' : 'text'}}" size="1" [(ngModel)]="data.password">
+          <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <p>Êtes-vous sûr ?</p>
+  <button mat-button (click)="onNoClick()">Annuler</button>
+  <button mat-button [mat-dialog-close]="data.password" cdkFocusInitial>Supprimer mon compte</button>
+</div>

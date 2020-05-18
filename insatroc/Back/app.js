@@ -262,12 +262,12 @@ const register = () => {
               } else {
                 console.log(hash)
                 //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
-                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"')", function (err, result, fields){
                   if (err) {
                     throw err;
                   }
                   var userID = result.insertID;
-                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
+                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
                   res.status(200).json({"token" : token, "username" : username});
                 });
               }
@@ -409,12 +409,12 @@ app.post('/getUserInfo', (req, res, next) => {
 
 app.post('/modifyUserInfo', (req, res, next) => {
   console.log("requête de modification des infos d'utilisateur reçue :");
-  // modifier dans la BD les infos de l'utilisateur (dont l'ID et username sont dans le header http)
-  // et répondre avec l'ID et l'username (au cas où il a changé)
-  //modification du mot de passe
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var userID = decodedToken.userID; // get userID from token payload
 
   //vérification si le username n'est pas déjà utilisé ou l'email
-  con.query("SELECT * FROM Student WHERE Username = '"+req.params.username+"' OR Email = '"+req.params.email+"'", function (err, result, fields) {
+  con.query("SELECT * FROM Student WHERE (Username = '"+req.params.username+"' OR Email = '"+req.params.email+"') AND StudentID != '"+userID+"'", function (err, result, fields) {
     if (err) throw err;
     if(result.length!=0){
       console.log("username or email already exists")
@@ -431,12 +431,11 @@ app.post('/modifyUserInfo', (req, res, next) => {
             } else {
               console.log(hash)
               //mise à jour de la base de données
-              con.query("UPDATE Student SET Username = '"+req.params.username+"', Email ='"+req.params.email+"', Name='"+req.params.lastname+"', Surname='"+req.params.firstname+"', Password='"+hash+"' WHERE StudentID = '"+req.params.id+"' AND Username = '"+req.params.username+"'", function (err, result, fields) {
+              con.query("UPDATE Student SET Username = '"+req.params.username+"', Email ='"+req.params.email+"', Name='"+req.params.lastname+"', Surname='"+req.params.firstname+"', Password='"+hash+"' WHERE StudentID = '"+userID+"'", function (err, result, fields) {
                 if (err) {
                   throw err;
                 }
-                const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
-                res.status(200).json({"token" : token, "username" : username});
+                res.status(200).json({"username" : req.params.username});
               });
             }
           })
@@ -448,7 +447,21 @@ app.post('/modifyUserInfo', (req, res, next) => {
 
 app.get('/getUserPosts', (req, res, next) => {
   console.log("requête pour les annonces d'un utilisateur reçue :");
-   // aller chercher dans la BD les annonces de l'utilisateur (dont l'ID et username sont dans le header http)
+   var encryptedToken = req.get("Authorization");  // get authorization token from http header
+   var decodedToken = jwt.decode(encryptedToken); // decode token
+   var userID = decodedToken.userID; // get userID from token payload
+
+   con.query("SELECT * FROM Announce WHERE StudentID='"+userID+"'", function (err, result, fields) {
+    if (err) throw err;
+    //var data = JSON.stringify(result);
+    var data = result;
+    var posts = [];
+    for(var i in data){
+        posts.push({'_id': data[i].AnnounceID, 'title': data[i].Title, 'description': data[i].Description, 'category': attributeCategory(data[i].CategoryID), 'price': data[i].Price, 'urls': null, 'date': data[i].PublicationDate, 'views': data[i].NbViews, 'username': ''});
+    }
+    console.log(posts);
+    res.status(200).json(posts);
+  });
 })
 
 

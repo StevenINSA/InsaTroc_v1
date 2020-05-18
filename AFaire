@@ -1,19 +1,15 @@
+BD :
+- stocker des images, tester si ça marche
+
 Back :
 - getAllPosts :
 renvoyer aussi un array avec les ID de catégories (en allant chercher dans la table AnnounceCategory)
-- déchiffrer les headers http
 - getUserInfo : mot de passe ?
-- faire modifyUserInfo
+- modifyUserInfo : ne marche pas, trouver pourquoi
 - faire deleteUserAccount
-- à la création de compte : vérifier si le username existe déjà
-- quand on ajoute une annonce, mettre le StudentID
 
 Front :
-- récupérer le token d'authentification (le déchiffrer ?)
-- le mettre dans les headers http
 - faire le html pour post-viewer-by-id
-- faire le html pour mes-annonces
-- ajouter option pour supprimer son compte
 - supprimer une de ses annonces
 - dans post-viewer et post-viewer-by-id, ajouter le username du vendeur
 - Rechercher
