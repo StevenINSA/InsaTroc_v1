@@ -407,9 +407,41 @@ app.post('/getUserInfo', (req, res, next) => {
 
 app.post('/modifyUserInfo', (req, res, next) => {
   console.log("requête de modification des infos d'utilisateur reçue :");
-
   // modifier dans la BD les infos de l'utilisateur (dont l'ID et username sont dans le header http)
   // et répondre avec l'ID et l'username (au cas où il a changé)
+  //modification du mot de passe
+
+  //vérification si le username n'est pas déjà utilisé ou l'email
+  con.query("SELECT * FROM Student WHERE Username = '"+req.params.username+"' OR Email = '"+req.params.email+"'", function (err, result, fields) {
+    if (err) throw err;
+    if(result.length!=0){
+      console.log("username or email already exists")
+      res.status(401).json({"message" : "username or password already exists"});
+    } else {
+      //modification avec le nouveau mot de passe crypté
+      bcrypt.genSalt(saltRounds, function (err, salt) {
+        if (err) {
+          throw err
+        } else {
+          bcrypt.hash(req.body.password, salt, function(err, hash) {
+            if (err) {
+              throw err
+            } else {
+              console.log(hash)
+              //mise à jour de la base de données
+              con.query("UPDATE Student SET Username = '"+req.params.username+"', Email ='"+req.params.email+"', Name='"+req.params.lastname+"', Surname='"+req.params.firstname+"', Password='"+hash+"' WHERE StudentID = '"+req.params.id+"' AND Username = '"+req.params.username+"'", function (err, result, fields) {
+                if (err) {
+                  throw err;
+                }
+                const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
+                res.status(200).json({"token" : token, "username" : username});
+              });
+            }
+          })
+        }
+      });
+    }
+  })
 })
 
 app.get('/getUserPosts', (req, res, next) => {
