@@ -447,7 +447,27 @@ app.post('/modifyUserInfo', (req, res, next) => {
 
 app.get('/getUserPosts', (req, res, next) => {
   console.log("requête pour les annonces d'un utilisateur reçue :");
-   // aller chercher dans la BD les annonces de l'utilisateur (dont l'ID et username sont dans le header http)
+   // aller chercher dans la BD les annonces de l'utilisateur (dont l'ID est dans le header http)
+   console.log(JSON.stringify(req.headers));
+   var token = req.get("Authorization");  // get authorization token from http header
+   var base64Url = token.split('.')[1]; // get token payload
+   var decodedValue = jwt.decode(token);
+   console.log(decodedValue);
+   var userID = decodedValue.userID;
+   console.log(userID);
+  //  var decodedValue = JSON.parse(atob(base64Url));  // decode payload
+
+   con.query("SELECT * FROM Announce WHERE StudentID='"+userID+"'", function (err, result, fields) {
+    if (err) throw err;
+    //var data = JSON.stringify(result);
+    var data = result;
+    var posts = [];
+    for(var i in data){
+        posts.push({'_id': data[i].AnnounceID, 'title': data[i].Title, 'description': data[i].Description, 'category': attributeCategory(data[i].CategoryID), 'price': data[i].Price, 'urls': null, 'date': data[i].PublicationDate, 'views': data[i].NbViews, 'username': ''});
+    }
+    console.log(posts);
+    res.status(200).json(posts);
+  });
 })
 
 

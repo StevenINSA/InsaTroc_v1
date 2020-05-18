@@ -97,7 +97,7 @@ export class AuthService {
           console.log(999);
           this.authUpdater.next(false)
         }
-      
+
       }
       /*(response) => {console.log(response);
         this.authService.setUserInfo(response['token'], response['username']);

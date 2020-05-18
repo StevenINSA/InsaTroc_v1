@@ -32,12 +32,13 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
+import { HttpAuthInterceptor } from './http-auth.interceptor';
 
 
 @NgModule({
@@ -86,7 +87,8 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
     DeleteAccountDialog,
   ],
   providers: [
-    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
+    {provide: HTTP_INTERCEPTORS, useClass: HttpAuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })

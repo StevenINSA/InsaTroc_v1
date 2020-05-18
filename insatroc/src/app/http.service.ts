@@ -71,17 +71,30 @@ export class HttpService {
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
     // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
-      this.posts = [];
-      this.http.get('http://localhost:3000/posts').subscribe(
-      (data)=>{
-        console.log("data");
-        console.log(data);
-        for(var i in data){
-          this.posts.push(data[i]);
-        }
-        console.log(this.posts);
+    this.posts = [];
+    this.http.get('http://localhost:3000/posts').subscribe(
+    (data)=>{
+      console.log("data");
+      console.log(data);
+      for(var i in data){
+        this.posts.push(data[i]);
       }
-    )
+      console.log(this.posts);
+    })
+    return(this.posts);
+  }
+
+  getUserPosts(){
+    this.posts = [];
+    this.http.get('http://localhost:3000/getUserPosts').subscribe(
+    (data)=>{
+      console.log("data");
+      console.log(data);
+      for(var i in data){
+        this.posts.push(data[i]);
+      }
+      console.log(this.posts);
+    })
     return(this.posts);
   }
 
