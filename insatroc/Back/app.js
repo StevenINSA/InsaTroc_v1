@@ -203,7 +203,7 @@ return (req, res, next) => {
         if (err) throw err;
         username = result[0].Username;
         userID = result[0].StudentID;
-        const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
+        const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
         res.status(200).json({"token" : token, "username" : username});
       });
     }
