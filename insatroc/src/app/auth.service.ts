@@ -82,7 +82,36 @@ export class AuthService {
 
   public register(firstname, lastname, username, email, password){
     this.deleteUserInfo();
-    return this.http.post('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password});
+    this.http.post<{token:string,username:string}>('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password}).subscribe(
+      (response)=>{
+        console.log(response);
+        this.setUserInfo(response.token,response.username);
+        this.router.navigate(['mon-profil']);
+      },
+      (error)=>{
+        console.log("error register:"+error);
+        if(error.error.message =="username or password already exists"){
+          console.log(999);
+          this.authUpdater.next(false)
+        }
+      
+      }
+      /*(response) => {console.log(response);
+        this.authService.setUserInfo(response['token'], response['username']);
+        this.router.navigate(['mon-profil']);},
+(error) => {console.log(error)
+console.log(error.error.message);
+      if(error.error.message == "username or password already exists"){
+        this.error = true;
+        this.form.patchValue({
+          username: '',
+          email: '',
+          password: '',
+        })
+      }
+    },
+);*/
+    );
   }
 
   public modifyUserInfo(firstname, lastname, username, email, password){
