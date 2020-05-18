@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private token :string;
+  public authUpdater = new Subject<boolean>();
 
-  constructor(private http : HttpClient) { }
+
+  constructor(private http : HttpClient,private router:Router) { }
 
   public isAuthenticated() : Boolean {
     let token = localStorage.getItem('token');
@@ -15,12 +20,28 @@ export class AuthService {
     }
     return false;
   }
+  isAuhenticated2(){
+    const token = localStorage.getItem('token');
+  
+    if(token){
+      this.authUpdater.next(true)
+    }else{
+      this.authUpdater.next(false);
+    }
+
+  }
+  onAuthUpdate(){
+    return this.authUpdater.asObservable();
+  }
 
   // localStorage ou sessionStorage
 
   public setUserInfo(token, username){
     localStorage.setItem('token', token);
     localStorage.setItem('username', username);
+    const now = new Date();
+    const expDate = new Date(now.getTime()+(this.getTokenData(token,0)*1000));
+    localStorage.setItem("expiration",expDate.toISOString());
   }
 
   public deleteUserInfo(){
@@ -41,7 +62,21 @@ export class AuthService {
   }
 
   public validate(email, password) {
-    return this.http.post('http://localhost:3000/authenticate', {'email' : email, 'password' : password});
+    this.http.post<{token:string,username:string}>('http://localhost:3000/authenticate', {'email' : email, 'password' : password}).subscribe(
+      (response)=>{
+        console.log(atob(response.token.split('.')[1]));
+        this.setUserInfo(response.token,response.username);
+        this.isAuhenticated2();
+        this.router.navigate(['/']);
+
+
+      },
+      (error)=>{
+        this.authUpdater.next(false);
+
+      }
+
+    )
     // stocker la valeur de retour (token) pour le mettre
   }
 
@@ -56,5 +91,12 @@ export class AuthService {
 
   public logout(){
     return this.http.get('http://localhost:3000/logout/');
+  }
+  //handling the token
+  private getTokenData(token:string,choice:number){
+    const decodedtok = JSON.parse(atob(token.split('.')[1]));
+    if (choice ==0){
+      return decodedtok.exp-decodedtok.iat
+    }
   }
 }
