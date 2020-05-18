@@ -3,9 +3,8 @@ Back :
 renvoyer aussi un array avec les ID de catégories (en allant chercher dans la table AnnounceCategory)
 - déchiffrer les headers http
 - getUserInfo : mot de passe ?
-- faire modifyUserInfo
+- modifyUserInfo : récupérer StudentID dans header http
 - faire deleteUserAccount
-- à la création de compte : vérifier si le username existe déjà
 - quand on ajoute une annonce, mettre le StudentID
 
 Front :
@@ -13,7 +12,6 @@ Front :
 - le mettre dans les headers http
 - faire le html pour post-viewer-by-id
 - faire le html pour mes-annonces
-- ajouter option pour supprimer son compte
 - supprimer une de ses annonces
 - dans post-viewer et post-viewer-by-id, ajouter le username du vendeur
 - Rechercher

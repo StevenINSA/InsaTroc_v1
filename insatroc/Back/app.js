@@ -262,7 +262,7 @@ const register = () => {
               } else {
                 console.log(hash)
                 //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
-                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,TelephoneNumber) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','numéro de tel')", function (err, result, fields){
+                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"')", function (err, result, fields){
                   if (err) {
                     throw err;
                   }
@@ -431,12 +431,11 @@ app.post('/modifyUserInfo', (req, res, next) => {
             } else {
               console.log(hash)
               //mise à jour de la base de données
-              con.query("UPDATE Student SET Username = '"+req.params.username+"', Email ='"+req.params.email+"', Name='"+req.params.lastname+"', Surname='"+req.params.firstname+"', Password='"+hash+"' WHERE StudentID = '"+req.params.id+"' AND Username = '"+req.params.username+"'", function (err, result, fields) {
+              con.query("UPDATE Student SET Username = '"+req.params.username+"', Email ='"+req.params.email+"', Name='"+req.params.lastname+"', Surname='"+req.params.firstname+"', Password='"+hash+"' WHERE StudentID = '"+req.params.id+"'", function (err, result, fields) {
                 if (err) {
                   throw err;
                 }
-                const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
-                res.status(200).json({"token" : token, "username" : username});
+                res.status(200).json({"username" : req.params.username});
               });
             }
           })
