@@ -55,8 +55,12 @@ export class HttpService {
   addPost(post:PostModel){
     //requete post http vers backend pour stocker post dans BD
     // this.posts.push(post);
+    let headers = new HttpHeaders({
+      'permission':localStorage.getItem('token')
+    });
+    let options = {headers: headers};
     console.log(post);
-    this.http.post('http://localhost:3000/addPost',post).subscribe(
+    this.http.post('http://localhost:3000/addPost',post,options).subscribe(
       (response) => { console.log(response)
         // var postID = response.postID;
         this.router.navigate(['/annonce'],{queryParams:{bid:response['postID'] as string}});
