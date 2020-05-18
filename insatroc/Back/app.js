@@ -127,9 +127,10 @@ function(username, password, done) {
   Sinon : return("unauthorized access", false);
   */
   con.query("SELECT Email FROM Student where Email = '"+username+ "'",function (err, user, fields) {
+    console.log(user);
     if (err) {
       throw err;
-    } else if (!user){
+    } else if (user.length==0){
       console.log("User not found");
       return done("User not found", false);
     } else {
@@ -218,6 +219,7 @@ return (req, res, next) => {
     // });
   })(req, res, next);
 }}
+
 
 // requête http POST pour l'authentification
 app.post('/authenticate/', auth(), (req, res) => {
