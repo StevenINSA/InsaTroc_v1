@@ -267,7 +267,7 @@ const register = () => {
                     throw err;
                   }
                   var userID = result.insertID;
-                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",});
+                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
                   res.status(200).json({"token" : token, "username" : username});
                 });
               }
