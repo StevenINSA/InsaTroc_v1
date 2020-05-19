@@ -485,10 +485,13 @@ app.post('/deleteUserAccount', (req, res, next) => {
           // return done("Incorrect Email/Password credentials", false);
         } else {
           console.log("Correct password");
-          con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
+          con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
             if(err) throw err;
-            res.status(200).json({"message": "account was deleted"});
-          });
+            con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
+              if(err) throw err;
+              res.status(200).json({"message": "account was deleted"});
+            });
+          })
         }
       })
     }
