@@ -15,10 +15,10 @@ const con = mysql.createConnection({
 });
 const jwtKey = "privateKey";
 
-/*
+
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-*/
+
 const app = express();
 
 function attributeID(category){
@@ -119,13 +119,6 @@ passport.use(new LocalStrategy({
   usernameField: 'email'
 },
 function(username, password, done) {
-
-  /* A la place de ce qui suit dans cette fonction,
-  il faut vérifier si la BD contient un utilisateur dont l'email est "username"
-  et si le mot de passe correspondant est bien "password".
-  Si oui, alors : return(done, null, username);
-  Sinon : return("unauthorized access", false);
-  */
   con.query("SELECT Email FROM Student where Email = '"+username+ "'",function (err, user, fields) {
     console.log(user);
     if (err) {
@@ -139,7 +132,7 @@ function(username, password, done) {
         if (err) {
           throw err;
         } else {
-          var string = JSON.stringify(result); //converti le result en JSON
+          var string = JSON.stringify(result); //convertit le result en JSON
           console.log(string);
           var json = JSON.parse(string); //sépare les éléments du JSON
           console.log(json);
@@ -160,14 +153,6 @@ function(username, password, done) {
       });
     }
   });
-
-  //if(username === "admin@admin.com" && password === "admin"){
-  //  console.log("username & password ok");
-  //  return done(null, username);
-  //} else {
-  //  console.log("unauthorized acces");
-  //  return done("unauthorized access", false);
-  //}
 }));
 
 // to facilitate user data storage in the session and retrieving the data on subsequent requests
@@ -182,8 +167,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 /***************** Authentification**************** */
-
-// créer un token d'authentification pour le renvoyer à angular ?
 
 // middleware that intercepts the authentication request and makes the Passport authentication call
 const auth = () => {
@@ -266,7 +249,7 @@ const register = () => {
                   if (err) {
                     throw err;
                   }
-                  var userID = result.insertID;
+                  var userID = result.insertId;
                   const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
                   res.status(200).json({"token" : token, "username" : username});
                 });
@@ -346,11 +329,9 @@ app.post('/addPost', (req, res, next) => {
             console.log(result);
         });
       }
+    });
   });
-});
-  })
-
-
+})
 
 
 // requête http GET pour afficher une annonce spécifique
@@ -390,6 +371,11 @@ app.get('/posts', (req, res, next) => {
 });
 
 
+/***************************************************************************************************
+* Fin des requêtes concernant les annonces - Début des requêtes concernant un profil d'utilisateur *
+* *************************************************************************************************/
+
+// requête pour récupérer toutes les infos d'un utilisateur
 app.post('/getUserInfo', (req, res, next) => {
   console.log("requête des infos d'utilisateur reçue :");
   con.query("SELECT * FROM Student WHERE Username = '"+req.body.username+"'", function (err, result, fields) {
@@ -407,6 +393,7 @@ app.post('/getUserInfo', (req, res, next) => {
   });
 })
 
+// requête pour modifier des infos d'un utilisateur
 app.post('/modifyUserInfo', (req, res, next) => {
   console.log("requête de modification des infos d'utilisateur reçue :");
   var encryptedToken = req.get("Authorization");  // get authorization token from http header
@@ -445,6 +432,7 @@ app.post('/modifyUserInfo', (req, res, next) => {
   })
 })
 
+// requête pour récupérer toutes les annonces postées par un utilisateur
 app.get('/getUserPosts', (req, res, next) => {
   console.log("requête pour les annonces d'un utilisateur reçue :");
    var encryptedToken = req.get("Authorization");  // get authorization token from http header
@@ -464,15 +452,54 @@ app.get('/getUserPosts', (req, res, next) => {
   });
 })
 
+// requête pour supprimer un compte d'utilisateur
+app.post('/deleteUserAccount', (req, res, next) => {
+  console.log("requête pour supprimer un compte utilisateur reçue");
+  console.log(req.headers);
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  console.log(decodedToken);
+  var userID = decodedToken.userID; // get userID from token payload
+  var password = req.body.password;
+  console.log(userID);
+  console.log(password);
+  // vérifier le mot de passe
+  // s'il est bon, supprimer le compte
+  // sinon, annuler
+  con.query("SELECT Password FROM Student where StudentID = '"+userID+"'", function (err, result, fields){
+    if (err) {
+      throw err;
+    } else {
+      var string = JSON.stringify(result); //convertit le result en JSON
+      console.log(string);
+      var json = JSON.parse(string); //sépare les éléments du JSON
+      console.log(json);
+      console.log("selection : ", json[0].Password);
+      var Cequejveux = json[0].Password;
+      bcrypt.compare (password, Cequejveux, function(err, isMatch){
+        if (err) {
+          throw err;
+        } else if (!isMatch){
+          console.log("The password doesn't match!");
+          res.status(400).json({"statusCode" : 400, "message" : "incorrect password"});
+          // return done("Incorrect Email/Password credentials", false);
+        } else {
+          console.log("Correct password");
+          con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
+            if(err) throw err;
+            res.status(200).json({"message": "account was deleted"});
+          });
+        }
+      })
+    }
+  });
+
+})
+
 
 app.use((req, res, next) => {
  console.log("coucou");
  res.json({message:'coucou'});
 });
-
-
-
-
-
 
 module.exports = app;

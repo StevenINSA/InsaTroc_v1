@@ -6,7 +6,7 @@ Back :
 renvoyer aussi un array avec les ID de catégories (en allant chercher dans la table AnnounceCategory)
 - getUserInfo : mot de passe ?
 - modifyUserInfo : ne marche pas, trouver pourquoi
-- faire deleteUserAccount
+- deleteUserAccount : problème : SQL empêche de supprimer son compte si on a déposé des annonces parce que le StudentID est une clé étrangère dans la table Announce ("Cannot delete or update a parent row: a foreign key constraint fails") -> faire en sorte qu'on puisse supprimer son compte et que ça supprime aussi toutes les annonces associées
 
 Front :
 - faire le html pour post-viewer-by-id

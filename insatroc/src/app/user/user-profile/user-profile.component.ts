@@ -33,9 +33,9 @@ export class UserProfileComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      if(result!=undefined){
-        this.authService.deleteAccount(result);
-      }
+      // if(result!=undefined){
+      //   this.authService.deleteAccount(result);
+      // }
 
     });
   }
@@ -99,6 +99,8 @@ export class UserProfileComponent implements OnInit {
 })
 export class DeleteAccountDialog {
   hide = true;
+  requiredError = false;
+  yes = false;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteAccountDialog>,
@@ -106,6 +108,20 @@ export class DeleteAccountDialog {
     public authService: AuthService) {}
 
   onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  deleteAccount(password){
+    console.log(password);
+    if(password!=undefined){
+      this.authService.deleteAccount(password);
+      this.yes = true;
+
+    }
+    else{this.requiredError=true; console.log(this.requiredError)}
+  }
+
+  closeDialog(){
     this.dialogRef.close();
   }
 

@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,7 @@ export class AuthService {
   public authUpdater = new Subject<boolean>();
 
 
-  constructor(private http : HttpClient,private router:Router) { }
+  constructor(private http : HttpClient,private router:Router, public dialog: MatDialog) { }
 
   public isAuthenticated() : Boolean {
     let token = localStorage.getItem('token');
@@ -133,10 +135,12 @@ console.log(error.error.message);
   }
 
   public deleteAccount(password){
-    this.http.post('http://localhost:3000/deleteAccount', {'password' : password}).subscribe(
+    this.http.post('http://localhost:3000/deleteUserAccount', {'password' : password}).subscribe(
       (response) => {console.log(response);
-                      this.deleteUserInfo()},
-      (error) => {console.log(error)},
+                      this.deleteUserInfo();
+                      this.router.navigate(['']);
+                      this.dialog.closeAll()},
+      (error) => {console.log(error);},
     );
   }
 
