@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {HttpService} from '../http.service';
 import {AuthService} from '../auth.service';
 import {Router} from "@angular/router";
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-header',
@@ -12,12 +13,16 @@ export class HeaderComponent implements OnInit {
   sidetoggle = false;
   loggedin = true;
   themetoggle = false;
-
+  search;
 
   constructor(public httpService: HttpService, public authService: AuthService, private router: Router) { }
 
   log (status) {
     console.log(status)
+  }
+
+  Search(){
+    // faire une recherche
   }
 
   Disconnect(){

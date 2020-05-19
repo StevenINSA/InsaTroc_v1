@@ -43,7 +43,7 @@
   <button mat-icon-button>
     <mat-icon>search</mat-icon>
   </button>
-  <input mat-clearable-input placeholder="Rechercher une annonce">
+  <input mat-clearable-input placeholder="Rechercher une annonce" #search>
   <span class="spacer"></span>
 
   <ng-container *ngIf="authService.isAuthenticated()">
