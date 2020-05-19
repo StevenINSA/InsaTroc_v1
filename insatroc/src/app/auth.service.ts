@@ -151,4 +151,9 @@ console.log(error.error.message);
       return decodedtok.exp-decodedtok.iat
     }
   }
+  private timeLeft(){
+    const datee = new Date(localStorage.getItem("expiration"));
+    const nowdate = new Date()
+    return (datee.getTime()-nowdate.getTime())
+  }
 }

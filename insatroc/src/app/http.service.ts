@@ -103,6 +103,13 @@ export class HttpService {
     })
     return(this.posts);
   }
+  incrPostViews(bid:string){
+    this.http.patch<{response:string}>('http://localhost:3000/incrview',{id:bid}).subscribe(
+      (Resp)=>{
+        console.log(Resp);
+      }
+    )
+  }
 
   getUserPosts(){
     this.posts = [];

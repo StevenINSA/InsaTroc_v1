@@ -21,6 +21,7 @@ export class PostViewerByIdComponent implements OnInit {
       console.log("this.post");
       console.log(this.post);
       console.log(this.post.description);
+      this.httpService.incrPostViews(this.post._id);
       //incr v
     })
   }
