@@ -342,8 +342,14 @@ app.get('/getPost/:id', (req, res, next) => {
     //if (result.toString().length == 0){
       //res.json("pas d'annonce correspondante"); //si l'id n'existe plus dans la bd
     //} marche pas, bug à cause du deuxième res.json
-
-    res.status(200).json(result);
+    var data = result[0];
+    console.log(data);
+    con.query("SELECT Username FROM Student WHERE StudentID = '"+data.StudentID+"'", function(err, result, fields){
+      if(err) throw err;
+      var user = result[0].Username;
+      var post = {'_id': data.AnnounceID, 'title': data.Title, 'description': data.Description, 'category': attributeCategory(data.CategoryID), 'price': data.Price, 'urls': null, 'date': data.PublicationDate, 'views': data.NbViews, 'username': user};
+      res.status(200).json(post);
+    })
   });
 });
 

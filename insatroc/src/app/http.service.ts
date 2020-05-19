@@ -34,22 +34,37 @@ export class HttpService {
     );
   }
 
-  getPost2(id){
+  getPost2(id) : PostModel{
     console.log(this.posts);
-    for(let k =0; k<this.posts.length; k++){
-      if (id == this.posts[k]._id){
-        return this.posts[k];
+    if(this.posts.length!=0){
+      for(let k =0; k<this.posts.length; k++){
+        if (id == this.posts[k]._id){
+          return this.posts[k];
+        }
       }
+    }
+    else{
+      // return(this.getPost(id));
+      this.getPost(id).subscribe(
+        (response) => {console.log(response);
+                      return response;},
+        (error) => {console.log(error);
+                    return error}
+      )
     }
   }
 
   getPost(id: number){
     //return this.http.get('https://api.openbrewerydb.org/breweries')
     // return this.http.get('http://localhost:3000/post_viewer');
-    this.http.get('http://localhost:3000/getPost/'+ id).subscribe(
-      (response) => {console.log(response)},
-      (error) => {console.log(error)},
-    );
+    this.posts = [];
+    // this.http.get('http://localhost:3000/getPost/'+ id).subscribe(
+    //   (response) => {console.log(response);
+    //                   return(response)},
+    //   (error) => {console.log(error)
+    //               return error},
+    // );
+    return(this.http.get('http://localhost:3000/getPost/'+ id));
   }
 
   addPost(post:PostModel){
