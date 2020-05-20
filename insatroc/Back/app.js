@@ -5,6 +5,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const jwt = require("jsonwebtoken");
+const tokenValidator = require("./jwt_validator")
 
 const mysql = require('mysql')
 const con = mysql.createConnection({
@@ -291,7 +292,7 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 
 
 // requête http POST pour ajouter une nouvelle annonce dans la DB
-app.post('/addPost', (req, res, next) => {
+app.post('/addPost',tokenValidator,(req, res, next) => {
   console.log("requête de création d'annonce reçue :")
 	console.log(req.body);  //affiche les éléments de la requête
 
