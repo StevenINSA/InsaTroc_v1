@@ -592,7 +592,7 @@ app.post('/deleteUserAccount', (req, res, next) => {
       var json = JSON.parse(string); //sépare les éléments du JSON
       console.log(json);
       console.log("selection : ", json[0].Password);*/
-      var motdepasse = json[0].Password;
+      var motdepasse = result[0].Password;
       bcrypt.compare (password, motdepasse, function(err, isMatch){
         if (err) {
           throw err;
@@ -602,13 +602,24 @@ app.post('/deleteUserAccount', (req, res, next) => {
           // return done("Incorrect Email/Password credentials", false);
         } else {
           console.log("Correct password");
-          con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
+
+          con.query("SELECT AnnounceID FROM Announce WHERE StudentID = '"+userID+"'", function(err,result,fields){
             if(err) throw err;
-            con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
-              if(err) throw err;
-              res.status(200).json({"message": "account was deleted"});
-            });
-          })
+            console.log("annonces : ", result);
+            for (let i=0; i<result.length; i++){
+              con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+result[i].AnnounceID+"'", function(err,result,fields){
+                if(err) throw err;
+              });
+            }
+              con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
+                if(err) throw err;
+                con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
+                  if(err) throw err;
+                  res.status(200).json({"message": "account was deleted"});
+                  console.log("account was deleted");
+                });
+              });
+          });
         }
       })
     }
