@@ -21,8 +21,11 @@ export class HeaderComponent implements OnInit {
     console.log(status)
   }
 
-  Search(){
+  Search(words){
     // faire une recherche
+    this.router.navigate(['/search'],{queryParams:{arg:words as string}});
+    console.log("recherche :");
+    console.log(this.search);
   }
 
   Disconnect(){

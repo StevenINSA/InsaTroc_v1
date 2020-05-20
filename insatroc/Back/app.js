@@ -376,6 +376,28 @@ app.get('/posts', (req, res, next) => {
   });
 });
 
+// requête http POST pour faire une recherche par mot-clé
+app.post('/search', (req, res, next) => {
+  console.log("requête de recherche reçue :")
+  console.log("mots-clé :");
+  console.log(req.body.arg);
+  var arg = req.body.arg.replace('\'', ' ');
+  arg = arg.replace(',', ' ');
+  arg = arg.replace(', ', ' ');
+  arg = arg.replace('.', ' ');
+  var separators = [' ', '+', '(', ')', '*', '\\/', ':', '?', '-'];
+  var keywords = arg.split(new RegExp('[' + separators.join('') + ']', 'g'));
+  keywords.forEach(function(item, index){
+    if(item.length<3){
+      keywords.splice(index, 1)
+    }
+  })
+  console.log(keywords);
+
+// récupérer le username du vendeur à partir du StudentID
+
+});
+
 
 /***************************************************************************************************
 * Fin des requêtes concernant les annonces - Début des requêtes concernant un profil d'utilisateur *

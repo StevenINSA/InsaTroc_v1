@@ -103,6 +103,7 @@ export class HttpService {
     })
     return(this.posts);
   }
+
   incrPostViews(bid:string){
     this.http.patch<{response:string}>('http://localhost:3000/incrview',{id:bid}).subscribe(
       (Resp)=>{
@@ -114,6 +115,22 @@ export class HttpService {
   getUserPosts(){
     this.posts = [];
     this.http.get('http://localhost:3000/getUserPosts').subscribe(
+    (data)=>{
+      console.log("data");
+      console.log(data);
+      for(var i in data){
+        this.posts.push(data[i]);
+      }
+      console.log(this.posts);
+    })
+    return(this.posts);
+  }
+
+  getSearchResult(words){
+    console.log("getSearchResult");
+    console.log(words);
+    this.posts = [];
+    this.http.post('http://localhost:3000/search', {arg:words}).subscribe(
     (data)=>{
       console.log("data");
       console.log(data);

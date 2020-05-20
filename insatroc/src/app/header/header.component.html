@@ -43,7 +43,18 @@
   <button mat-icon-button>
     <mat-icon>search</mat-icon>
   </button>
-  <input mat-clearable-input placeholder="Rechercher une annonce" #search>
+  <!-- <input mat-clearable-input placeholder="Rechercher une annonce" #search> -->
+
+  <mat-form-field appearance="outline" (keydown.enter)="Search(search)">
+    <mat-label>Rechercher une annonce</mat-label>
+    <input matInput type="text" [(ngModel)]="search">
+    <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+
+
   <span class="spacer"></span>
 
   <ng-container *ngIf="authService.isAuthenticated()">

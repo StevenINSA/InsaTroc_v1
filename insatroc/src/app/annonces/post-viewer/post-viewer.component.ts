@@ -70,6 +70,7 @@ export class PostViewerComponent implements OnInit {
   pageChanged (event : PageEvent){
     console.log(event);
   }
+
   onDisplayPost(id){
     for (let k=0 ; k<this.Annonces.length;k++){
       if(id == this.Annonces[k]._id){
