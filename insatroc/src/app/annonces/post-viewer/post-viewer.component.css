@@ -35,10 +35,17 @@ mat-card {
   width: 50%;
   margin-left: 24%;
 }
-mat-card-subtitle.views{
+
+.views{
   margin-right: auto;
   text-align: end;
 }
+
+.date{
+  margin-left: auto;
+  text-align: left;
+}
+
 mat-card-title.cardlink:hover{
   cursor: hand;
   cursor: pointer;
