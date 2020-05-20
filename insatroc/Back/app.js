@@ -16,8 +16,8 @@ const con = mysql.createConnection({
 const jwtKey = "privateKey";
 
 
-const mariadb = require('mariadb');
-const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
+//const mariadb = require('mariadb');
+//const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
 
 const app = express();
 
