@@ -402,7 +402,7 @@ app.post('/search', (req, res, next) => {
 app.patch('/incrview', (req, res, next) => {
   console.log("requête pour incrémenter le nombre de vues");
   console.log(req.body.id);
-  con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE StudentID = '"+req.body.id+"'", function (err, result, fields) {
+  con.query("UPDATE Announce SET NbViews = NbViews+'"+1+"' WHERE StudentID = '"+req.body.id+"'", function (err, result, fields) {
     if (err) throw err;
     res.status(200).json({"message":"ok"});
   });

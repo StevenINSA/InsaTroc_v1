@@ -38,12 +38,14 @@ mat-card {
 
 .views{
   margin-right: auto;
-  text-align: end;
+  float: right;
+  color: #0097A7;
 }
 
 .date{
   margin-left: auto;
-  text-align: left;
+  float: left;
+  color: rgb(8, 40, 90);
 }
 
 mat-card-title.cardlink:hover{

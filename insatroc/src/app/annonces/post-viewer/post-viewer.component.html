@@ -95,14 +95,15 @@
             </mat-expansion-panel>
 
             <br>
-            <span class="date" style="color: #0097A7;">
+            <span class="date" >
               <!-- <mat-icon>touch_app</mat-icon> -->
-              {{annonce.date}}
+              {{annonce.date | date:'medium'}}
             </span>
-            <span class="views" style="color: #0097A7;">
+            <span class="views">
               <!-- <mat-icon>touch_app</mat-icon> -->
               {{annonce.views}} vues
             </span>
+            <br>
 
         </mat-card-content>
       </mat-card>
