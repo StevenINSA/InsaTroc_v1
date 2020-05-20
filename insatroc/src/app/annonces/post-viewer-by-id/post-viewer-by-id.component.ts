@@ -28,7 +28,7 @@ export class PostViewerByIdComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.httpService.getPost3(params.bid).subscribe(
         (response) => {console.log(response);
-                      this.post = response;
+                      this.post = response as PostModel;
                     this.httpService.incrPostViews(this.post._id);},
         (error) => {console.log(error)}
       );
