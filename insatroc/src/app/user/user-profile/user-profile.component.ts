@@ -11,6 +11,10 @@ export interface DialogData {
   password: string;
 }
 
+export interface PasswordDialogData {
+  password: string;
+}
+
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -22,10 +26,27 @@ export class UserProfileComponent implements OnInit {
   hide = true;
   readonly = true;
   password: string;
+  oldPassword: string;
+  newPassword: string;
 
   constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog) {}
 
   openDialog(): void {
+    const dialogRef = this.dialog.open(DeleteAccountDialog, {
+      width: '250px',
+      data: {password: this.password}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      // if(result!=undefined){
+      //   this.authService.deleteAccount(result);
+      // }
+
+    });
+  }
+
+  openPasswordDialog(): void {
     const dialogRef = this.dialog.open(DeleteAccountDialog, {
       width: '250px',
       data: {password: this.password}
@@ -119,6 +140,44 @@ export class DeleteAccountDialog {
 
     }
     else{this.requiredError=true; console.log(this.requiredError)}
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+
+}
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'change-password-dialog',
+  templateUrl: 'change-password-dialog.html',
+})
+export class ChangePasswordDialog {
+  hide = true;
+
+  constructor(
+    public dialogRef: MatDialogRef<ChangePasswordDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: PasswordDialogData,
+    public authService: AuthService) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  changePassword(oldPassword, newPassword){
+    console.log(oldPassword);
+    // if(password!=undefined){
+    //   this.authService.deleteAccount(password);
+    //   this.yes = true;
+    // }
+    // else{this.requiredError=true; console.log(this.requiredError)}
   }
 
   closeDialog(){

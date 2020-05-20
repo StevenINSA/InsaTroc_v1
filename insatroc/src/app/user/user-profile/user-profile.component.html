@@ -45,7 +45,7 @@
           <textarea matInput formControlName="contact" rows=7 placeholder="Entrez les informations de contact que vous voulez voir apparaître sur vos annonces." readonly = {{readonly}}></textarea>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="container">
+        <!-- <mat-form-field appearance="outline" class="container">
           <mat-label>Mot de passe</mat-label>
           <input matInput type="{{hide ? 'password' : 'text'}}" size="1" formControlName="password"required minlength=5 maxlength=25 readonly = {{readonly}}>
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide">
@@ -54,12 +54,22 @@
           <mat-error *ngIf="form.get('password').hasError('required')">Veuillez remplir ce champ</mat-error>
           <mat-error *ngIf="form.get('password').hasError('minlength')">Doit contenir au moins 5 caractères</mat-error>
           <mat-error *ngIf="form.get('password').hasError('maxlength')">Ne doit pas contenir plus de 25 caractères</mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
 
         <mat-card-actions>
           <div class="container">
-            <button mat-raised-button *ngIf="readonly" color="accent" type="submit">Modifier mes informations</button>
-            <button mat-raised-button *ngIf="!readonly" color="accent" type="submit">Enregistrer</button>
+            <button mat-raised-button *ngIf="readonly" color="accent" type="submit">
+              <mat-icon>create</mat-icon>
+              Modifier mes informations</button>
+            <button mat-raised-button *ngIf="!readonly" color="accent" type="submit">
+              <mat-icon>save</mat-icon>
+              Enregistrer les modifications</button>
+          </div>
+          <br>
+          <div class="container">
+            <button mat-raised-button color="disable" type="button" (click)="openPasswordDialog()">
+              <mat-icon>vpn_key</mat-icon>
+              Modifier mon mot de passe</button>
           </div>
           <br>
           <div class="container">
