@@ -313,7 +313,7 @@ app.post('/addPost', (req, res, next) => {
 
   con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
     if(err) throw err;
-    con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"')",
+    con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate, NbViews) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"', '"+0+"')",
     function (err, result, fields){
       if (err) throw err;
       console.log(result.insertId);
@@ -397,6 +397,16 @@ app.post('/search', (req, res, next) => {
 // récupérer le username du vendeur à partir du StudentID
 
 });
+
+// requête http PATCH pour incrémenter le nombre de vues d'une annonce
+app.patch('/incrview', (req, res, next) => {
+  console.log("requête pour incrémenter le nombre de vues");
+  console.log(req.body.id);
+  con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE StudentID = '"+req.body.id+"'", function (err, result, fields) {
+    if (err) throw err;
+    res.status(200).json({"message":"ok"});
+  });
+})
 
 
 /***************************************************************************************************

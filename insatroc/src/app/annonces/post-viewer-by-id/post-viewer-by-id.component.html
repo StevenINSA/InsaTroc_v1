@@ -6,7 +6,9 @@
     <h2 align="right" style= "color: crimson;" *ngIf="post.price==0">Gratuit</h2>
     <h4 style="color: darkgray;">Catégorie : {{post.category}}</h4>
 
-    <div class="container2" *ngIf="post.urls.length>0">
+    <div mat-card-avatar class="example-header-image"></div>
+
+    <div class="container2" *ngIf="post.urls!=null || post.urls.length>0">
       <!-- Full-width images with number text -->
       <div class="mySlides">
         <div class="numbertext">{{slideIndex+1}} / {{post.urls.length}}</div>
@@ -24,10 +26,15 @@
     </div>
 
     <br>
-    <h2 *ngIf="post.description!=''">Description</h2>
+    <!-- <h2>Description</h2> -->
+    <h2 *ngIf="post.description">Description</h2>
     <p>{{post.description}}</p>
     <br>
   </div>
+
+  <mat-divider></mat-divider>
+
+  <h3>Contacter l'annonceur :</h3>
 
 
   <mat-card-actions>

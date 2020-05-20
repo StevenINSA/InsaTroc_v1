@@ -73,16 +73,11 @@ export class AuthService {
         this.setUserInfo(response.token,response.username);
         this.isAuhenticated2();
         this.router.navigate(['/']);
-
-
       },
       (error)=>{
         this.authUpdater.next(false);
-
       }
-
     )
-    // stocker la valeur de retour (token) pour le mettre
   }
 
   public register(firstname, lastname, username, email, password){
