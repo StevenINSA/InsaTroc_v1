@@ -133,13 +133,13 @@ function(username, password, done) {
         if (err) {
           throw err;
         } else {
-          var string = JSON.stringify(result); //convertit le result en JSON
+          /*var string = JSON.stringify(result); //convertit le result en JSON
           console.log(string);
           var json = JSON.parse(string); //sépare les éléments du JSON
           console.log(json);
-          console.log("selection : ", json[0].Password);
-          var Cequejveux = json[0].Password;
-          bcrypt.compare (password, Cequejveux, function(err, isMatch){
+          console.log("selection : ", json[0].Password);*/
+          var motdepasse = result[0].Password;
+          bcrypt.compare (password, motdepasse, function(err, isMatch){
             if (err) {
               throw err;
             } else if (!isMatch){
@@ -357,23 +357,59 @@ app.get('/getPost/:id', (req, res, next) => {
 // requête http GET pour afficher toutes les annonces
 app.get('/posts', (req, res, next) => {
   console.log("requête d'affichage de toutes les annonces reçue :")
-
-// récupérer le username du vendeur à partir du StudentID
-
-  con.query("SELECT * FROM Announce", function (err, result, fields) {
+  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID", function (err, result, fields) {
     if (err) throw err;
-    //var data = JSON.stringify(result);
-    var data = result;
-    var posts = [];
-    for(var i in data){
-      // con.query("SELECT Username FROM Student WHERE StudentID = '"+data[i].StudentID+"'", function(err, result, fields){
-        // if(err) throw err;
-        // var user = result[0].Username;
-        posts.push({'_id': data[i].AnnounceID, 'title': data[i].Title, 'description': data[i].Description, 'category': attributeCategory(data[i].CategoryID), 'price': data[i].Price, 'urls': null, 'date': data[i].PublicationDate, 'views': data[i].NbViews, 'username': "user"});
-      // })
+
+    /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
+    si l'announce suivante a le meme numéro(mais elle aura un CatID différent), on ne rajoute pas l'annonce dans resultat mais on push dans le tableau
+    de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en double et un tableau de catID correct*/
+    var resultat=[];
+    var categoryids=[];
+    let j=0; //on travail avec deux pointeurs : i et j
+    for (let i=0; i<result.length; i++){
+
+      if (i==0){
+        categoryids[0]=result[i].CategoryID;
+        resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                   "Titre" : result[i].Title,
+                   "Prix" : result[i].Price,
+                   "Description" : result[i].Description,
+                   "StudentID" : result[i].StudentID,
+                   "Date de publication" : result[i].PublicationDate,
+                   "Nombre de vues" : result[i].NbViews,
+                   "Username" : result[i].Username,
+                   "N° de telephone" : result[i].TelephoneNumber,
+                   "Image" : result[i].Image,
+                   "Adresse" : result[i].Address,
+                   "categoryids" : categoryids,
+                 }
+      }
+      else{
+        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+          resultat[j].categoryids.push(result[i].CategoryID)
+        }
+        else{
+          j+=1;
+          categoryids=[];
+          categoryids[0]=result[i].CategoryID;
+          resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                     "Titre" : result[i].Title,
+                     "Prix" : result[i].Price,
+                     "Description" : result[i].Description,
+                     "StudentID" : result[i].StudentID,
+                     "Date de publication" : result[i].PublicationDate,
+                     "Nombre de vues" : result[i].NbViews,
+                     "Username" : result[i].Username,
+                     "N° de telephone" : result[i].TelephoneNumber,
+                     "Image" : result[i].Image,
+                     "Adresse" : result[i].Address,
+                     "categoryids" : categoryids,
+                   }
+        }
+      }
     }
-    console.log(posts);
-    res.status(200).json(posts);
+    res.status(200).json({"annonces" : resultat});
+    console.log("resultat :", resultat);
   });
 });
 
@@ -512,13 +548,13 @@ app.post('/deleteUserAccount', (req, res, next) => {
     if (err) {
       throw err;
     } else {
-      var string = JSON.stringify(result); //convertit le result en JSON
+      /*var string = JSON.stringify(result); //convertit le result en JSON
       console.log(string);
       var json = JSON.parse(string); //sépare les éléments du JSON
       console.log(json);
-      console.log("selection : ", json[0].Password);
-      var Cequejveux = json[0].Password;
-      bcrypt.compare (password, Cequejveux, function(err, isMatch){
+      console.log("selection : ", json[0].Password);*/
+      var motdepasse = json[0].Password;
+      bcrypt.compare (password, motdepasse, function(err, isMatch){
         if (err) {
           throw err;
         } else if (!isMatch){
