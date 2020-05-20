@@ -167,3 +167,15 @@ input::-webkit-inner-spin-button {
       background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
       background-size: cover;
     }
+
+    .views{
+      margin-right: auto;
+      float: right;
+      color: #0097A7;
+    }
+
+    .date{
+      margin-left: auto;
+      float: left;
+      color: rgb(8, 40, 90);
+    }

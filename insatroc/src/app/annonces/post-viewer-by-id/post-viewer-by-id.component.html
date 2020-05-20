@@ -6,36 +6,50 @@
     <h2 align="right" style= "color: crimson;" *ngIf="post.price==0">Gratuit</h2>
     <h4 style="color: darkgray;">Catégorie : {{post.category}}</h4>
 
-    <div mat-card-avatar class="example-header-image"></div>
 
-    <div class="container2" *ngIf="post.urls!=null || post.urls.length>0">
-      <!-- Full-width images with number text -->
+    <!-- <div class="container2" *ngIf="post.urls!=null || post.urls.length>0">
       <div class="mySlides">
         <div class="numbertext">{{slideIndex+1}} / {{post.urls.length}}</div>
         <img [src]="post.urls[slideIndex]" style="width:100%">
       </div>
-      <!-- Next and previous buttons -->
       <a class="prev" (click)="PlusSlides(-1)" *ngIf="slideIndex>0">&#10094;</a>
       <a class="next" (click)="PlusSlides(1)" *ngIf="slideIndex<post.urls.length-1">&#10095;</a>
-      <!-- Thumbnail images -->
       <div class="row">
         <div class="column" *ngFor='let url of post.urls; let i = index'>
           <img [className]="(i==slideIndex) ? 'demo cursor active' : 'demo cursor'" [src]="url" style="width:100%" (click)="currentSlide(i)">
         </div>
       </div>
-    </div>
+    </div> -->
 
     <br>
     <!-- <h2>Description</h2> -->
     <h2 *ngIf="post.description">Description</h2>
     <p>{{post.description}}</p>
     <br>
+
+    <br>
+    <span class="date" >
+      <!-- <mat-icon>touch_app</mat-icon> -->
+      {{post.date | date:'medium'}}
+    </span>
+    <span class="views">
+      <!-- <mat-icon>touch_app</mat-icon> -->
+      {{post.views}} vues
+    </span>
+    <br>
+
   </div>
+<br>
+
 
   <mat-divider></mat-divider>
-
+  <br>
   <h3>Contacter l'annonceur :</h3>
-
+  <mat-card-header>
+    <div mat-card-avatar class="example-header-image"></div>
+    <mat-card-title>{{post.username}}</mat-card-title>
+    <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
+  </mat-card-header>
 
   <mat-card-actions>
     <div class="container">

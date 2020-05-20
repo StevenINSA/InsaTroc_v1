@@ -4,10 +4,6 @@
     <mat-card>
       <mat-card-header style="float:left;">
           <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
-          <mat-card-subtitle class="views">
-            <mat-icon>touch_app</mat-icon>
-            {{annonce.views}}
-          </mat-card-subtitle>
           <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
       </mat-card-header>
       <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
@@ -24,10 +20,23 @@
               </p>
 
           </mat-expansion-panel>
+
+          <br>
+          <span class="date" >
+            <!-- <mat-icon>touch_app</mat-icon> -->
+            {{annonce.date | date:'medium'}}
+          </span>
+          <span class="views">
+            <!-- <mat-icon>touch_app</mat-icon> -->
+            {{annonce.views}} vues
+          </span>
+          <br>
+
       </mat-card-content>
     </mat-card>
 
   </ng-container>
+
 </div>
 
 <br>
