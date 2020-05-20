@@ -123,5 +123,8 @@
       }
     }
   },
-  "defaultProject": "insatroc"
+  "defaultProject": "insatroc",
+  "cli": {
+    "analytics": "fc8fb531-51e7-44ec-b89c-2f62bc9ab850"
+  }
 }

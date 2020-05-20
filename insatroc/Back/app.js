@@ -464,14 +464,67 @@ app.post('/search', (req, res, next) => {
   var separators = [' ', '+', '(', ')', '*', '\\/', ':', '?', '-'];
   var keywords = arg.split(new RegExp('[' + separators.join('') + ']', 'g'));
   keywords.forEach(function(item, index){
-    if(item.length<3){
+      if(item.length<3){
       keywords.splice(index, 1)
-    }
-  })
+      }
+      con.query("SELECT * FROM Announce INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID WHERE CONTAINS (Title, '"+item+"') > 0 OR CONTAINS (Description, '"+item+"') > 0  ", function(err,result){
+          if(err) throw err;
+      /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
+  si l'announce suivante a le meme numéro(mais elle aura un CatID différent), on ne rajoute pas l'annonce dans resultat mais on push dans le tableau
+  de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en double et un tableau de catID correct*/
+          var resultat=[];
+          var categoryids=[];
+          let j=0; //on travail avec deux pointeurs : i et j
+          for (let i=0; i<result.length; i++){
+
+              if (i==0){
+                  categoryids[0]=result[i].CategoryID;
+                  resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                          "Titre" : result[i].Title,
+                          "Prix" : result[i].Price,
+                          "Description" : result[i].Description,
+                          "StudentID" : result[i].StudentID,
+                          "Date de publication" : result[i].PublicationDate,
+                          "Nombre de vues" : result[i].NbViews,
+                          "Username" : result[i].Username,
+                          "N° de telephone" : result[i].TelephoneNumber,
+                          "Image" : result[i].Image,
+                          "Adresse" : result[i].Address,
+                          "categoryids" : categoryids,
+                              }
+              
+
+              } else {
+                  if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+                      resultat[j].categoryids.push(result[i].CategoryID)
+                  } else { 
+                      j+=1;
+                      categoryids=[];
+                      categoryids[0]=result[i].CategoryID;
+                      resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                                  "Titre" : result[i].Title,
+                                  "Prix" : result[i].Price,
+                                  "Description" : result[i].Description,
+                                  "StudentID" : result[i].StudentID,
+                                  "Date de publication" : result[i].PublicationDate,
+                                  "Nombre de vues" : result[i].NbViews,
+                                  "Username" : result[i].Username,
+                                  "N° de telephone" : result[i].TelephoneNumber,
+                                  "Image" : result[i].Image,
+                                  "Adresse" : result[i].Address,
+                                  "categoryids" : categoryids,
+                                  }
+                  }
+              }
+          }
+          res.status(200).json({"annonces" : resultat});
+          console.log("resultat :", resultat);
+      });
   console.log(keywords);
 
 // récupérer le username du vendeur à partir du StudentID
 
+  });
 });
 
 // requête http PATCH pour incrémenter le nombre de vues d'une annonce
@@ -482,7 +535,7 @@ app.patch('/incrview', (req, res, next) => {
     if (err) throw err;
     res.status(200).json({"message":"ok"});
   });
-})
+});
 
 
 /***************************************************************************************************
@@ -508,7 +561,7 @@ app.get('/getUserInfo', (req, res, next) => {
     console.log(user);
     res.status(200).json(user);
   });
-})
+});
 
 // requête pour modifier des infos d'un utilisateur
 app.post('/modifyUserInfo', (req, res, next) => {
@@ -547,7 +600,7 @@ app.post('/modifyUserInfo', (req, res, next) => {
       });
     }
   })
-})
+});
 
 // requête pour récupérer toutes les annonces postées par un utilisateur
 app.get('/getUserPosts', (req, res, next) => {
@@ -608,8 +661,7 @@ app.get('/getUserPosts', (req, res, next) => {
     res.status(200).json({"annonces" : resultat});
     console.log("resultat :", resultat);
     });
-  });
-})
+});
 
 // requête pour supprimer un compte d'utilisateur
 app.post('/deleteUserAccount', (req, res, next) => {
@@ -667,7 +719,52 @@ app.post('/deleteUserAccount', (req, res, next) => {
     }
   });
 
-})
+});
+
+
+//requête pour modifier le password
+app.post('/modifyPassword', (req, res,next) =>{
+  console.log("requête pour changer le password d'un utilisateur reçue :");
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var userID = decodedToken.userID; // get userID from token payload
+
+  con.query("SELECT Password FROM Student where StudentID = '"+userID+ "'",function (err, result, fields) {
+      if (err) {
+          throw err;
+      } else {
+          var Cequejveux = result[0].Password;
+          bcrypt.compare (req.params.oldPassword, Cequejveux, function(err, isMatch){
+              if (err) {
+                  throw err;
+              } else if (!isMatch){
+                  console.log("The password doesn't match!");
+                  res.status(401).json({"message" : "Incorrect Password"});
+              } else {
+                  console.log("Correct password");
+                  bcrypt.genSalt(saltRounds, function (err, salt) {
+                      if (err) {
+                          throw err
+                      } else {
+                          bcrypt.hash(req.params.newPassword, salt, function(err, hash) {
+                              if (err) {
+                                  throw err
+                              } else {
+                                  console.log(hash)
+                                  con.query("UPDATE Student SET Password='"+hash+"' WHERE StudentID = '"+userID+"'", function (err, result, fields) {
+                                      if(err){
+                                          throw err;
+                                      }
+                                  });  
+                              }
+                          }) 
+                      }             
+                  });    
+              }
+          });   
+      }
+  });
+});
 
 
 app.use((req, res, next) => {
