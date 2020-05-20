@@ -12,6 +12,7 @@ import { PostViewerByIdComponent } from './annonces/post-viewer-by-id/post-viewe
 import { UserPostsComponent } from './user/user-posts/user-posts.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 import { DeleteAccountDialog } from './user/user-profile/user-profile.component';
+import { ChangePasswordDialog} from './user/user-profile/user-profile.component';
 import { HttpAuthInterceptor } from './http-auth.interceptor';
 import { SearchResultsComponent } from './annonces/search-results/search-results.component';
 
@@ -57,6 +58,7 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
     UserProfileComponent,
     DeleteAccountDialog,
     SearchResultsComponent,
+    ChangePasswordDialog,
   ],
   imports: [
     BrowserModule,
@@ -88,6 +90,7 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
   ],
   entryComponents: [
     DeleteAccountDialog,
+    ChangePasswordDialog,
   ],
   providers: [
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
