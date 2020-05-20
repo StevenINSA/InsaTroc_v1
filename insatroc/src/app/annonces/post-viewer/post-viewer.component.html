@@ -5,10 +5,12 @@
     <mat-nav-list>
       <span>Trier par</span>
       <mat-form-field appearance="standard">
-        <mat-select placeholder="Choisir" name="category" size="1" ngModel>
+        <mat-select placeholder="Choisir" name="category" size="1" ngModel [(value)]="tri" (selectionChange)="Trier()">
+          <mat-option></mat-option>
+          <mat-option value="populaire">Popularité</mat-option>
           <mat-option value="prix-croissant">Prix croissant</mat-option>
           <mat-option value="prix-decroissant">Prix décroissant</mat-option>
-          <mat-option value="date">Date</mat-option>
+          <mat-option value="date">Date (plus récent)</mat-option>
         </mat-select>
       </mat-form-field>
       <br>
