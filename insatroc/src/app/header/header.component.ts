@@ -11,7 +11,7 @@ import { FormControl } from '@angular/forms';
 })
 export class HeaderComponent implements OnInit {
   sidetoggle = false;
-  loggedin = true;
+  loggedin = false;
   themetoggle = false;
   search;
 
@@ -51,6 +51,12 @@ export class HeaderComponent implements OnInit {
   test(){}
 
   ngOnInit(): void {
+    this.authService.onAuthUpdate().subscribe(
+      (resp)=>{
+        console.log("header : "+resp);
+        this.loggedin=resp;
+      }
+    )
   }
 
 }

@@ -3,6 +3,7 @@ import { OverlayContainer} from '@angular/cdk/overlay';
 
 
 import {HttpService} from './http.service';
+import { AuthService } from './auth.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,7 +11,7 @@ import {HttpService} from './http.service';
 })
 export class AppComponent implements OnInit {
 
-constructor(public httpservice: HttpService){}
+constructor(public httpservice: HttpService, public authservice: AuthService){}
   title='insatroc';
   theme ;
 
@@ -23,6 +24,7 @@ constructor(public httpservice: HttpService){}
 
       }
     )
+    this.authservice.autoAuth();
   }
 }
   
