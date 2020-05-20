@@ -414,12 +414,13 @@ app.patch('/incrview', (req, res, next) => {
 * *************************************************************************************************/
 
 // requête pour récupérer toutes les infos d'un utilisateur
-app.post('/getUserInfo', (req, res, next) => {
-  console.log("requête des infos d'utilisateur reçue :");
-  con.query("SELECT * FROM Student WHERE Username = '"+req.body.username+"'", function (err, result, fields) {
+app.get('/getUserInfo', (req, res, next) => {
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var userID = decodedToken.userID; // get userID from token payload
+  console.log("Requête des infos d'utilisateur reçue.");
+  con.query("SELECT * FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields) {
     if (err) throw err;
-    // console.log(req);
-    console.log(req.body.username);
     var user = {"first_name" : result[0].Surname,
                 "last_name" : result[0].Name,
                 "username" : result[0].Username,
@@ -427,6 +428,8 @@ app.post('/getUserInfo', (req, res, next) => {
                 "phone_number" : result[0].TelephoneNumber,
                 "contact_info" : result[0].Address
               }
+    console.log("Envoi des données au front :");
+    console.log(user);
     res.status(200).json(user);
   });
 })
