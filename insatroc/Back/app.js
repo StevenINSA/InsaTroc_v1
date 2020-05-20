@@ -338,19 +338,57 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
 // requête http GET pour afficher une annonce spécifique
 app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
-  con.query("SELECT * FROM Announce WHERE AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
+  console.log("req.params :",req.params);
+  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
     if (err) throw err;
-    //if (result.toString().length == 0){
-      //res.json("pas d'annonce correspondante"); //si l'id n'existe plus dans la bd
-    //} marche pas, bug à cause du deuxième res.json
-    var data = result[0];
-    console.log(data);
-    con.query("SELECT Username FROM Student WHERE StudentID = '"+data.StudentID+"'", function(err, result, fields){
-      if(err) throw err;
-      var user = result[0].Username;
-      var post = {'_id': data.AnnounceID, 'title': data.Title, 'description': data.Description, 'category': attributeCategory(data.CategoryID), 'price': data.Price, 'urls': null, 'date': data.PublicationDate, 'views': data.NbViews, 'username': user};
-      res.status(200).json(post);
-    })
+    var resultat=[];
+    var categoryids=[];
+    let j=0; //on travail avec deux pointeurs : i et j
+    for (let i=0; i<result.length; i++){
+
+      if (i==0){
+        categoryids[0]=result[i].CategoryID;
+        resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                   "Titre" : result[i].Title,
+                   "Prix" : result[i].Price,
+                   "Description" : result[i].Description,
+                   "StudentID" : result[i].StudentID,
+                   "Date de publication" : result[i].PublicationDate,
+                   "Nombre de vues" : result[i].NbViews,
+                   "Username" : result[i].Username,
+                   "N° de telephone" : result[i].TelephoneNumber,
+                   "Image" : result[i].Image,
+                   "Adresse" : result[i].Address,
+                   "categoryids" : categoryids,
+                 }
+      }
+
+      else{
+        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+          resultat[j].categoryids.push(result[i].CategoryID)
+        }
+        else{
+          j+=1;
+          categoryids=[];
+          categoryids[0]=result[i].CategoryID;
+          resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                     "Titre" : result[i].Title,
+                     "Prix" : result[i].Price,
+                     "Description" : result[i].Description,
+                     "StudentID" : result[i].StudentID,
+                     "Date de publication" : result[i].PublicationDate,
+                     "Nombre de vues" : result[i].NbViews,
+                     "Username" : result[i].Username,
+                     "N° de telephone" : result[i].TelephoneNumber,
+                     "Image" : result[i].Image,
+                     "Adresse" : result[i].Address,
+                     "categoryids" : categoryids,
+                   }
+        }
+      }
+    }
+    res.status(200).json({"annonces" : resultat});
+    console.log("resultat :", resultat);
   });
 });
 
@@ -384,6 +422,7 @@ app.get('/posts', (req, res, next) => {
                    "categoryids" : categoryids,
                  }
       }
+
       else{
         if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
           resultat[j].categoryids.push(result[i].CategoryID)
