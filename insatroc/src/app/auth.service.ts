@@ -11,6 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 export class AuthService {
   private token :string;
   public authUpdater = new Subject<boolean>();
+  private authStatus = false; 
 
 
   constructor(private http : HttpClient,private router:Router, public dialog: MatDialog) { }
@@ -27,13 +28,18 @@ export class AuthService {
 
     if(token){
       this.authUpdater.next(true)
+      this.authStatus = true;
     }else{
       this.authUpdater.next(false);
+      this.authStatus = false;
     }
 
   }
   onAuthUpdate(){
     return this.authUpdater.asObservable();
+  }
+  getAuthStatus(){
+    return this.authStatus;
   }
 
   // localStorage ou sessionStorage
@@ -73,6 +79,7 @@ export class AuthService {
         this.setUserInfo(response.token,response.username);
         this.isAuhenticated2();
         this.router.navigate(['/']);
+        this.setTimer(this.timeLeft());
       },
       (error)=>{
         this.authUpdater.next(false);
@@ -146,9 +153,36 @@ console.log(error.error.message);
       return decodedtok.exp-decodedtok.iat
     }
   }
+  public autoAuth(){
+    try {
+      const life = this.timeLeft();
+      console.log(life);
+      if (life>0){
+        this.setTimer(life);
+        this.isAuthenticated();
+      }else{
+        console.log("TOKEN EXPIRED , RETURN TO THE VOOOOID");
+        this.deleteUserInfo();
+        this.isAuthenticated();
+      }
+    }catch (err){
+      this.deleteUserInfo();
+      this.isAuthenticated();
+    }
+  }
   private timeLeft(){
     const datee = new Date(localStorage.getItem("expiration"));
     const nowdate = new Date()
     return (datee.getTime()-nowdate.getTime())
   }
+  private setTimer(time:number){
+    setTimeout(()=>{
+      //this.token=null;
+      //this.isAuhenticated();
+      this.authUpdater.next(false);
+      this.authStatus = false;
+      console.log("expired");
+    },time)
+
+    }
 }
