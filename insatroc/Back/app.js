@@ -339,7 +339,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
 app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
   console.log("req.params :",req.params);
-  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
+  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
     if (err) throw err;
     var resultat=[];
     var categoryids=[];
@@ -556,7 +556,7 @@ app.get('/getUserPosts', (req, res, next) => {
    var decodedToken = jwt.decode(encryptedToken); // decode token
    var userID = decodedToken.userID; // get userID from token payload
 
-   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.StudentID='"+userID+"'", function (err, result, fields) {
+   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID WHERE Announce.StudentID='"+userID+"'", function (err, result, fields) {
     if (err) throw err;
     //var data = JSON.stringify(result);
     var resultat=[];
