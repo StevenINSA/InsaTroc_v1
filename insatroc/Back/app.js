@@ -556,16 +556,58 @@ app.get('/getUserPosts', (req, res, next) => {
    var decodedToken = jwt.decode(encryptedToken); // decode token
    var userID = decodedToken.userID; // get userID from token payload
 
-   con.query("SELECT * FROM Announce WHERE StudentID='"+userID+"'", function (err, result, fields) {
+   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.StudentID='"+userID+"'", function (err, result, fields) {
     if (err) throw err;
     //var data = JSON.stringify(result);
-    var data = result;
-    var posts = [];
-    for(var i in data){
-        posts.push({'_id': data[i].AnnounceID, 'title': data[i].Title, 'description': data[i].Description, 'category': attributeCategory(data[i].CategoryID), 'price': data[i].Price, 'urls': null, 'date': data[i].PublicationDate, 'views': data[i].NbViews, 'username': ''});
+    var resultat=[];
+    var categoryids=[];
+    let j=0; //on travail avec deux pointeurs : i et j
+    for (let i=0; i<result.length; i++){
+
+      if (i==0){
+        categoryids[0]=result[i].CategoryID;
+        resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                   "Titre" : result[i].Title,
+                   "Prix" : result[i].Price,
+                   "Description" : result[i].Description,
+                   "StudentID" : result[i].StudentID,
+                   "Date de publication" : result[i].PublicationDate,
+                   "Nombre de vues" : result[i].NbViews,
+                   "Username" : result[i].Username,
+                   "N° de telephone" : result[i].TelephoneNumber,
+                   "Image" : result[i].Image,
+                   "Adresse" : result[i].Address,
+                   "categoryids" : categoryids,
+                 }
+      }
+
+      else{
+        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+          resultat[j].categoryids.push(result[i].CategoryID)
+        }
+        else{
+          j+=1;
+          categoryids=[];
+          categoryids[0]=result[i].CategoryID;
+          resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                     "Titre" : result[i].Title,
+                     "Prix" : result[i].Price,
+                     "Description" : result[i].Description,
+                     "StudentID" : result[i].StudentID,
+                     "Date de publication" : result[i].PublicationDate,
+                     "Nombre de vues" : result[i].NbViews,
+                     "Username" : result[i].Username,
+                     "N° de telephone" : result[i].TelephoneNumber,
+                     "Image" : result[i].Image,
+                     "Adresse" : result[i].Address,
+                     "categoryids" : categoryids,
+                   }
+        }
+      }
     }
-    console.log(posts);
-    res.status(200).json(posts);
+    res.status(200).json({"annonces" : resultat});
+    console.log("resultat :", resultat);
+    });
   });
 })
 
