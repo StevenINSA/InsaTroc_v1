@@ -35,14 +35,6 @@ mat-card-title.cardlink:hover{
   max-height: 90%;
 }
 
-/*
-.container {
-display: flex;
-justify-content: center;
-align-items: center;
-}
-*/
-
 .Nocontent {
   color: red;
   text-align: center;
