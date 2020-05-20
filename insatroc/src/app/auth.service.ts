@@ -11,7 +11,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 export class AuthService {
   private token :string;
   public authUpdater = new Subject<boolean>();
-  private authStatus = false; 
+  private authStatus = false;
 
 
   constructor(private http : HttpClient,private router:Router, public dialog: MatDialog) { }
