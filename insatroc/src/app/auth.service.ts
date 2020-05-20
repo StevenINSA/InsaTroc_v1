@@ -159,7 +159,8 @@ console.log(error.error.message);
       console.log(life);
       if (life>0){
         this.setTimer(life);
-        this.isAuthenticated();
+        //this.isAuthenticated();
+        this.isAuhenticated2();
       }else{
         console.log("TOKEN EXPIRED , RETURN TO THE VOOOOID");
         this.deleteUserInfo();
@@ -167,7 +168,8 @@ console.log(error.error.message);
       }
     }catch (err){
       this.deleteUserInfo();
-      this.isAuthenticated();
+      //this.isAuthenticated();
+      this.isAuhenticated2();
     }
   }
   private timeLeft(){
@@ -185,4 +187,7 @@ console.log(error.error.message);
     },time)
 
     }
+  public disconnect(){
+    this.authStatus=false;
+  }
 }

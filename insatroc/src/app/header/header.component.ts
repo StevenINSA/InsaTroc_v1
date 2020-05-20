@@ -30,6 +30,7 @@ export class HeaderComponent implements OnInit {
 
   Disconnect(){
     this.loggedin = false;
+    this.authService.disconnect();
     this.authService.logout().subscribe(
       (response) => {console.log(response);
                     this.authService.deleteUserInfo();
@@ -51,6 +52,7 @@ export class HeaderComponent implements OnInit {
   test(){}
 
   ngOnInit(): void {
+    this.loggedin=this.authService.getAuthStatus();
     this.authService.onAuthUpdate().subscribe(
       (resp)=>{
         console.log("header : "+resp);
