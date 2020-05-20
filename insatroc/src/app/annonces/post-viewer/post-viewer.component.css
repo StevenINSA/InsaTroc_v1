@@ -35,9 +35,17 @@ mat-card {
   width: 50%;
   margin-left: 24%;
 }
-mat-card-subtitle.views{
-  margin-left: auto;
+
+.views{
+  margin-right: auto;
+  text-align: end;
 }
+
+.date{
+  margin-left: auto;
+  text-align: left;
+}
+
 mat-card-title.cardlink:hover{
   cursor: hand;
   cursor: pointer;
@@ -56,7 +64,7 @@ align-items: center;
 .Nocontent {
   color: red;
   text-align: center;
- 
+
 }
 .prev, .next {
   cursor: pointer;

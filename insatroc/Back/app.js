@@ -313,7 +313,7 @@ app.post('/addPost', (req, res, next) => {
 
   con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
     if(err) throw err;
-    con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"')",
+    con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate, NbViews) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"', '"+0+"')",
     function (err, result, fields){
       if (err) throw err;
       console.log(result.insertId);
@@ -342,8 +342,14 @@ app.get('/getPost/:id', (req, res, next) => {
     //if (result.toString().length == 0){
       //res.json("pas d'annonce correspondante"); //si l'id n'existe plus dans la bd
     //} marche pas, bug à cause du deuxième res.json
-
-    res.status(200).json(result);
+    var data = result[0];
+    console.log(data);
+    con.query("SELECT Username FROM Student WHERE StudentID = '"+data.StudentID+"'", function(err, result, fields){
+      if(err) throw err;
+      var user = result[0].Username;
+      var post = {'_id': data.AnnounceID, 'title': data.Title, 'description': data.Description, 'category': attributeCategory(data.CategoryID), 'price': data.Price, 'urls': null, 'date': data.PublicationDate, 'views': data.NbViews, 'username': user};
+      res.status(200).json(post);
+    })
   });
 });
 
@@ -369,6 +375,38 @@ app.get('/posts', (req, res, next) => {
     res.status(200).json(posts);
   });
 });
+
+// requête http POST pour faire une recherche par mot-clé
+app.post('/search', (req, res, next) => {
+  console.log("requête de recherche reçue :")
+  console.log("mots-clé :");
+  console.log(req.body.arg);
+  var arg = req.body.arg.replace('\'', ' ');
+  arg = arg.replace(',', ' ');
+  arg = arg.replace(', ', ' ');
+  arg = arg.replace('.', ' ');
+  var separators = [' ', '+', '(', ')', '*', '\\/', ':', '?', '-'];
+  var keywords = arg.split(new RegExp('[' + separators.join('') + ']', 'g'));
+  keywords.forEach(function(item, index){
+    if(item.length<3){
+      keywords.splice(index, 1)
+    }
+  })
+  console.log(keywords);
+
+// récupérer le username du vendeur à partir du StudentID
+
+});
+
+// requête http PATCH pour incrémenter le nombre de vues d'une annonce
+app.patch('/incrview', (req, res, next) => {
+  console.log("requête pour incrémenter le nombre de vues");
+  console.log(req.body.id);
+  con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE StudentID = '"+req.body.id+"'", function (err, result, fields) {
+    if (err) throw err;
+    res.status(200).json({"message":"ok"});
+  });
+})
 
 
 /***************************************************************************************************

@@ -5,10 +5,12 @@
     <mat-nav-list>
       <span>Trier par</span>
       <mat-form-field appearance="standard">
-        <mat-select placeholder="Choisir" name="category" size="1" ngModel>
+        <mat-select placeholder="Choisir" name="category" size="1" ngModel [(value)]="tri" (selectionChange)="Trier()">
+          <mat-option></mat-option>
+          <mat-option value="populaire">Popularité</mat-option>
           <mat-option value="prix-croissant">Prix croissant</mat-option>
           <mat-option value="prix-decroissant">Prix décroissant</mat-option>
-          <mat-option value="date">Date</mat-option>
+          <mat-option value="date">Date (plus récent)</mat-option>
         </mat-select>
       </mat-form-field>
       <br>
@@ -65,11 +67,8 @@
           {{Filtrage()}}
         <mat-card-header style="float:left;">
             <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
-            <mat-card-subtitle class="views">
-              <mat-icon>touch_app</mat-icon>
-              {{annonce.views}}
-            </mat-card-subtitle>
             <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
+
         </mat-card-header>
         <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
         <!-- <mat-card-content class="sliderr">
@@ -94,6 +93,17 @@
                 </p>
 
             </mat-expansion-panel>
+
+            <br>
+            <span class="date" style="color: #0097A7;">
+              <!-- <mat-icon>touch_app</mat-icon> -->
+              {{annonce.date}}
+            </span>
+            <span class="views" style="color: #0097A7;">
+              <!-- <mat-icon>touch_app</mat-icon> -->
+              {{annonce.views}} vues
+            </span>
+
         </mat-card-content>
       </mat-card>
 

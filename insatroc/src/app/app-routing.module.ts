@@ -10,6 +10,7 @@ import { CreateAccountComponent } from './user/create-account/create-account.com
 import { PostViewerByIdComponent } from './annonces/post-viewer-by-id/post-viewer-by-id.component';
 import { UserPostsComponent } from './user/user-posts/user-posts.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
+import { SearchResultsComponent } from './annonces/search-results/search-results.component';
 
 import { AuthGuardService as AuthGuard} from './auth-guard.service';
 
@@ -24,6 +25,7 @@ const routes: Routes = [
   {path: 'annonce', component: PostViewerByIdComponent},
   {path: 'mes-annonces', component: UserPostsComponent},
   {path: 'mon-profil', component: UserProfileComponent},
+  {path: 'search', component: SearchResultsComponent},
 ];
 
 @NgModule({

@@ -12,6 +12,8 @@ import { PostViewerByIdComponent } from './annonces/post-viewer-by-id/post-viewe
 import { UserPostsComponent } from './user/user-posts/user-posts.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 import { DeleteAccountDialog } from './user/user-profile/user-profile.component';
+import { HttpAuthInterceptor } from './http-auth.interceptor';
+import { SearchResultsComponent } from './annonces/search-results/search-results.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -38,7 +40,7 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
-import { HttpAuthInterceptor } from './http-auth.interceptor';
+
 
 
 @NgModule({
@@ -54,6 +56,7 @@ import { HttpAuthInterceptor } from './http-auth.interceptor';
     UserPostsComponent,
     UserProfileComponent,
     DeleteAccountDialog,
+    SearchResultsComponent,
   ],
   imports: [
     BrowserModule,

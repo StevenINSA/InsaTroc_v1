@@ -17,6 +17,7 @@ export class PostViewerComponent implements OnInit {
   max = 300;
   selected=[];
   maxprice=0;
+  tri;
 
 
   AnnoncesV :PostModel[] = [{_id: null, title: "Vends un sac ", description: "je vends un sac pour venir sac si sac alors sac sac", category: ["Autres"], price: 50, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg','../../../assets/images/pileofcolorpencils.jpg'], date: new Date(), views: 30, username: "Pénélope"},
@@ -70,6 +71,7 @@ export class PostViewerComponent implements OnInit {
   pageChanged (event : PageEvent){
     console.log(event);
   }
+
   onDisplayPost(id){
     for (let k=0 ; k<this.Annonces.length;k++){
       if(id == this.Annonces[k]._id){
@@ -89,5 +91,72 @@ export class PostViewerComponent implements OnInit {
   }
   Filtrage(){
     this.annoncesFiltrees +=1;
+  }
+
+  Trier(){
+    if(this.tri=="prix-croissant"){
+      this.SortByIncreasingPrice();
+    }
+    if(this.tri=="prix-decroissant"){
+      this.SortByDecreasingPrice();
+    }
+    if(this.tri=="date"){
+      this.SortByDate();
+    }
+    if(this.tri=="populaire"){
+      this.SortByNbViews();
+    }
+  }
+
+  SortByIncreasingPrice(){
+    var annoncesTriees: PostModel[] = this.Annonces.sort((n1, n2) => {
+      if(n1.price > n2.price){
+        return 1;
+      }
+      if(n1.price < n2.price){
+        return -1;
+      }
+      return 0;
+    });
+    this.Annonces = annoncesTriees;
+  }
+
+  SortByDecreasingPrice(){
+    var annoncesTriees: PostModel[] = this.Annonces.sort((n1, n2) => {
+      if(n1.price < n2.price){
+        return 1;
+      }
+      if(n1.price > n2.price){
+        return -1;
+      }
+      return 0;
+    });
+    this.Annonces = annoncesTriees;
+  }
+
+  SortByDate(){
+    var annoncesTriees: PostModel[] = this.Annonces.sort((n1, n2) => {
+      if(n1.date < n2.date){
+        return 1;
+      }
+      if(n1.date > n2.date){
+        return -1;
+      }
+      return 0;
+    });
+    this.Annonces = annoncesTriees;
+  }
+
+  SortByNbViews(){
+    var annoncesTriees: PostModel[] = this.Annonces.sort((n1, n2) => {
+      if(n1.views < n2.views){
+        return 1;
+      }
+      if(n1.views > n2.views){
+        return -1;
+      }
+      return 0;
+    });
+    this.Annonces = annoncesTriees;
   }
 }

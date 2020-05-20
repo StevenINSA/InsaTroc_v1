@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { stringify } from 'querystring';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from "rxjs/";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -34,22 +35,56 @@ export class HttpService {
     );
   }
 
-  getPost2(id){
+  // Ne marche pas si on réactualise la page
+  // getPost2(id) : PostModel{
+  //   console.log(this.posts);
+  //   if(this.posts.length!=0){
+  //     for(let k =0; k<this.posts.length; k++){
+  //       if (id == this.posts[k]._id){
+  //         return this.posts[k];
+  //       }
+  //     }
+  //   }
+  //   else{
+  //     // return(this.getPost(id));
+
+  //     this.getPost(id).subscribe(
+  //       (response) => {console.log(response);
+  //                     return response;},
+  //       (error) => {console.log(error)}
+  //     );
+  //   }
+  // }
+
+  getPost3(id){
     console.log(this.posts);
-    for(let k =0; k<this.posts.length; k++){
-      if (id == this.posts[k]._id){
-        return this.posts[k];
+    if(this.posts.length!=0){
+      for(let k =0; k<this.posts.length; k++){
+        if (id == this.posts[k]._id){
+          const myObservable = new Observable((observer) => {
+            observer.next(this.posts[k])
+            observer.complete()
+          })
+          return myObservable;
+        }
       }
+    }
+    else{
+      return(this.getPost(id));
     }
   }
 
   getPost(id: number){
     //return this.http.get('https://api.openbrewerydb.org/breweries')
     // return this.http.get('http://localhost:3000/post_viewer');
-    this.http.get('http://localhost:3000/getPost/'+ id).subscribe(
-      (response) => {console.log(response)},
-      (error) => {console.log(error)},
-    );
+    // this.posts = [];
+    // this.http.get('http://localhost:3000/getPost/'+ id).subscribe(
+    //   (response) => {console.log(response);
+    //                   return(response)},
+    //   (error) => {console.log(error)
+    //               return error},
+    // );
+    return(this.http.get('http://localhost:3000/getPost/'+ id));
   }
 
   addPost(post:PostModel){
@@ -89,9 +124,33 @@ export class HttpService {
     return(this.posts);
   }
 
+  incrPostViews(bid:string){
+    this.http.patch<{response:string}>('http://localhost:3000/incrview',{id:bid}).subscribe(
+      (Resp)=>{
+        console.log(Resp);
+      }
+    )
+  }
+
   getUserPosts(){
     this.posts = [];
     this.http.get('http://localhost:3000/getUserPosts').subscribe(
+    (data)=>{
+      console.log("data");
+      console.log(data);
+      for(var i in data){
+        this.posts.push(data[i]);
+      }
+      console.log(this.posts);
+    })
+    return(this.posts);
+  }
+
+  getSearchResult(words){
+    console.log("getSearchResult");
+    console.log(words);
+    this.posts = [];
+    this.http.post('http://localhost:3000/search', {arg:words}).subscribe(
     (data)=>{
       console.log("data");
       console.log(data);

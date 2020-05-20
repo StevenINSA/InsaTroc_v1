@@ -1,7 +1,7 @@
 mat-sidenav-container {
 
     height: 100%;
-    
+
 
 }
 mat-sidenav, mat-sidenav-content {
@@ -18,4 +18,19 @@ mat-toolbar {
 }
 h1 {
     font: italic;
+}
+
+mat-form-field { /* Changes the input styling to just about nothing so that button styling can take over */
+  font-size: 15px;
+  /* height: 0px; */
+
+}
+
+
+/* ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: transparent !important;
+} */
+
+.mat-button {
+  padding: 0 30px; /* Changes position of dropdown icons */
 }
