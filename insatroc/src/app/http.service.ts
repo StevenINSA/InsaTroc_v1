@@ -63,11 +63,7 @@ export class HttpService {
       for(let k =0; k<this.posts.length; k++){
         if (id == this.posts[k]._id){
           console.log("blablabla");
-          const myObservable = new Observable((observer) => {
-            observer.next({"post": this.posts[k], "user": this.users});
-            observer.complete()
-          })
-          return myObservable;
+          return this.makeObservableFromPost(k);
         }
       }
     }
@@ -76,18 +72,22 @@ export class HttpService {
     }
   }
 
+  makeObservableFromPost(id){
+    var post = [];
+    post.push({"AnnounceID":this.posts[id]._id, "Titre":this.posts[id].title, "categoryids": this.posts[id].category, "Prix":this.posts[id].price, "Description": this.posts[id].description, "DateDePublication": this.posts[id].date, "NombreDeVues": this.posts[id].views, "Username": this.posts[id].username, "NumTelephone": this.users[id].numTel, "Adresse": this.users[id].contactInfo});
+    console.log("observable");
+    console.log(post);
+    const myObservable = new Observable((observer) => {
+      observer.next(post);
+      observer.complete()
+    })
+    return myObservable;
+  }
+
   getPost(id: number){
-    //return this.http.get('https://api.openbrewerydb.org/breweries')
-    // return this.http.get('http://localhost:3000/post_viewer');
-    // this.posts = [];
-    // this.http.get('http://localhost:3000/getPost/'+ id).subscribe(
-    //   (response) => {console.log(response);
-    //                   return(response)},
-    //   (error) => {console.log(error)
-    //               return error},
-    // );
     return(this.http.get('http://localhost:3000/getPost/'+ id));
   }
+
 
   addPost(post:PostModel){
     //requete post http vers backend pour stocker post dans BD

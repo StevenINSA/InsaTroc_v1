@@ -339,7 +339,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
 app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
   console.log("req.params :",req.params);
-  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
+  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
     if (err) throw err;
     var resultat=[];
     var categoryids=[];
@@ -684,9 +684,6 @@ app.post('/deleteUserAccount', (req, res, next) => {
   var password = req.body.password;
   console.log(userID);
   console.log(password);
-  // vérifier le mot de passe
-  // s'il est bon, supprimer le compte
-  // sinon, annuler
   con.query("SELECT Password FROM Student where StudentID = '"+userID+"'", function (err, result, fields){
     if (err) {
       throw err;
@@ -732,7 +729,7 @@ app.post('/deleteUserAccount', (req, res, next) => {
 });
 
 
-//requête pour modifier le password
+//requête pour modifier le mot de passe
 app.post('/modifyPassword', (req, res,next) =>{
   console.log("requête pour changer le password d'un utilisateur reçue :");
   var encryptedToken = req.get("Authorization");  // get authorization token from http header

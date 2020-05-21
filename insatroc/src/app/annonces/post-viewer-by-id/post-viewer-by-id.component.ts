@@ -26,13 +26,31 @@ export class PostViewerByIdComponent implements OnInit {
     //   this.httpService.incrPostViews(this.post._id);
     // })
 
+    // this.route.queryParams.subscribe(params => {
+    //   this.httpService.getPost3(params.bid).subscribe(
+    //     (response) => {console.log(response);
+    //                   var res = response as JSON;
+    //                   this.post = res['post'] as PostModel;
+    //                   this.user = res['user'];
+    //                 this.httpService.incrPostViews(this.post._id);},
+    //     (error) => {console.log(error)}
+    //   );
+    // })
+
     this.route.queryParams.subscribe(params => {
+      this.post = null;
+      this.user = null;
       this.httpService.getPost3(params.bid).subscribe(
-        (response) => {console.log(response);
-                      var res = response as JSON;
-                      this.post = res['post'] as PostModel;
-                      this.user = res['user'];
-                    this.httpService.incrPostViews(this.post._id);},
+        (data)=>{
+          console.log("data");
+          console.log(data);
+          var i = 0;
+          this.post = {_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username};
+          this.user = {"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone};
+          console.log(this.post);
+          console.log(this.user);
+          this.httpService.incrPostViews(this.post._id);
+        },
         (error) => {console.log(error)}
       );
     })
