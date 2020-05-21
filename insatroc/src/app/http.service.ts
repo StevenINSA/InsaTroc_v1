@@ -21,6 +21,7 @@ const httpOptions = {
 export class HttpService {
   private posts: PostModel[]= []
   public themeUpdater = new Subject<String>();
+  private users = [];
 
   constructor(private http: HttpClient, private router:Router) { }
 
@@ -61,11 +62,8 @@ export class HttpService {
     if(this.posts.length!=0){
       for(let k =0; k<this.posts.length; k++){
         if (id == this.posts[k]._id){
-          const myObservable = new Observable((observer) => {
-            observer.next(this.posts[k])
-            observer.complete()
-          })
-          return myObservable;
+          console.log("blablabla");
+          return this.makeObservableFromPost(k);
         }
       }
     }
@@ -74,18 +72,22 @@ export class HttpService {
     }
   }
 
+  makeObservableFromPost(id){
+    var post = [];
+    post.push({"AnnounceID":this.posts[id]._id, "Titre":this.posts[id].title, "categoryids": this.posts[id].category, "Prix":this.posts[id].price, "Description": this.posts[id].description, "DateDePublication": this.posts[id].date, "NombreDeVues": this.posts[id].views, "Username": this.posts[id].username, "NumTelephone": this.users[id].numTel, "Adresse": this.users[id].contactInfo});
+    console.log("observable");
+    console.log(post);
+    const myObservable = new Observable((observer) => {
+      observer.next(post);
+      observer.complete()
+    })
+    return myObservable;
+  }
+
   getPost(id: number){
-    //return this.http.get('https://api.openbrewerydb.org/breweries')
-    // return this.http.get('http://localhost:3000/post_viewer');
-    // this.posts = [];
-    // this.http.get('http://localhost:3000/getPost/'+ id).subscribe(
-    //   (response) => {console.log(response);
-    //                   return(response)},
-    //   (error) => {console.log(error)
-    //               return error},
-    // );
     return(this.http.get('http://localhost:3000/getPost/'+ id));
   }
+
 
   addPost(post:PostModel){
     //requete post http vers backend pour stocker post dans BD
@@ -112,16 +114,19 @@ export class HttpService {
     //requete get http vers backend pour récuperer les annonces depuis la BD
     // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
     this.posts = [];
+    this.users = [];
     this.http.get('http://localhost:3000/posts').subscribe(
     (data)=>{
       console.log("data");
       console.log(data);
       for(var i in data){
-        this.posts.push(data[i]);
+        this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
+        this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
       console.log(this.posts);
+      console.log(this.users);
     })
-    return(this.posts);
+    return({"posts": this.posts, "postUsers": this.users});
   }
 
   incrPostViews(bid:string){

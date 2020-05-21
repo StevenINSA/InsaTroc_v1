@@ -55,8 +55,8 @@ function attributeID(category){
 function attributeCategory(categoryID){
   var category = [];
 
-  // for(let i in categoryID){
-    switch (categoryID){
+  for(let i in categoryID){
+    switch (categoryID[i]){
       case 1:
       category.push("Chambre");
       break;
@@ -81,7 +81,7 @@ function attributeCategory(categoryID){
       category.push("Autre");
       break;
       }
-  // }
+  }
   return category;
 }
 
@@ -339,7 +339,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
 app.get('/getPost/:id', (req, res, next) => {
   console.log("id de l'annonce demandée : ", req.params.id);
   console.log("req.params :",req.params);
-  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
+  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
     if (err) throw err;
     var resultat=[];
     var categoryids=[];
@@ -353,10 +353,10 @@ app.get('/getPost/:id', (req, res, next) => {
                    "Prix" : result[i].Price,
                    "Description" : result[i].Description,
                    "StudentID" : result[i].StudentID,
-                   "Date de publication" : result[i].PublicationDate,
-                   "Nombre de vues" : result[i].NbViews,
+                   "DateDePublication" : result[i].PublicationDate,
+                   "NombreDeVues" : result[i].NbViews,
                    "Username" : result[i].Username,
-                   "N° de telephone" : result[i].TelephoneNumber,
+                   "NumTelephone" : result[i].TelephoneNumber,
                    "Image" : result[i].Image,
                    "Adresse" : result[i].Address,
                    "categoryids" : categoryids,
@@ -376,10 +376,10 @@ app.get('/getPost/:id', (req, res, next) => {
                      "Prix" : result[i].Price,
                      "Description" : result[i].Description,
                      "StudentID" : result[i].StudentID,
-                     "Date de publication" : result[i].PublicationDate,
-                     "Nombre de vues" : result[i].NbViews,
+                     "DateDePublication" : result[i].PublicationDate,
+                     "NombreDeVues" : result[i].NbViews,
                      "Username" : result[i].Username,
-                     "N° de telephone" : result[i].TelephoneNumber,
+                     "NumTelephone" : result[i].TelephoneNumber,
                      "Image" : result[i].Image,
                      "Adresse" : result[i].Address,
                      "categoryids" : categoryids,
@@ -387,7 +387,10 @@ app.get('/getPost/:id', (req, res, next) => {
         }
       }
     }
-    res.status(200).json({"annonces" : resultat});
+    for(let i=0; i<resultat.length; i++){
+      resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
+    }
+    res.status(200).json(resultat);
     console.log("resultat :", resultat);
   });
 });
@@ -413,10 +416,10 @@ app.get('/posts', (req, res, next) => {
                    "Prix" : result[i].Price,
                    "Description" : result[i].Description,
                    "StudentID" : result[i].StudentID,
-                   "Date de publication" : result[i].PublicationDate,
-                   "Nombre de vues" : result[i].NbViews,
+                   "DateDePublication" : result[i].PublicationDate,
+                   "NombreDeVues" : result[i].NbViews,
                    "Username" : result[i].Username,
-                   "N° de telephone" : result[i].TelephoneNumber,
+                   "NumTelephone" : result[i].TelephoneNumber,
                    "Image" : result[i].Image,
                    "Adresse" : result[i].Address,
                    "categoryids" : categoryids,
@@ -436,10 +439,10 @@ app.get('/posts', (req, res, next) => {
                      "Prix" : result[i].Price,
                      "Description" : result[i].Description,
                      "StudentID" : result[i].StudentID,
-                     "Date de publication" : result[i].PublicationDate,
-                     "Nombre de vues" : result[i].NbViews,
+                     "DateDePublication" : result[i].PublicationDate,
+                     "NombreDeVues" : result[i].NbViews,
                      "Username" : result[i].Username,
-                     "N° de telephone" : result[i].TelephoneNumber,
+                     "NumTelephone" : result[i].TelephoneNumber,
                      "Image" : result[i].Image,
                      "Adresse" : result[i].Address,
                      "categoryids" : categoryids,
@@ -447,7 +450,10 @@ app.get('/posts', (req, res, next) => {
         }
       }
     }
-    res.status(200).json({"annonces" : resultat});
+    for(let i=0; i<resultat.length; i++){
+      resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
+    }
+    res.status(200).json(resultat);
     console.log("resultat :", resultat);
   });
 });
@@ -484,20 +490,20 @@ app.post('/search', (req, res, next) => {
                           "Prix" : result[i].Price,
                           "Description" : result[i].Description,
                           "StudentID" : result[i].StudentID,
-                          "Date de publication" : result[i].PublicationDate,
-                          "Nombre de vues" : result[i].NbViews,
+                          "DateDePublication" : result[i].PublicationDate,
+                          "NombreDeVues" : result[i].NbViews,
                           "Username" : result[i].Username,
-                          "N° de telephone" : result[i].TelephoneNumber,
+                          "NNumTelephone" : result[i].TelephoneNumber,
                           "Image" : result[i].Image,
                           "Adresse" : result[i].Address,
                           "categoryids" : categoryids,
                               }
-              
+
 
               } else {
                   if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
                       resultat[j].categoryids.push(result[i].CategoryID)
-                  } else { 
+                  } else {
                       j+=1;
                       categoryids=[];
                       categoryids[0]=result[i].CategoryID;
@@ -506,10 +512,10 @@ app.post('/search', (req, res, next) => {
                                   "Prix" : result[i].Price,
                                   "Description" : result[i].Description,
                                   "StudentID" : result[i].StudentID,
-                                  "Date de publication" : result[i].PublicationDate,
-                                  "Nombre de vues" : result[i].NbViews,
+                                  "DateDePublication" : result[i].PublicationDate,
+                                  "NombreDeVues" : result[i].NbViews,
                                   "Username" : result[i].Username,
-                                  "N° de telephone" : result[i].TelephoneNumber,
+                                  "NumTelephone" : result[i].TelephoneNumber,
                                   "Image" : result[i].Image,
                                   "Adresse" : result[i].Address,
                                   "categoryids" : categoryids,
@@ -517,7 +523,10 @@ app.post('/search', (req, res, next) => {
                   }
               }
           }
-          res.status(200).json({"annonces" : resultat});
+          for(let i=0; i<resultat.length; i++){
+            resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
+          }
+          res.status(200).json(resultat);
           console.log("resultat :", resultat);
       });
   console.log(keywords);
@@ -548,6 +557,7 @@ app.get('/getUserInfo', (req, res, next) => {
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
   console.log("Requête des infos d'utilisateur reçue.");
+  console.log(userID);
   con.query("SELECT * FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields) {
     if (err) throw err;
     var user = {"first_name" : result[0].Surname,
@@ -674,9 +684,6 @@ app.post('/deleteUserAccount', (req, res, next) => {
   var password = req.body.password;
   console.log(userID);
   console.log(password);
-  // vérifier le mot de passe
-  // s'il est bon, supprimer le compte
-  // sinon, annuler
   con.query("SELECT Password FROM Student where StudentID = '"+userID+"'", function (err, result, fields){
     if (err) {
       throw err;
@@ -722,19 +729,22 @@ app.post('/deleteUserAccount', (req, res, next) => {
 });
 
 
-//requête pour modifier le password
+//requête pour modifier le mot de passe
 app.post('/modifyPassword', (req, res,next) =>{
   console.log("requête pour changer le password d'un utilisateur reçue :");
   var encryptedToken = req.get("Authorization");  // get authorization token from http header
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
 
+  console.log(req.body);
+  console.log(req.body.newPassword);
+
   con.query("SELECT Password FROM Student where StudentID = '"+userID+ "'",function (err, result, fields) {
       if (err) {
           throw err;
       } else {
           var Cequejveux = result[0].Password;
-          bcrypt.compare (req.params.oldPassword, Cequejveux, function(err, isMatch){
+          bcrypt.compare (req.body.oldPassword, Cequejveux, function(err, isMatch){
               if (err) {
                   throw err;
               } else if (!isMatch){
@@ -746,7 +756,7 @@ app.post('/modifyPassword', (req, res,next) =>{
                       if (err) {
                           throw err
                       } else {
-                          bcrypt.hash(req.params.newPassword, salt, function(err, hash) {
+                          bcrypt.hash(req.body.newPassword, salt, function(err, hash) {
                               if (err) {
                                   throw err
                               } else {
@@ -755,13 +765,14 @@ app.post('/modifyPassword', (req, res,next) =>{
                                       if(err){
                                           throw err;
                                       }
-                                  });  
+                                      res.status(200).json({"message": "Password successfully changed"});
+                                  });
                               }
-                          }) 
-                      }             
-                  });    
+                          })
+                      }
+                  });
               }
-          });   
+          });
       }
   });
 });

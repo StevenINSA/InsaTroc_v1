@@ -6,6 +6,8 @@ import { UserModel } from '../user_model';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
 import {Inject} from '@angular/core';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Router} from "@angular/router";
 
 export interface DialogData {
   password: string;
@@ -45,22 +47,18 @@ export class UserProfileComponent implements OnInit {
       // if(result!=undefined){
       //   this.authService.deleteAccount(result);
       // }
-
     });
   }
 
   openPasswordDialog(): void {
     const dialogRef = this.dialog.open(ChangePasswordDialog, {
       width: '250px',
-      data: {oldPassword: this.oldPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2}
+      data: {oldPassword: this.oldPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2},
+      panelClass: 'change-password-dialog'
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      // if(result!=undefined){
-      //   this.authService.deleteAccount(result);
-      // }
-
     });
   }
 
@@ -90,7 +88,6 @@ export class UserProfileComponent implements OnInit {
       password: new FormControl('', []),
     });
 
-    // this.form.disable();
 
     this.authService.getUserInfo().subscribe(
       (response) => { this.form.patchValue({
@@ -103,14 +100,6 @@ export class UserProfileComponent implements OnInit {
       })},
       (error) => {console.log(error)}
     );
-
-      // console.log(this.user.last_name);
-    // this.form.patchValue({
-    //   first_name: "Pénélope",
-    //   last_name: "Roullot"
-    // });
-
-    // this.form.disable();
   }
 
 }
@@ -124,12 +113,14 @@ export class UserProfileComponent implements OnInit {
 export class DeleteAccountDialog {
   hide = true;
   requiredError = false;
-  yes = false;
+  wrongPassword = false;
 
   constructor(
     public dialogRef: MatDialogRef<DeleteAccountDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public authService: AuthService) {}
+    public authService: AuthService,
+    public router: Router,
+    private _snackBar: MatSnackBar) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -138,15 +129,30 @@ export class DeleteAccountDialog {
   deleteAccount(password){
     console.log(password);
     if(password!=undefined){
-      this.authService.deleteAccount(password);
-      this.yes = true;
-
+      this.authService.deleteAccount(password).subscribe(
+        (response) => {console.log(response);
+                        this.authService.deleteUserInfo();
+                        this.router.navigate(['']);
+                        this.dialogRef.close();
+                        this._snackBar.open("Votre compte a bien été supprimé.","X", {duration: 3500});},
+        (error) => {console.log(error);
+                    if(error.error.message==("incorrect password")){
+                      this.wrongPassword = true;
+                    }},
+      );
     }
     else{this.requiredError=true; console.log(this.requiredError)}
   }
 
   closeDialog(){
     this.dialogRef.close();
+  }
+
+  disabled(){
+    if(this.data.password==undefined || this.data.password==''){
+      return true;
+    }
+    return false;
   }
 
 }
@@ -166,11 +172,13 @@ export class ChangePasswordDialog {
   hide1 = true;
   hide2 = true;
   hide3 = true;
+  wrongPassword = false;
 
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialog>,
     @Inject(MAT_DIALOG_DATA) public data: PasswordDialogData,
-    public authService: AuthService) {}
+    public authService: AuthService,
+    private _snackBar: MatSnackBar) {}
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -178,15 +186,46 @@ export class ChangePasswordDialog {
 
   changePassword(oldPassword, newPassword){
     console.log(oldPassword);
-    // if(password!=undefined){
-    //   this.authService.deleteAccount(password);
-    //   this.yes = true;
-    // }
-    // else{this.requiredError=true; console.log(this.requiredError)}
+    this.authService.changePassword(oldPassword, newPassword).subscribe(
+      (response) => {console.log(response);
+                    this.dialogRef.close();
+                    this._snackBar.open("Mot de passe changé avec succès","X", {duration: 2000});
+                  },
+      (error) => {console.log(error);
+                  if(error.error.message=="Incorrect Password"){
+                    this.wrongPassword = true;
+                  }},
+    );
   }
 
   closeDialog(){
     this.dialogRef.close();
+  }
+
+  disabled(){
+    if(this.data.oldPassword==undefined || this.data.oldPassword==''
+    || this.data.newPassword1==undefined || this.data.newPassword1==''
+    || this.data.newPassword2==undefined || this.data.newPassword2==''
+    || this.data.newPassword1!=this.data.newPassword2
+    || this.passwordValidator(this.data.newPassword1) || this.passwordValidator(this.data.newPassword2)){
+      return true;
+    }
+    return false;
+  }
+
+  passwordValidator(password: string){
+    if(password==undefined || password==''){
+      return null;
+    }
+    else if(password.length<5){
+      return "Doit contenir au moins 5 caractères";
+    }
+    else if(password.length>25){
+      return "Ne doit pas contenir plus de 25 caractères";
+    }
+    else{
+      return null;
+    }
   }
 
 }

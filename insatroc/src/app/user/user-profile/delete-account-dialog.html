@@ -14,7 +14,6 @@
 <div mat-dialog-actions>
   <p>Si vous confirmez, votre compte sera supprimé définitivement. Êtes-vous sûr de vouloir continuer ?</p>
   <button mat-button (click)="onNoClick()">Annuler</button>
-  <!-- <button mat-button [mat-dialog-close]="data.password" cdkFocusInitial>Supprimer mon compte</button> -->
-  <button mat-button (click)="deleteAccount(data.password)" cdkFocusInitial>Supprimer mon compte</button>
-  <p style="color: red" *ngIf="authService.isAuthenticated() && yes">La suppression de compte a échoué, veuillez réessayer.</p>
+  <button mat-button (click)="deleteAccount(data.password)" cdkFocusInitial [disabled]="disabled()">Supprimer mon compte</button>
+  <p style="color: red" *ngIf="wrongPassword">Mot de passe incorrect, la suppression de compte a échoué.</p>
 </div>
