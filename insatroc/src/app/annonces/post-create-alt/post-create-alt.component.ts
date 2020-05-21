@@ -6,7 +6,9 @@ import {HttpService} from '../../http.service';
 import {imageValidator} from './home-made.validator';
 import {Router} from "@angular/router";
 import {AuthService} from '../../auth.service';
-
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
+import {Inject} from '@angular/core';
 
 @Component({
   selector: 'app-post-create-alt',
@@ -15,7 +17,7 @@ import {AuthService} from '../../auth.service';
 })
 export class PostCreateAltComponent implements OnInit {
 
-  constructor(private _snackBar: MatSnackBar, private _formBuilder: FormBuilder,public httpService:HttpService,private router :Router, private authService: AuthService) { }
+  constructor(private _snackBar: MatSnackBar, private _formBuilder: FormBuilder,public httpService:HttpService,private router :Router, private authService: AuthService, public dialog: MatDialog) { }
   Announce : PostModel;
   Announces = [];
   free : Boolean = false;
@@ -28,6 +30,9 @@ export class PostCreateAltComponent implements OnInit {
 
 
   ngOnInit(): void {
+    if(!this.authService.checkUserContactInfo()){
+      this.openDialog();
+    }
     this.form = new FormGroup({
       title:new FormControl(null,{validators:[Validators.required, Validators.minLength(3)]}),
       category:new FormControl(null,{validators:[Validators.required]}),
@@ -39,7 +44,19 @@ export class PostCreateAltComponent implements OnInit {
     this.form2 = new FormGroup({
       image:new FormControl(null,{validators:[imageValidator]})
     })
+  }
 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(FillContactInfoDialog, {
+      width: '400px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      // if(result!=undefined){
+      //   this.authService.deleteAccount(result);
+      // }
+    });
   }
 
   HidePrice(){
@@ -117,6 +134,37 @@ export class PostCreateAltComponent implements OnInit {
     this.router.navigate(['']);
     this._snackBar.open("Annonce ajoutée !","X", {duration: 2000});
 
+  }
+
+}
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'fill-contact-info-dialog',
+  templateUrl: 'fill-contact-info-dialog.html',
+})
+export class FillContactInfoDialog {
+  hide = true;
+  requiredError = false;
+  wrongPassword = false;
+
+  constructor(
+    public dialogRef: MatDialogRef<FillContactInfoDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: FillContactInfoDialog,
+    public authService: AuthService,
+    public router: Router,
+    private _snackBar: MatSnackBar) {}
+
+  FillContactInfo(): void {
+    this.router.navigate(['mon-profil']);
+    this.dialogRef.close();
   }
 
 }

@@ -78,6 +78,17 @@ export class AuthService {
     return this.http.get('http://localhost:3000/getUserInfo');
   }
 
+  // vérifier si un utilisateur a rempli ses infos de contact
+  public checkUserContactInfo() : boolean{
+    console.log("checkUserInfo");
+    this.http.get('http://localhost:3000/checkUserContactInfo').subscribe(
+      (response)=>{return true;},
+      (error)=>{console.log(error);
+                return false;}
+    )
+    return true;
+  }
+
   // se connecter
   public validate(email, password) {
     this.http.post<{token:string,username:string}>('http://localhost:3000/authenticate', {'email' : email, 'password' : password}).subscribe(
