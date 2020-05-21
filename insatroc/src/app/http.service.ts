@@ -103,6 +103,7 @@ export class HttpService {
         // var postID = response.postID;
         this.router.navigate(['/annonce'],{queryParams:{bid:response['postID'] as string}});
         this.posts.push({_id: response['postID'], title: post.title, description: post.description, category: post.category, price: post.price, urls: post.urls, date: post.date, views: post.views, username: post.username});
+        this.users.push({"contactInfo": response['contact'], "numTel": response['phoneNb']});
       },
       (error) => {console.log(error)},
       // rediriger vers "/annonce/:id", id "étant l'ID de l'annonce qui est renvoyé par le serveur une fois qu'il l'a mise dans la DB"
@@ -144,9 +145,11 @@ export class HttpService {
       console.log("data");
       console.log(data);
       for(var i in data){
-        this.posts.push(data[i]);
+        this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
+        this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
       console.log(this.posts);
+      console.log(this.users);
     })
     return(this.posts);
   }
