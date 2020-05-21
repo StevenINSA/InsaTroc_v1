@@ -3,17 +3,18 @@
 
 // $my-app-primary : mat-palette($mat-red,A400);
 $my-app-primary : mat-palette($mat-light-blue,900);
-$my-app-accent: mat-palette($mat-red,500, A100, A400);
+$my-app-warn: mat-palette($mat-red,A400, A100, A400);
+$my-app-accent: mat-palette($mat-green);
 
-$my-app-theme: mat-light-theme($my-app-primary,$my-app-accent);
+$my-app-theme: mat-light-theme($my-app-primary,$my-app-accent, $my-app-warn);
 //.main {
 //    @include angular-material-theme($my-app-theme);
 //}
 @include angular-material-theme($my-app-theme);
 
 $dark-primary: mat-palette($mat-blue-grey);
-$dark-accent:  mat-palette($mat-red, 500, A100, A400);
-$dark-warn:    mat-palette($mat-deep-orange);
+$dark-warn:  mat-palette($mat-red, A400, A100, A400);
+$dark-accent:    mat-palette($mat-green);
 $dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 

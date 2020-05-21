@@ -1,0 +1,8 @@
+<div mat-dialog-content>
+  <p>Si vous confirmez, cette annonce sera supprimée définitivement.</p>
+  <p>Êtes-vous sûr·e de vouloir continuer ?</p>
+</div>
+<div >
+  <button mat-button color="warn" (click)="onNoClick()">Annuler</button>
+  <button mat-button color="warn" (click)="DeletePost(data.postID)" cdkFocusInitial>Supprimer mon annonce</button>
+</div>

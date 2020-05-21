@@ -38,7 +38,7 @@ export class UserProfileComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DeleteAccountDialog, {
-      width: '250px',
+      width: '400px',
       data: {password: this.password}
     });
 
@@ -52,7 +52,7 @@ export class UserProfileComponent implements OnInit {
 
   openPasswordDialog(): void {
     const dialogRef = this.dialog.open(ChangePasswordDialog, {
-      width: '250px',
+      width: '350px',
       data: {oldPassword: this.oldPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2},
       panelClass: 'change-password-dialog'
     });

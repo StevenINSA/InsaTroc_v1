@@ -537,6 +537,25 @@ app.post('/search', (req, res, next) => {
   });
 });
 
+app.post('/deletePost/', (req, res, next) => {
+  console.log("requête pour supprimer une annonce reçue");
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var userID = decodedToken.userID; // get userID from token payload
+  con.query("SELECT StudentID FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+    if(err) throw err;
+    if(userID == result[0].StudentID){ // vérifier que le username de l'en-tête http et de l'annonce sont identiques
+      con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+        if(err) throw err;
+          con.query("DELETE FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+            if(err) throw err;
+            res.status(200).json({"message" : "annonce supprimée"});
+          })
+      })
+    }
+  });
+})
+
 // requête http PATCH pour incrémenter le nombre de vues d'une annonce
 app.patch('/incrview', (req, res, next) => {
   console.log("requête pour incrémenter le nombre de vues");
@@ -716,14 +735,14 @@ app.post('/deleteUserAccount', (req, res, next) => {
                 if(err) throw err;
               });
             }
-              con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
+            con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
+              if(err) throw err;
+              con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
                 if(err) throw err;
-                con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
-                  if(err) throw err;
-                  res.status(200).json({"message": "account was deleted"});
-                  console.log("account was deleted");
-                });
+                res.status(200).json({"message": "account was deleted"});
+                console.log("account was deleted");
               });
+            });
           });
         }
       })

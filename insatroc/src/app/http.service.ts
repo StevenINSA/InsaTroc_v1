@@ -6,6 +6,7 @@ import { stringify } from 'querystring';
 import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from "rxjs/";
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -23,7 +24,7 @@ export class HttpService {
   public themeUpdater = new Subject<String>();
   private users = [];
 
-  constructor(private http: HttpClient, private router:Router) { }
+  constructor(private http: HttpClient, private router:Router, private _snackBar: MatSnackBar) { }
 
   myMethod(){
     this.http.get<{response:string}>('http://localhost:3000/').subscribe(
@@ -163,6 +164,16 @@ export class HttpService {
       console.log(this.users);
     })
     return({"posts": this.posts, "postUsers": this.users});
+  }
+
+  deletePost(postID){
+    console.log(postID);
+    this.http.post('http://localhost:3000/deletePost', {postID:postID}).subscribe(
+      (response) => {console.log(response);
+                    this.router.navigate(['mes-annonces']);
+                    this._snackBar.open("Annonce supprimée","X", {duration: 2000});},
+      (error) => {console.log(error)},
+    );
   }
 
   onThemeUpdate(){

@@ -39,21 +39,38 @@
     <br>
 
   </div>
-<br>
-
+  <br>
 
   <mat-divider></mat-divider>
   <br>
+
   <h3>Contacter l'annonceur :</h3>
   <mat-card-header>
-    <div mat-card-avatar class="example-header-image"></div>
+    <div mat-card-avatar class="example-header-image"  [ngStyle]="{'color': userColor}" >
+      <mat-icon style="transform: scale(2);">account_circle</mat-icon>
+    </div>
     <mat-card-title>{{post.username}}</mat-card-title>
     <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
   </mat-card-header>
+  <br>
+  <mat-card-content>
+    <div *ngIf="user.numTel">
+      <span>Numéro de téléphone : </span>
+      <span>{{user.numTel}}</span>
+    </div>
+    <div *ngIf="user.contactInfo">
+      <span>{{user.contactInfo}}</span>
+    </div>
+  </mat-card-content>
+
+  <mat-divider></mat-divider>
+  <br>
 
   <mat-card-actions>
-    <div class="container">
-      <button mat-raised-button  color="primary">Contacter</button>
+    <div class="container" *ngIf="post.username==authService.getUsername()">
+      <button mat-raised-button (click)="openDialog()" color="warn">Supprimer mon annonce</button>
     </div>
   </mat-card-actions>
+  <br>
+
 </mat-card>
