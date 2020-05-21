@@ -26,13 +26,9 @@ export class HttpService {
   constructor(private http: HttpClient, private router:Router) { }
 
   myMethod(){
-    console.log('Hey, what\'s up?');
-    // this.http.get('http://localhost:3000');
     this.http.get<{response:string}>('http://localhost:3000/').subscribe(
       (response) => { console.log(response)},
       (error) => {console.log(error)},
-      // rediriger vers "/annonce/:id", id "étant l'ID de l'annonce qui est renvoyé par le serveur une fois qu'il l'a mise dans la DB"
-
     );
   }
 
@@ -57,6 +53,7 @@ export class HttpService {
   //   }
   // }
 
+  // Requête pour afficher une annonce spécifique
   getPost3(id){
     console.log(this.posts);
     if(this.posts.length!=0){
@@ -84,33 +81,25 @@ export class HttpService {
     return myObservable;
   }
 
+// Requête pour afficher une annonce spécifique
   getPost(id: number){
     return(this.http.get('http://localhost:3000/getPost/'+ id));
   }
 
-
+// Requête pour ajouter une annonce
   addPost(post:PostModel){
-    //requete post http vers backend pour stocker post dans BD
-    // this.posts.push(post);
-    // let headers = new HttpHeaders({
-    //   'permission':localStorage.getItem('token')
-    // });
-    // let options = {headers: headers};
     console.log(post);
-    // this.http.post('http://localhost:3000/addPost',post,options).subscribe(
     this.http.post('http://localhost:3000/addPost',post).subscribe(
       (response) => { console.log(response)
-        // var postID = response.postID;
         this.router.navigate(['/annonce'],{queryParams:{bid:response['postID'] as string}});
         this.posts.push({_id: response['postID'], title: post.title, description: post.description, category: post.category, price: post.price, urls: post.urls, date: post.date, views: post.views, username: post.username});
         this.users.push({"contactInfo": response['contact'], "numTel": response['phoneNb']});
       },
       (error) => {console.log(error)},
-      // rediriger vers "/annonce/:id", id "étant l'ID de l'annonce qui est renvoyé par le serveur une fois qu'il l'a mise dans la DB"
     );
-    // console.log(this.posts.length);
   }
 
+// Requête pour afficher toutes les annonces
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
     // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
@@ -130,6 +119,7 @@ export class HttpService {
     return({"posts": this.posts, "postUsers": this.users});
   }
 
+// Incrémentation du nombre de vues d'une annonce quand un utilisateur clique dessus
   incrPostViews(bid:string){
     this.http.patch<{response:string}>('http://localhost:3000/incrview',{id:bid}).subscribe(
       (Resp)=>{
@@ -138,6 +128,7 @@ export class HttpService {
     )
   }
 
+// Requête pour récupérer toutes les annonces d'un utilisateur
   getUserPosts(){
     this.posts = [];
     this.http.get('http://localhost:3000/getUserPosts').subscribe(
@@ -154,22 +145,25 @@ export class HttpService {
     return(this.posts);
   }
 
+// Requête pour rechercher une annonce par mot-clé
   getSearchResult(words){
     console.log("getSearchResult");
     console.log(words);
     this.posts = [];
+    this.users = [];
     this.http.post('http://localhost:3000/search', {arg:words}).subscribe(
     (data)=>{
       console.log("data");
       console.log(data);
       for(var i in data){
-        this.posts.push(data[i]);
+        this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
+        this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
       console.log(this.posts);
+      console.log(this.users);
     })
-    return(this.posts);
+    return({"posts": this.posts, "postUsers": this.users});
   }
-
 
   onThemeUpdate(){
     return(this.themeUpdater.asObservable())
@@ -178,37 +172,4 @@ export class HttpService {
     this.themeUpdater.next(theme)
 
   }
-
-  // attributeCategory(categoryID: number){
-  //   var category = [];
-
-  //   // for(let i in categoryID){
-  //     switch (categoryID){
-  //       case 1:
-  //       category.push("Chambre");
-  //       break;
-
-  //       case 2:
-  //       category.push("Cuisine");
-  //       break;
-
-  //       case 3:
-  //       category.push("Salle de bain");
-  //       break;
-
-  //       case 4:
-  //       category.push("Bureau");
-  //       break;
-
-  //       case 5:
-  //       category.push("Loisirs/Sport");
-  //       break;
-
-  //       case 6:
-  //       category.push("Autre");
-  //       break;
-  //       }
-  //   // }
-  //   return category;
-  // }
 }

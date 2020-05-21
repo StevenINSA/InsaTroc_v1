@@ -26,27 +26,27 @@ function attributeID(category){
   var categoryID;
 
   switch (category){
-    case "Chambre":
+    case " Chambre":
     categoryID = 1;
     break;
 
-    case "Cuisine":
+    case " Cuisine":
     categoryID = 2;
     break;
 
-    case "Salle de bain":
+    case " Salle de bain":
     categoryID = 3;
     break;
 
-    case "Bureau":
+    case " Bureau":
     categoryID = 4;
     break;
 
-    case "Loisirs/Sport":
+    case " Loisirs/Sport":
     categoryID = 5;
     break;
 
-    case "Autre":
+    case " Autre":
     categoryID = 6;
     break;
     }
@@ -58,27 +58,27 @@ function attributeCategory(categoryID){
   for(let i in categoryID){
     switch (categoryID[i]){
       case 1:
-      category.push("Chambre");
+      category.push(" Chambre");
       break;
 
       case 2:
-      category.push("Cuisine");
+      category.push(" Cuisine");
       break;
 
       case 3:
-      category.push("Salle de bain");
+      category.push(" Salle de bain");
       break;
 
       case 4:
-      category.push("Bureau");
+      category.push(" Bureau");
       break;
 
       case 5:
-      category.push("Loisirs/Sport");
+      category.push(" Loisirs/Sport");
       break;
 
       case 6:
-      category.push("Autre");
+      category.push(" Autre");
       break;
       }
   }

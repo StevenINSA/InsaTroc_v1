@@ -4,9 +4,8 @@ BD :
 Back :
 - modifyUserInfo : ne marche pas, trouver pourquoi
 - search : faire la requête pour la BD
+- incrémenter nombre de vues
 
 Front :
 - supprimer une de ses annonces
-- html de Rechercher
-- Filtrer par catégorie
 - Forcer à remplir contact info quand on veut déposer une annonce
