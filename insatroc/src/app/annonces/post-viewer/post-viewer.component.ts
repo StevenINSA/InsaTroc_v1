@@ -41,8 +41,7 @@ export class PostViewerComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.selected)
     console.log(this.maxprice)
-    this.Annonces = this.httpservice.getAllPosts();
-    console.log(this.Annonces);
+    this.Annonces = this.httpservice.getAllPosts().posts;
   }
 
   AddAnnounce(annonce : PostModel){}

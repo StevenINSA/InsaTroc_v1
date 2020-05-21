@@ -68,10 +68,17 @@ export class AuthService {
     }
   }
 
+
+/*********************************************************************
+*                    REQUÊTES POUR LE BACKEND                        *
+*********************************************************************/
+
+  // récupérer les infos d'un utilisateur
   public getUserInfo(){
     return this.http.get('http://localhost:3000/getUserInfo');
   }
 
+  // se connecter
   public validate(email, password) {
     this.http.post<{token:string,username:string}>('http://localhost:3000/authenticate', {'email' : email, 'password' : password}).subscribe(
       (response)=>{
@@ -87,13 +94,16 @@ export class AuthService {
     )
   }
 
+  // se créer un compte
   public register(firstname, lastname, username, email, password){
     this.deleteUserInfo();
     this.http.post<{token:string,username:string}>('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password}).subscribe(
       (response)=>{
         console.log(response);
         this.setUserInfo(response.token,response.username);
+        this.isAuhenticated2();
         this.router.navigate(['mon-profil']);
+        this.setTimer(this.timeLeft());
       },
       (error)=>{
         console.log("error register:"+error);
@@ -121,6 +131,7 @@ console.log(error.error.message);
     );
   }
 
+  // modifier les infos d'un utilisateur
   public modifyUserInfo(firstname, lastname, username, email, password){
     // this.deleteUserInfo();
 
@@ -132,20 +143,32 @@ console.log(error.error.message);
     );
   }
 
+  // se déconnecter
   public logout(){
     return this.http.get('http://localhost:3000/logout/');
   }
 
+  // supprimer son compte
   public deleteAccount(password){
-    this.http.post('http://localhost:3000/deleteUserAccount', {'password' : password}).subscribe(
-      (response) => {console.log(response);
-                      this.deleteUserInfo();
-                      this.router.navigate(['']);
-                      this.dialog.closeAll()},
-      (error) => {console.log(error);},
-    );
+    return (this.http.post('http://localhost:3000/deleteUserAccount', {'password' : password}));
+    // this.http.post('http://localhost:3000/deleteUserAccount', {'password' : password}).subscribe(
+    //   (response) => {console.log(response);
+    //                   this.deleteUserInfo();
+    //                   this.router.navigate(['']);
+    //                   this.dialog.closeAll()},
+    //   (error) => {console.log(error);},
+    // );
   }
 
+  // modifier son mot de passe
+  public changePassword(oldPassword, newPassword){
+    return (this.http.post('http://localhost:3000/modifyPassword', {"oldPassword": oldPassword, "newPassword": newPassword}));
+  }
+
+
+/*********************************************************************
+*               Authentication and Token Management                  *
+*********************************************************************/
   //handling the token
   private getTokenData(token:string,choice:number){
     const decodedtok = JSON.parse(atob(token.split('.')[1]));
@@ -186,7 +209,8 @@ console.log(error.error.message);
       console.log("expired");
     },time)
 
-    }
+  }
+
   public disconnect(){
     this.authStatus=false;
   }
