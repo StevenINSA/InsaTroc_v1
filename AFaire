@@ -5,6 +5,3 @@ Back :
 - modifyUserInfo : ne marche pas, trouver pourquoi
 - search : faire la requête pour la BD
 - incrémenter nombre de vues
-
-Front :
-- Forcer à remplir contact info quand on veut déposer une annonce
