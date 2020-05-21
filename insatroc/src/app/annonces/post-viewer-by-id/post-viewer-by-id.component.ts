@@ -12,6 +12,7 @@ export class PostViewerByIdComponent implements OnInit {
   free: boolean;
   slideIndex = 0;
   post : PostModel;
+  user;
 
   constructor(public httpService:HttpService,private router :Router, private route: ActivatedRoute) { }
 
@@ -28,7 +29,9 @@ export class PostViewerByIdComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.httpService.getPost3(params.bid).subscribe(
         (response) => {console.log(response);
-                      this.post = response as PostModel;
+                      var res = response as JSON;
+                      this.post = res['post'] as PostModel;
+                      this.user = res['user'];
                     this.httpService.incrPostViews(this.post._id);},
         (error) => {console.log(error)}
       );

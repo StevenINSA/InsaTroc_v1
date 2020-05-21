@@ -27,6 +27,28 @@ mat-card {
   width: 100%;
 }
 
-.password-field{
+/* .password-field{
   color: green;
+  background-color: rgb(208, 255, 215);
 }
+
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label .password-field{
+  color: green !important;
+  background-color: rgb(208, 255, 215);
+}
+
+::ng-deep .mat-focused .mat-form-field-underline .mat-form-field-ripple{
+  background-color: green !important;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label .password-field{
+  color: green !important;
+}
+
+.change-password-dialog {
+  font-size: 16px;
+  color: blue;
+  background-color: burlywood;
+  border: solid 1px #c0c0ff;
+} */
