@@ -2,14 +2,9 @@ BD :
 - stocker des images, tester si ça marche
 
 Back :
-- getAllPosts :
-renvoyer aussi un array avec les ID de catégories (en allant chercher dans la table AnnounceCategory)
-- getAllPosts : renvoyer le username de chaque annonce (en cours)
 - modifyUserInfo : ne marche pas, trouver pourquoi
-- deleteUserAccount : problème : SQL empêche de supprimer son compte si on a déposé des annonces parce que le StudentID est une clé étrangère dans la table Announce, et si on essaie de supprimer les annonces correspondantes, il ne veut pas non plus parce que CategoryID est une clé étrangère pour la table AnnounceCategories ("Cannot delete or update a parent row: a foreign key constraint fails")
 - search : faire la requête pour la BD
+- incrémenter nombre de vues
 
 Front :
-- supprimer une de ses annonces
-- html de Rechercher
-- Filtrer par catégorie
+- Forcer à remplir contact info quand on veut déposer une annonce

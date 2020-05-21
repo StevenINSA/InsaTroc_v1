@@ -27,12 +27,12 @@
               <mat-label>Catégorie</mat-label>
               <mat-select matNativeControl name="category" required  formControlName="category" [(value)]="selected" multiple>
                 <mat-select-trigger>{{selected}}</mat-select-trigger>
-                <mat-option value="Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
-                <mat-option value="Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
-                <mat-option value="Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
-                <mat-option value="Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
-                <mat-option value="Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
-                <mat-option value="Autre"><mat-icon>category</mat-icon>Autre</mat-option>
+                <mat-option value=" Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
+                <mat-option value=" Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
+                <mat-option value=" Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
+                <mat-option value=" Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
+                <mat-option value=" Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
+                <mat-option value=" Autre"><mat-icon>category</mat-icon>Autre</mat-option>
               </mat-select>
               <mat-error *ngIf="form.get('category').invalid">Veuillez choisir une catégorie</mat-error>
             </mat-form-field>

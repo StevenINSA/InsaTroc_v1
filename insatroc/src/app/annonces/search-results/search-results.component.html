@@ -1,1 +1,118 @@
-<p>search-results works!</p>
+<mat-sidenav-container>
+  <!-- Side Drawer with Filter and Ordering options -->
+  <mat-sidenav #sidenav mode="side" (opened)="log('Opened')" (closed)="log('Closed')">
+
+    <mat-nav-list>
+      <span>Trier par</span>
+      <mat-form-field appearance="standard">
+        <mat-select placeholder="Choisir" name="category" size="1" ngModel [(value)]="tri" (selectionChange)="Trier()">
+          <mat-option></mat-option>
+          <mat-option value="populaire">Popularité</mat-option>
+          <mat-option value="prix-croissant">Prix croissant</mat-option>
+          <mat-option value="prix-decroissant">Prix décroissant</mat-option>
+          <mat-option value="date">Date (plus récent)</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br>
+      <span>Filtrer par</span>
+      <mat-form-field appearance="standard">
+        <mat-select placeholder="Catégorie" name="category" size="1" ngModel [(value)]="selected" multiple>
+          <mat-select-trigger>{{selected}}</mat-select-trigger>
+          <mat-option value="Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
+          <mat-option value="Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
+          <mat-option value="Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
+          <mat-option value="Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
+          <mat-option value="Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
+          <mat-option value="Autre"><mat-icon>category</mat-icon>Autre</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="standard">
+        <mat-label>Prix maximum</mat-label>
+        <input matInput type="number" [(ngModel)]="maxprice">
+      </mat-form-field>
+      <br>
+      <span>{{min}}      </span>
+      <mat-slider
+        class="example-margin"
+        [max]="max"
+        [min]="min"
+        [step]=1
+        [thumbLabel]=1
+        [(ngModel)]="maxprice">
+      </mat-slider>
+      <span>{{max}}</span>
+    </mat-nav-list>
+
+  </mat-sidenav>
+
+<!-- Actual page with all the posts -->
+  <mat-sidenav-content>
+
+    <!-- Toolbar -->
+    <mat-toolbar color="disabled">
+      <button mat-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+      </button>
+      <h2>Toutes les annonces</h2>
+      <span class="fill-remaining-space"></span>
+      <!-- <span style="font-size:medium;" *ngIf="annoncesFiltrees<=1; else elseBlock">
+        {{annoncesFiltrees}} annonce trouvée</span>
+        <ng-template #elseBlock>{{annoncesFiltrees}} annonces trouvées</ng-template> -->
+      <span style="font-size:medium;">{{annoncesFiltrees}} annonces trouvées</span>
+    </mat-toolbar>
+
+    <!-- Posts -->
+    <ng-container *ngFor="let annonce of Annonces ; let i = index">
+      <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" >
+          {{Filtrage()}}
+          {{Trier()}}
+        <mat-card-header style="float:left;">
+            <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
+            <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
+
+        </mat-card-header>
+        <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
+        <!-- <mat-card-content class="sliderr">
+        <img mat-card-image class='image{{i}} ' id={{i}}  src={{annonce.urls[0]}}>
+        <button class="prev" mat-stroked-button (click)="slideIt(i,2)">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+          </button>
+        <button class="next" mat-stroked-button color="primary" (click)="slideIt(i,1)">
+          <mat-icon>keyboard_arrow_right</mat-icon>
+          </button>
+        </mat-card-content> -->
+        <mat-card-content>
+        <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
+      </mat-card-content>
+
+        <br>
+        <mat-card-content>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>Description</mat-expansion-panel-header>
+                <p>
+                    {{annonce.description}}
+                </p>
+
+            </mat-expansion-panel>
+
+            <br>
+            <span class="date" >
+              <!-- <mat-icon>touch_app</mat-icon> -->
+              {{annonce.date | date:'dd/MM/yyyy'}}
+            </span>
+            <span class="views">
+              <!-- <mat-icon>touch_app</mat-icon> -->
+              {{annonce.views}} vues
+            </span>
+            <br>
+
+        </mat-card-content>
+      </mat-card>
+
+    </ng-container>
+    <mat-paginator [length]="npages" [pageSize]="pPerPages" (page)="pageChanged($event)"></mat-paginator>
+    {{ResetFiltrage()}}
+    <p class="Nocontent" *ngIf="Annonces.length==0">Rien à signaler</p>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

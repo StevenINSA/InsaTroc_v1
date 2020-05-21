@@ -15,6 +15,8 @@ import { DeleteAccountDialog } from './user/user-profile/user-profile.component'
 import { ChangePasswordDialog} from './user/user-profile/user-profile.component';
 import { HttpAuthInterceptor } from './http-auth.interceptor';
 import { SearchResultsComponent } from './annonces/search-results/search-results.component';
+import { DeletePostDialog } from './annonces/post-viewer-by-id/post-viewer-by-id.component';
+import { FillContactInfoDialog } from './annonces/post-create-alt/post-create-alt.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -59,6 +61,8 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
     DeleteAccountDialog,
     SearchResultsComponent,
     ChangePasswordDialog,
+    DeletePostDialog,
+    FillContactInfoDialog,
   ],
   imports: [
     BrowserModule,
@@ -91,6 +95,8 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
   entryComponents: [
     DeleteAccountDialog,
     ChangePasswordDialog,
+    DeletePostDialog,
+    FillContactInfoDialog,
   ],
   providers: [
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},

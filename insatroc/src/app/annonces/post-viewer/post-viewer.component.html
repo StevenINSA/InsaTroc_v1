@@ -6,7 +6,6 @@
       <span>Trier par</span>
       <mat-form-field appearance="standard">
         <mat-select placeholder="Choisir" name="category" size="1" ngModel [(value)]="tri" (selectionChange)="Trier()">
-          <mat-option></mat-option>
           <mat-option value="populaire">Popularité</mat-option>
           <mat-option value="prix-croissant">Prix croissant</mat-option>
           <mat-option value="prix-decroissant">Prix décroissant</mat-option>
@@ -65,6 +64,7 @@
     <ng-container *ngFor="let annonce of Annonces ; let i = index">
       <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" >
           {{Filtrage()}}
+          {{Trier()}}
         <mat-card-header style="float:left;">
             <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
             <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
@@ -84,7 +84,7 @@
         <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
       </mat-card-content>
 
-
+<br>
         <mat-card-content>
             <mat-expansion-panel>
                 <mat-expansion-panel-header>Description</mat-expansion-panel-header>
@@ -97,7 +97,7 @@
             <br>
             <span class="date" >
               <!-- <mat-icon>touch_app</mat-icon> -->
-              {{annonce.date | date:'medium'}}
+              {{annonce.date | date:'dd/MM/yyyy'}}
             </span>
             <span class="views">
               <!-- <mat-icon>touch_app</mat-icon> -->

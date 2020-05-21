@@ -1,0 +1,97 @@
+mat-sidenav-container {
+  background: url('../../../assets/images/coloredpencils.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100vh;
+  height: 100%;
+
+}
+mat-sidenav, mat-sidenav-content {
+  padding-left: 2%;
+}
+mat-sidenav {
+  background-color: rgb(255, 220, 106);
+  width: 20%;
+}
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  right: 0;
+  left: 0;
+}
+
+.fill-remaining-space {
+  /* This fills the remaining space, by using flexbox.
+     Every toolbar row uses a flexbox row layout. */
+  flex: 1 1 auto;
+}
+
+mat-card {
+  margin-top: 3%;
+  position: relative;
+  width: 50%;
+  margin-left: 24%;
+}
+
+.views{
+  margin-right: auto;
+  float: right;
+  color: #0097A7;
+}
+
+.date{
+  margin-left: auto;
+  float: left;
+  color: rgb(8, 40, 90);
+}
+
+mat-card-title.cardlink:hover{
+  cursor: hand;
+  cursor: pointer;
+  color: rgb(111, 0, 255);
+}
+.image {
+
+  max-height: 90%;
+}
+
+.container {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.Nocontent {
+  color: red;
+  text-align: center;
+
+}
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  margin-top: -22px;
+  padding: 16px;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+.sliderr {
+  max-width: 1000px;
+  position: relative;
+  margin: auto;
+}
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+.prev {
+  left: 0;
+  border-radius: 3px 0 0 3px;
+}

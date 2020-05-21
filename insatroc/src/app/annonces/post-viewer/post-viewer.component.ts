@@ -17,8 +17,7 @@ export class PostViewerComponent implements OnInit {
   max = 300;
   selected=[];
   maxprice=0;
-  tri;
-
+  tri = "populaire";
 
   AnnoncesV :PostModel[] = [{_id: null, title: "Vends un sac ", description: "je vends un sac pour venir sac si sac alors sac sac", category: ["Autres"], price: 50, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg','../../../assets/images/pileofcolorpencils.jpg'], date: new Date(), views: 30, username: "Pénélope"},
                            {_id: null, title: "Vends un sac de couchage ", description: "je vends un sac de couchage , trs inconfortable mais c'est mieux que rien", category: ["Loisirs/Sport", "Bureau"], price: 10, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg'], date: new Date(), views: 15, username: "user1"}
@@ -67,6 +66,7 @@ export class PostViewerComponent implements OnInit {
     }
 
   }
+
   pageChanged (event : PageEvent){
     console.log(event);
   }
@@ -79,7 +79,6 @@ export class PostViewerComponent implements OnInit {
       }
     }
   }
-
 
   PostInFilteredCategory(annonce: PostModel){
     return(this.selected.some((val) => annonce.category.includes(val)));

@@ -26,27 +26,27 @@ function attributeID(category){
   var categoryID;
 
   switch (category){
-    case "Chambre":
+    case " Chambre":
     categoryID = 1;
     break;
 
-    case "Cuisine":
+    case " Cuisine":
     categoryID = 2;
     break;
 
-    case "Salle de bain":
+    case " Salle de bain":
     categoryID = 3;
     break;
 
-    case "Bureau":
+    case " Bureau":
     categoryID = 4;
     break;
 
-    case "Loisirs/Sport":
+    case " Loisirs/Sport":
     categoryID = 5;
     break;
 
-    case "Autre":
+    case " Autre":
     categoryID = 6;
     break;
     }
@@ -58,27 +58,27 @@ function attributeCategory(categoryID){
   for(let i in categoryID){
     switch (categoryID[i]){
       case 1:
-      category.push("Chambre");
+      category.push(" Chambre");
       break;
 
       case 2:
-      category.push("Cuisine");
+      category.push(" Cuisine");
       break;
 
       case 3:
-      category.push("Salle de bain");
+      category.push(" Salle de bain");
       break;
 
       case 4:
-      category.push("Bureau");
+      category.push(" Bureau");
       break;
 
       case 5:
-      category.push("Loisirs/Sport");
+      category.push(" Loisirs/Sport");
       break;
 
       case 6:
-      category.push("Autre");
+      category.push(" Autre");
       break;
       }
   }
@@ -312,16 +312,17 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les erreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-  con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
+  // con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
+  con.query("SELECT * FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
     if(err) throw err;
+    var studentPhoneNb = result.TelephoneNumber;
+    var studentContact = result.Address;
     con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate, NbViews) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"', '"+0+"')",
     function (err, result, fields){
       if (err) throw err;
       console.log(result.insertId);
       var postID = result.insertId;
-      res.status(201).json({  //statut "ressource créée"
-      message: 'objet créé', postID: postID
-      });
+      res.status(201).json({message: 'objet créé', postID: postID, phoneNb: studentPhoneNb, contact: studentContact});
       for (let i=0; i<req.body.category.length; i++){
 
         con.query("INSERT INTO AnnounceCategories (CategoryID, AnnounceID) VALUES ('"+catID[i]+"','"+result.insertId+"')",
@@ -536,6 +537,25 @@ app.post('/search', (req, res, next) => {
   });
 });
 
+app.post('/deletePost/', (req, res, next) => {
+  console.log("requête pour supprimer une annonce reçue");
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var userID = decodedToken.userID; // get userID from token payload
+  con.query("SELECT StudentID FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+    if(err) throw err;
+    if(userID == result[0].StudentID){ // vérifier que le username de l'en-tête http et de l'annonce sont identiques
+      con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+        if(err) throw err;
+          con.query("DELETE FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+            if(err) throw err;
+            res.status(200).json({"message" : "annonce supprimée"});
+          })
+      })
+    }
+  });
+})
+
 // requête http PATCH pour incrémenter le nombre de vues d'une annonce
 app.patch('/incrview', (req, res, next) => {
   console.log("requête pour incrémenter le nombre de vues");
@@ -619,7 +639,7 @@ app.get('/getUserPosts', (req, res, next) => {
    var decodedToken = jwt.decode(encryptedToken); // decode token
    var userID = decodedToken.userID; // get userID from token payload
 
-   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID WHERE Announce.StudentID='"+userID+"'", function (err, result, fields) {
+   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.StudentID='"+userID+"' ORDER BY Announce.AnnounceID", function (err, result, fields) {
     if (err) throw err;
     //var data = JSON.stringify(result);
     var resultat=[];
@@ -634,10 +654,10 @@ app.get('/getUserPosts', (req, res, next) => {
                    "Prix" : result[i].Price,
                    "Description" : result[i].Description,
                    "StudentID" : result[i].StudentID,
-                   "Date de publication" : result[i].PublicationDate,
-                   "Nombre de vues" : result[i].NbViews,
+                   "DateDePublication" : result[i].PublicationDate,
+                   "NombreDeVues" : result[i].NbViews,
                    "Username" : result[i].Username,
-                   "N° de telephone" : result[i].TelephoneNumber,
+                   "NumTelephone" : result[i].TelephoneNumber,
                    "Image" : result[i].Image,
                    "Adresse" : result[i].Address,
                    "categoryids" : categoryids,
@@ -657,10 +677,10 @@ app.get('/getUserPosts', (req, res, next) => {
                      "Prix" : result[i].Price,
                      "Description" : result[i].Description,
                      "StudentID" : result[i].StudentID,
-                     "Date de publication" : result[i].PublicationDate,
-                     "Nombre de vues" : result[i].NbViews,
+                     "DateDePublication" : result[i].PublicationDate,
+                     "NombreDeVues" : result[i].NbViews,
                      "Username" : result[i].Username,
-                     "N° de telephone" : result[i].TelephoneNumber,
+                     "NumTelephone" : result[i].TelephoneNumber,
                      "Image" : result[i].Image,
                      "Adresse" : result[i].Address,
                      "categoryids" : categoryids,
@@ -668,7 +688,10 @@ app.get('/getUserPosts', (req, res, next) => {
         }
       }
     }
-    res.status(200).json({"annonces" : resultat});
+    for(let i=0; i<resultat.length; i++){
+      resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
+    }
+    res.status(200).json(resultat);
     console.log("resultat :", resultat);
     });
 });
@@ -712,14 +735,14 @@ app.post('/deleteUserAccount', (req, res, next) => {
                 if(err) throw err;
               });
             }
-              con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
+            con.query("DELETE FROM Announce WHERE StudentID = '"+userID+"'", function(err, result, fields){
+              if(err) throw err;
+              con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
                 if(err) throw err;
-                con.query("DELETE FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields){
-                  if(err) throw err;
-                  res.status(200).json({"message": "account was deleted"});
-                  console.log("account was deleted");
-                });
+                res.status(200).json({"message": "account was deleted"});
+                console.log("account was deleted");
               });
+            });
           });
         }
       })
