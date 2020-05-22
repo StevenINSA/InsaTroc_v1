@@ -601,8 +601,8 @@ app.post('/modifyUserInfo', (req, res, next) => {
   var encryptedToken = req.get("Authorization");  // get authorization token from http header
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
-  console.log("params:",req.params);
-  con.query("UPDATE Student SET Name='"+req.params.firstname+"', TelephoneNumber='"+req.params.phone+"', Address='"+req.params.other+"', Surname='"+req.params.lastname+"' WHERE StudentID='"+userID+"'",function (err, result, fields) {
+  console.log("params:",req.body);
+  con.query("UPDATE Student SET Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"' WHERE StudentID='"+userID+"'",function (err, result, fields) {
     if (err) throw err;
     console.log(result);
 
