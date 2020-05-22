@@ -11,7 +11,7 @@
       <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
     </mat-card-content>
 
-
+      <br>
       <mat-card-content>
           <mat-expansion-panel>
               <mat-expansion-panel-header>Description</mat-expansion-panel-header>
@@ -20,11 +20,11 @@
               </p>
 
           </mat-expansion-panel>
-
+          <br>
           <br>
           <span class="date" >
             <!-- <mat-icon>touch_app</mat-icon> -->
-            {{annonce.date | date:'medium'}}
+            {{annonce.date | date:'dd/MM/yyyy'}}
           </span>
           <span class="views">
             <!-- <mat-icon>touch_app</mat-icon> -->
