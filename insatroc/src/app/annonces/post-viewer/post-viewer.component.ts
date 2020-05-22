@@ -12,35 +12,39 @@ import { Router } from '@angular/router';
 })
 export class PostViewerComponent implements OnInit {
   posts : PostModel[] = [];
+  AnnoncesV :PostModel[] = [{_id: null, title: "Vends un sac ", description: "je vends un sac pour venir sac si sac alors sac sac", category: ["Autres"], price: 50, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg','../../../assets/images/pileofcolorpencils.jpg'], date: new Date(), views: 30, username: "Pénélope"},
+                           {_id: null, title: "Vends un sac de couchage ", description: "je vends un sac de couchage , trs inconfortable mais c'est mieux que rien", category: ["Loisirs/Sport", "Bureau"], price: 10, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg'], date: new Date(), views: 15, username: "user1"}];
+  AnnoncesOriginales :PostModel[]= [];
+  Annonces: PostModel[] = [];
+
   sidetoggle = false;
   min = 0;
   max = 300;
   selected=[];
   maxprice=0;
   tri = "populaire";
-
-  AnnoncesV :PostModel[] = [{_id: null, title: "Vends un sac ", description: "je vends un sac pour venir sac si sac alors sac sac", category: ["Autres"], price: 50, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg','../../../assets/images/pileofcolorpencils.jpg'], date: new Date(), views: 30, username: "Pénélope"},
-                           {_id: null, title: "Vends un sac de couchage ", description: "je vends un sac de couchage , trs inconfortable mais c'est mieux que rien", category: ["Loisirs/Sport", "Bureau"], price: 10, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg'], date: new Date(), views: 15, username: "user1"}
-  ]
-  Annonces :PostModel[]= [];
   annoncesFiltrees = this.Annonces.length;
+
   activeImage = null;
+
   para = 0;
   npages = 30;
-  pPerPages = 10;
+  NbPostsPerPage = 10;
+  pageIndex = 0;
 
 
 
-  constructor(public httpservice: HttpService, private router:Router) { }
-
-  log (status) {
-    console.log(status)
-  }
+  constructor(public httpservice: HttpService, private router:Router) {}
 
   ngOnInit(): void {
     console.log(this.selected)
     console.log(this.maxprice)
-    this.Annonces = this.httpservice.getAllPosts().posts;
+    this.AnnoncesOriginales = this.httpservice.getAllPosts().posts;
+    this.Annonces = this.AnnoncesOriginales;
+  }
+
+  log (status) {
+    console.log(status)
   }
 
   AddAnnounce(annonce : PostModel){}
@@ -69,8 +73,11 @@ export class PostViewerComponent implements OnInit {
 
   pageChanged (event : PageEvent){
     console.log(event);
+    this.pageIndex = event.pageIndex;
+    this.NbPostsPerPage = event.pageSize;
   }
 
+// Redirection vers une annonce quand on clique dessus
   onDisplayPost(id){
     for (let k=0 ; k<this.Annonces.length;k++){
       if(id == this.Annonces[k]._id){
@@ -80,15 +87,39 @@ export class PostViewerComponent implements OnInit {
     }
   }
 
-  PostInFilteredCategory(annonce: PostModel){
-    return(this.selected.some((val) => annonce.category.includes(val)));
+
+
+// Filtrage et Tri
+
+  getAnnonces(){
+    this.Filtrer();
+    this.Trier();
+    return this.Annonces;
   }
 
-  ResetFiltrage(){
-    this.annoncesFiltrees = 0;
-  }
-  Filtrage(){
-    this.annoncesFiltrees +=1;
+  // PostInFilteredCategory(annonce: PostModel){
+  //   console.log(this.selected);
+  //   return(this.selected.some((val) => annonce.category.includes(val)));
+  // }
+
+  // ResetFiltrage(){
+  //   this.annoncesFiltrees = 0;
+  // }
+  // Filtrage(){
+  //   this.annoncesFiltrees +=1;
+  // }
+
+  Filtrer(){
+    var annoncesFiltrees2: PostModel[] = [];
+    for(let annonce of this.AnnoncesOriginales){
+      // Filtrage par catégorie
+      if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
+       && (this.maxprice==0 || annonce.price <= this.maxprice)){
+        annoncesFiltrees2.push(annonce);
+      }
+    }
+    this.Annonces = annoncesFiltrees2;
+    this.annoncesFiltrees = this.Annonces.length;
   }
 
   Trier(){

@@ -479,64 +479,64 @@ app.post('/search', (req, res, next) => {
       if (index != (keywords.length)-1){
           stringarray = stringarray + "OR ";
       }
-  con.query("SELECT * FROM Announce INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE "+stringarray, function(err,result){
-      if(err) throw err;
-  /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
-si l'announce suivante a le meme numéro(mais elle aura un CatID différent), on ne rajoute pas l'annonce dans resultat mais on push dans le tableau
-de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en double et un tableau de catID correct*/
-      var resultat=[];
-      var categoryids=[];
-      let j=0; //on travail avec deux pointeurs : i et j
-      for (let i=0; i<result.length; i++){
-
-          if (i==0){
-              categoryids[0]=result[i].CategoryID;
-              resultat[j]={"AnnounceID" : result[i].AnnounceID,
-                      "Titre" : result[i].Title,
-                      "Prix" : result[i].Price,
-                      "Description" : result[i].Description,
-                      "StudentID" : result[i].StudentID,
-                      "Date de publication" : result[i].PublicationDate,
-                      "Nombre de vues" : result[i].NbViews,
-                      "Username" : result[i].Username,
-                      "N° de telephone" : result[i].TelephoneNumber,
-                      "Image" : result[i].Image,
-                      "Adresse" : result[i].Address,
-                      "categoryids" : categoryids,
-                          }
-          
-
-          } else {
-              if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
-                  resultat[j].categoryids.push(result[i].CategoryID)
-              } else { 
-                  j+=1;
-                  categoryids=[];
-                  categoryids[0]=result[i].CategoryID;
-                  resultat[j]={"AnnounceID" : result[i].AnnounceID,
-                              "Titre" : result[i].Title,
-                              "Prix" : result[i].Price,
-                              "Description" : result[i].Description,
-                              "StudentID" : result[i].StudentID,
-                              "Date de publication" : result[i].PublicationDate,
-                              "Nombre de vues" : result[i].NbViews,
-                              "Username" : result[i].Username,
-                              "N° de telephone" : result[i].TelephoneNumber,
-                              "Image" : result[i].Image,
-                              "Adresse" : result[i].Address,
-                              "categoryids" : categoryids,
-                              }
-              }
+      console.log(stringarray);
+  })
+  con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE "+stringarray, function(err,result){
+    if(err) throw err;
+    /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
+    si l'announce suivante a le meme numéro(mais elle aura un CatID différent), on ne rajoute pas l'annonce dans resultat mais on push dans le tableau
+    de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en double et un tableau de catID correct*/
+    var resultat=[];
+    var categoryids=[];
+    let j=0; //on travaille avec deux pointeurs : i et j
+    for (let i=0; i<result.length; i++){
+      if (i==0){
+          categoryids[0]=result[i].CategoryID;
+          resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                  "Titre" : result[i].Title,
+                  "Prix" : result[i].Price,
+                  "Description" : result[i].Description,
+                  "StudentID" : result[i].StudentID,
+                  "DateDePublication" : result[i].PublicationDate,
+                  "NombreDeVues" : result[i].NbViews,
+                  "Username" : result[i].Username,
+                  "NumTelephone" : result[i].TelephoneNumber,
+                  "Image" : result[i].Image,
+                  "Adresse" : result[i].Address,
+                  "categoryids" : categoryids,
           }
+        }
+      else {
+        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+            resultat[j].categoryids.push(result[i].CategoryID)
+        }
+        else {
+            j+=1;
+            categoryids=[];
+            categoryids[0]=result[i].CategoryID;
+            resultat[j]={"AnnounceID" : result[i].AnnounceID,
+                        "Titre" : result[i].Title,
+                        "Prix" : result[i].Price,
+                        "Description" : result[i].Description,
+                        "StudentID" : result[i].StudentID,
+                        "DateDePublication" : result[i].PublicationDate,
+                        "NombreDeVues" : result[i].NbViews,
+                        "Username" : result[i].Username,
+                        "NumTelephone" : result[i].TelephoneNumber,
+                        "Image" : result[i].Image,
+                        "Adresse" : result[i].Address,
+                        "categoryids" : categoryids,
+                        }
+        }
       }
-      res.status(200).json({"annonces" : resultat});
-      console.log("resultat :", resultat);
+    }
+    for(let i=0; i<resultat.length; i++){
+      resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
+    }
+    res.status(200).json(resultat);
+    console.log("resultat :", resultat);
   });
-  console.log(keywords);
-
-// récupérer le username du vendeur à partir du StudentID
-
-  });
+  // });
 });
 
 app.post('/deletePost/', (req, res, next) => {

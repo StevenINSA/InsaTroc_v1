@@ -64,7 +64,8 @@ justify-content: center;
 align-items: center;
 }
 .Nocontent {
-  color: red;
+  color: rgb(32, 37, 109);
+  font-size: large;
   text-align: center;
 
 }
