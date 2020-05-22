@@ -143,10 +143,10 @@ console.log(error.error.message);
   }
 
   // modifier les infos d'un utilisateur
-  public modifyUserInfo(firstname, lastname, username, email, password){
+  public modifyUserInfo(firstname, lastname, username, phone, other){
     // this.deleteUserInfo();
 
-    this.http.post('http://localhost:3000/modifyUserInfo', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password}).subscribe(
+    this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other':other}).subscribe(
       (response) => {console.log(response);
                       // localStorage.removeItem('username');
                       localStorage.setItem('username', username);},
