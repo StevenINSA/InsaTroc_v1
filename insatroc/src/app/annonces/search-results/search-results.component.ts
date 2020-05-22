@@ -12,10 +12,10 @@ import { PageEvent } from '@angular/material/paginator';
 export class SearchResultsComponent implements OnInit {
   Annonces : PostModel[] = [];
   AnnoncesOriginales :PostModel[]= [];
-  min = 0;
-  max = 300;
+  min;
+  max;
   selected=[];
-  maxprice=0;
+  maxprice = 0;
   tri = "populaire";
   annoncesFiltrees = this.Annonces.length;
   activeImage = null;
@@ -56,6 +56,16 @@ export class SearchResultsComponent implements OnInit {
   }
 
   getAnnonces(){
+    this.min = this.AnnoncesOriginales[0].price;
+    this.max = this.min;
+    for(let annonce of this.AnnoncesOriginales){
+      if(annonce.price > this.max){
+        this.max = annonce.price;
+      }
+      if(annonce.price < this.min){
+        this.min = annonce.price;
+      }
+    }
     this.Filtrer();
     this.Trier();
     return this.Annonces;
@@ -65,8 +75,11 @@ export class SearchResultsComponent implements OnInit {
     var annoncesFiltrees2: PostModel[] = [];
     for(let annonce of this.AnnoncesOriginales){
       // Filtrage par catégorie
+      console.log(this.maxprice);
+      console.log(this.min);
+      console.log(annonce.price);
       if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
-       && (this.maxprice==0 || annonce.price <= this.maxprice)){
+       && (this.maxprice==this.min || this.maxprice==0 || annonce.price <= this.maxprice)){
         annoncesFiltrees2.push(annonce);
       }
     }
