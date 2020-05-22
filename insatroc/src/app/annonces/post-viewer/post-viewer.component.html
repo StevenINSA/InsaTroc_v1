@@ -25,12 +25,14 @@
           <mat-option value=" Autre"><mat-icon>category</mat-icon>Autre</mat-option>
         </mat-select>
       </mat-form-field>
+
       <mat-form-field appearance="standard">
         <mat-label>Prix maximum</mat-label>
         <input matInput type="number" [(ngModel)]="maxprice">
       </mat-form-field>
+
       <br>
-      <span>{{min}}      </span>
+      <span>{{min}}</span>
       <mat-slider
         class="example-margin"
         [max]="max"
@@ -40,6 +42,7 @@
         [(ngModel)]="maxprice">
       </mat-slider>
       <span>{{max}}</span>
+
     </mat-nav-list>
 
   </mat-sidenav>

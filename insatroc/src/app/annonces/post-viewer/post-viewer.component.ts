@@ -18,8 +18,8 @@ export class PostViewerComponent implements OnInit {
   Annonces: PostModel[] = [];
 
   sidetoggle = false;
-  min = 0;
-  max = 300;
+  min: number;
+  max: number;
   selected=[];
   maxprice=0;
   tri = "populaire";
@@ -37,8 +37,7 @@ export class PostViewerComponent implements OnInit {
   constructor(public httpservice: HttpService, private router:Router) {}
 
   ngOnInit(): void {
-    console.log(this.selected)
-    console.log(this.maxprice)
+    console.log(this.maxprice);
     this.AnnoncesOriginales = this.httpservice.getAllPosts().posts;
     this.Annonces = this.AnnoncesOriginales;
   }
@@ -92,6 +91,17 @@ export class PostViewerComponent implements OnInit {
 // Filtrage et Tri
 
   getAnnonces(){
+    this.min = this.AnnoncesOriginales[0].price;
+    this.max = this.min;
+    for(let annonce of this.AnnoncesOriginales){
+      if(annonce.price > this.max){
+        this.max = annonce.price;
+      }
+      if(annonce.price < this.min){
+        this.min = annonce.price;
+      }
+    }
+    console.log(this.max);
     this.Filtrer();
     this.Trier();
     return this.Annonces;
