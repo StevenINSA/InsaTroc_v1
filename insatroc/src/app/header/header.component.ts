@@ -42,8 +42,11 @@ export class HeaderComponent implements OnInit {
   changetheme() {
     if (this.slidetoggle) {
       this.httpService.changetheme('');
+      this.slidetoggle = false;
     }else{
       this.httpService.changetheme('alternative');
+      console.log("ehemmm");
+      this.slidetoggle = true;
     }
 
   }
