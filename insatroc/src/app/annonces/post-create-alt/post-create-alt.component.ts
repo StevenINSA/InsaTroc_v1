@@ -30,9 +30,17 @@ export class PostCreateAltComponent implements OnInit {
 
 
   ngOnInit(): void {
-    if(!this.authService.checkUserContactInfo()){
-      this.openDialog();
-    }
+    // if(!this.authService.checkUserContactInfo()){
+    //   console.log(this.authService.checkUserContactInfo());
+    //   this.openDialog();
+    // }
+
+    this.authService.checkUserContactInfo().subscribe(
+      (response) => {console.log(response)},
+      (error) => {console.log(error);
+                  this.openDialog();}
+    )
+
     this.form = new FormGroup({
       title:new FormControl(null,{validators:[Validators.required, Validators.minLength(3)]}),
       category:new FormControl(null,{validators:[Validators.required]}),

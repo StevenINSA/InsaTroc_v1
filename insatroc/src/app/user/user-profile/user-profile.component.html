@@ -12,7 +12,7 @@
           <mat-label>Prénom</mat-label>
           <input matInput required formControlName="first_name" readonly = {{readonlyFirstName}}>
           <mat-error *ngIf="form.get('first_name').hasError('required') && !readonlyFirstName">Veuillez remplir ce champ</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre prénom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyFirstName=!readonlyFirstName" [ngStyle]="{'color': !readonlyFirstName ? '#01579B' : 'black'}">
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre prénom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyFirstName=!readonlyFirstName; modified=true;" [ngStyle]="{'color': !readonlyFirstName ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
           <!-- <mat-button-toggle><mat-icon>create</mat-icon></mat-button-toggle> -->
@@ -24,7 +24,7 @@
           <mat-label>Nom</mat-label>
           <input matInput formControlName="last_name" required readonly = {{readonlyLastName}}>
           <mat-error *ngIf="form.get('last_name').hasError('required')">Veuillez remplir ce champ</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyLastName=!readonlyLastName" [ngStyle]="{'color': !readonlyLastName ? '#01579B' : 'black'}">
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyLastName=!readonlyLastName; modified=true;" [ngStyle]="{'color': !readonlyLastName ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
         </mat-form-field>
@@ -33,7 +33,7 @@
           <mat-label>Nom d'utilisateur</mat-label>
           <input matInput formControlName="username" required readonly = {{readonlyUsername}}>
           <mat-error *ngIf="form.get('username').hasError('required')">Veuillez remplir ce champ</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom d'utilisateur" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyUsername=!readonlyUsername" [ngStyle]="{'color': !readonlyUsername ? '#01579B' : 'black'}">
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom d'utilisateur" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyUsername=!readonlyUsername; modified=true;" [ngStyle]="{'color': !readonlyUsername ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
         </mat-form-field>
@@ -43,7 +43,7 @@
           <input matInput formControlName="email" required readonly = {{readonlyEmail}}>
           <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
           <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre email" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyEmail=!readonlyEmail" [ngStyle]="{'color': !readonlyEmail ? '#01579B' : 'black'}">
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre email" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyEmail=!readonlyEmail; modified=true;" [ngStyle]="{'color': !readonlyEmail ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
         </mat-form-field>
@@ -52,7 +52,7 @@
           <mat-label>Numéro de téléphone</mat-label>
           <input matInput formControlName="phone_number" readonly = {{readonlyPhoneNumber}}>
           <!-- <mat-error *ngIf="form.get('phone_number').hasError('length')">Numéro de téléphone non valide</mat-error> -->
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre numéro de téléphone" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyPhoneNumber=!readonlyPhoneNumber" [ngStyle]="{'color': !readonlyPhoneNumber ? '#01579B' : 'black'}">
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre numéro de téléphone" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyPhoneNumber=!readonlyPhoneNumber; modified=true;" [ngStyle]="{'color': !readonlyPhoneNumber ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
         </mat-form-field>
@@ -60,7 +60,7 @@
         <mat-form-field appearance="outline" class="textarea">
           <mat-label>Autres informations de contact</mat-label>
           <textarea matInput formControlName="contact" rows=7 placeholder="Entrez les informations de contact que vous voulez voir apparaître sur vos annonces. (exemples : e-mail, Facebook, Whatsapp, Instagram, adresse postale, etc.)" readonly = {{readonlyContact}}></textarea>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier vos informations de contact" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyContact=!readonlyContact" [ngStyle]="{'color': !readonlyContact ? '#01579B' : 'black'}">
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier vos informations de contact" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyContact=!readonlyContact; modified=true;" [ngStyle]="{'color': !readonlyContact ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
         </mat-form-field>
@@ -78,12 +78,14 @@
 
         <mat-card-actions>
           <div class="container">
-            <!-- <button mat-raised-button *ngIf="readonly" color="primary" type="submit">
-              <mat-icon>create</mat-icon>
-              Modifier mes informations</button> -->
-            <button mat-raised-button color="primary" type="submit">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!modified">
               <mat-icon>save</mat-icon>
-              Modifier mes modifications</button>
+              Enregistrer les modifications
+            </button>
+            <button mat-raised-button type="submit" [disabled]="!modified">
+              <mat-icon [ngStyle]="{'color': modified ? 'red' : 'grey'}" >cancel</mat-icon>
+              Annuler
+            </button>
           </div>
           <br>
           <div class="container">

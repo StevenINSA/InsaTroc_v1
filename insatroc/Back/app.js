@@ -599,6 +599,27 @@ app.get('/getUserInfo', (req, res, next) => {
   });
 });
 
+// requête pour vérifier si les infos de contact d'un utilisateur sont bien remplies
+app.get('/checkUserContactInfo', (req, res, next) => {
+  console.log("vérification des infos de contact");
+  var encryptedToken = req.get("Authorization");  // get authorization token from http header
+  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var userID = decodedToken.userID; // get userID from token payload
+  con.query("SELECT * FROM Student WHERE StudentID='"+userID+"'", function(err, result, fields){
+    if(err) throw err;
+    console.log(result);
+    if((result[0].Address=='' || result[0].Address==null)
+     && (result[0].TelephoneNumber=='' || result[0].TelephoneNumber==null)){
+       console.log("false");
+      res.status(400).json(false);
+    }
+    else{
+      console.log("true");
+      res.status(200).json(true);
+    }
+  })
+})
+
 // requête pour modifier des infos d'un utilisateur
 app.post('/modifyUserInfo', (req, res, next) => {
   console.log("requête de modification des infos d'utilisateur reçue :");
@@ -610,12 +631,13 @@ app.post('/modifyUserInfo', (req, res, next) => {
   //vérification que le username n'existe pas déjà
   con.query("SELECT * FROM Student WHERE Username='"+req.body.username+"'",function(err,result,fields){
     if(err) throw err;
-    if (result.length !=0){ //si déjà présent, erreur
+    if (result.length !=0 && result[0].StudentID!=userID){ //si déjà présent, erreur
       console.log("username already exists")
       res.status(401).json({"message" : "username already exists"});
     } else { //sinon, mise à jour de la base de données
       con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"' WHERE StudentID='"+userID+"'",function (err, result, fields) {
         if (err) throw err;
+        console.log("done");
         res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
       });
     }

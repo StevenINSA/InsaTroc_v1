@@ -38,6 +38,7 @@ export class UserProfileComponent implements OnInit {
   readonlyEmail = true;
   readonlyPhoneNumber = true;
   readonlyContact = true;
+  modified = false;
 
   constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog) {}
 
@@ -68,6 +69,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   ModifyUserInfo(form: FormGroup){
+    this.modified = false;
     // if(this.readonly){
     //   this.readonly = false;
     // }

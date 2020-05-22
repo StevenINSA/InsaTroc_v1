@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class AuthService {
   private authStatus = false;
 
 
-  constructor(private http : HttpClient,private router:Router, public dialog: MatDialog) { }
+  constructor(private http : HttpClient,private router:Router, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
 
   public isAuthenticated() : Boolean {
     let token = localStorage.getItem('token');
@@ -79,14 +80,16 @@ export class AuthService {
   }
 
   // vérifier si un utilisateur a rempli ses infos de contact
-  public checkUserContactInfo() : boolean{
-    console.log("checkUserInfo");
-    this.http.get('http://localhost:3000/checkUserContactInfo').subscribe(
-      (response)=>{return true;},
-      (error)=>{console.log(error);
-                return false;}
-    )
-    return true;
+  public checkUserContactInfo(){
+    // console.log("checkUserInfo");
+    // this.http.get('http://localhost:3000/checkUserContactInfo').subscribe(
+    //   (response)=>{console.log(response);
+    //               return true;},
+    //   (error)=>{console.log(error);
+    //             return false;}
+    // )
+    // // return false;
+    return this.http.get('http://localhost:3000/checkUserContactInfo');
   }
 
   // se connecter
@@ -149,7 +152,8 @@ console.log(error.error.message);
     this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other':other}).subscribe(
       (response) => {console.log(response);
                       // localStorage.removeItem('username');
-                      localStorage.setItem('username', username);},
+                      localStorage.setItem('username', username);
+                      this._snackBar.open("Votre profil a bien été modifié.","x", {duration: 4000});},
       (error) => {console.log(error)},
     );
   }
