@@ -2,8 +2,6 @@ BD :
 - stocker des images, tester si ça marche
 
 Back :
-- modifyUserInfo : ne marche pas, trouver pourquoi
-- incrémenter nombre de vues
 - rechercher : traiter les mots plus petits que 3 lettres
 
 Front :
