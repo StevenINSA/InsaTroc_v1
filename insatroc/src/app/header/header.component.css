@@ -16,6 +16,10 @@ mat-toolbar {
 .spacer {
     flex: 1 1 auto;
 }
+.main{
+  transform: scale(1.5);
+  
+}
 h1 {
     font: italic;
 }
