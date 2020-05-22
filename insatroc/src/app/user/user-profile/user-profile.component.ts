@@ -28,11 +28,16 @@ export class UserProfileComponent implements OnInit {
   form: FormGroup;
   user: UserModel;
   hide = true;
-  readonly = true;
   password: string;
   oldPassword: string;
   newPassword1: string;
   newPassword2: string;
+  readonlyFirstName = true;
+  readonlyLastName = true;
+  readonlyUsername = true;
+  readonlyEmail = true;
+  readonlyPhoneNumber = true;
+  readonlyContact = true;
 
   constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog) {}
 
@@ -63,18 +68,18 @@ export class UserProfileComponent implements OnInit {
   }
 
   ModifyUserInfo(form: FormGroup){
-    if(this.readonly){
-      this.readonly = false;
-    }
-    else {
+    // if(this.readonly){
+    //   this.readonly = false;
+    // }
+    // else {
       // this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
       //   (response) => {console.log(response);
       //                 this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});},
       //   (error) => {console.log(error)},
       // );
       this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password);
-      this.readonly = true;
-    }
+      // this.readonly = true;
+    // }
   }
 
   ngOnInit(): void {
@@ -103,6 +108,12 @@ export class UserProfileComponent implements OnInit {
   }
 
 }
+
+
+
+
+
+
 
 
 

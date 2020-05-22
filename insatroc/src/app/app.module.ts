@@ -43,7 +43,7 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
-
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -91,6 +91,7 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
     MatBadgeModule,
     MatPaginatorModule,
     MatDialogModule,
+    MatTooltipModule,
   ],
   entryComponents: [
     DeleteAccountDialog,
