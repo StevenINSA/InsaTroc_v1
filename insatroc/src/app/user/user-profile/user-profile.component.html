@@ -8,6 +8,9 @@
         <h4 style="color: crimson; font-family: sans-serif; font-size: 200%; align-content: center;" class="container">Mon profil</h4>
         <br>
 
+        <p style="text-align: center; color: grey; font-size: 13px;"><mat-icon style="color: mediumblue; font-size: large;">info</mat-icon> Les informations suivantes ne sont visibles que par vous. <br> Elles n'apparaitront pas sur vos annonces.</p>
+        <br>
+
         <mat-form-field appearance="outline" class="container">
           <mat-label>Prénom</mat-label>
           <input matInput required formControlName="first_name" readonly = {{readonlyFirstName}}>
@@ -19,7 +22,6 @@
           <!-- <mat-chip><mat-icon>create</mat-icon></mat-chip> -->
         </mat-form-field>
 
-
         <mat-form-field appearance="outline" class="container">
           <mat-label>Nom</mat-label>
           <input matInput formControlName="last_name" required readonly = {{readonlyLastName}}>
@@ -30,20 +32,26 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="container">
-          <mat-label>Nom d'utilisateur</mat-label>
-          <input matInput formControlName="username" required readonly = {{readonlyUsername}}>
-          <mat-error *ngIf="form.get('username').hasError('required')">Veuillez remplir ce champ</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom d'utilisateur" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyUsername=!readonlyUsername; modified=true;" [ngStyle]="{'color': !readonlyUsername ? '#01579B' : 'black'}">
-            <mat-icon>create</mat-icon>
-          </button>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="container">
           <mat-label>Email</mat-label>
           <input matInput formControlName="email" required readonly = {{readonlyEmail}}>
           <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
           <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
           <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre email" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyEmail=!readonlyEmail; modified=true;" [ngStyle]="{'color': !readonlyEmail ? '#01579B' : 'black'}">
+            <mat-icon>create</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-divider></mat-divider>
+        <br>
+
+        <p style="text-align: center; color: grey; font-size: 13px;"><mat-icon style="color: crimson; font-size: large;">report</mat-icon> Les informations suivantes apparaitront sur vos annonces :</p>
+        <br>
+
+        <mat-form-field appearance="outline" class="container">
+          <mat-label>Nom d'utilisateur</mat-label>
+          <input matInput formControlName="username" required readonly = {{readonlyUsername}}>
+          <mat-error *ngIf="form.get('username').hasError('required')">Veuillez remplir ce champ</mat-error>
+          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom d'utilisateur" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyUsername=!readonlyUsername; modified=true;" [ngStyle]="{'color': !readonlyUsername ? '#01579B' : 'black'}">
             <mat-icon>create</mat-icon>
           </button>
         </mat-form-field>
