@@ -72,7 +72,7 @@ export class UserProfileComponent implements OnInit {
       //                 this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});},
       //   (error) => {console.log(error)},
       // );
-      this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.other_contact_info);
+      this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact);
       this.readonly = true;
     }
   }
