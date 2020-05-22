@@ -231,7 +231,7 @@ const register = () => {
     con.query("SELECT * FROM Student WHERE Username = '"+username+"' OR Email = '"+email+"'", function (err, result, fields) {
       if (err) throw err;
       if(result.length!=0){
-        console.log("username or email already exists")
+        console.log("username or email already exists");
         res.status(401).json({"message" : "username or password already exists"});
       }
       else{
@@ -761,15 +761,12 @@ app.post('/modifyPassword', (req, res,next) =>{
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
 
-  console.log(req.body);
-  console.log(req.body.newPassword);
-
   con.query("SELECT Password FROM Student where StudentID = '"+userID+ "'",function (err, result, fields) {
       if (err) {
           throw err;
       } else {
-          var Cequejveux = result[0].Password;
-          bcrypt.compare (req.body.oldPassword, Cequejveux, function(err, isMatch){
+          var password = result[0].Password;
+          bcrypt.compare (req.body.oldPassword, password, function(err, isMatch){
               if (err) {
                   throw err;
               } else if (!isMatch){
