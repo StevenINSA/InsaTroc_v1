@@ -10,7 +10,7 @@ import { FormControl } from '@angular/forms';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  sidetoggle = false;
+  slidetoggle = false;
   loggedin = false;
   themetoggle = false;
   search;
@@ -40,18 +40,19 @@ export class HeaderComponent implements OnInit {
 
   }
   changetheme() {
-    if (this.themetoggle) {
+    if (this.slidetoggle) {
       this.httpService.changetheme('');
-      this.themetoggle = !this.themetoggle;
     }else{
       this.httpService.changetheme('alternative');
-      this.themetoggle = !this.themetoggle;
     }
 
   }
   test(){}
 
   ngOnInit(): void {
+    if (localStorage.getItem('theme')=="alternative"){
+      this.slidetoggle=true;
+    }
     this.loggedin=this.authService.getAuthStatus();
     this.authService.onAuthUpdate().subscribe(
       (resp)=>{

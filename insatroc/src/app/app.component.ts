@@ -16,8 +16,10 @@ constructor(public httpservice: HttpService, public authservice: AuthService){}
   theme ;
 
   ngOnInit(): void {
+    this.theme = localStorage.getItem('theme');
     this.httpservice.onThemeUpdate().subscribe(
       (a) => {
+        localStorage.setItem("theme",a as string);
         this.theme = a
 
         console.log(a);
