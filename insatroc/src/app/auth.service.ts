@@ -146,7 +146,7 @@ console.log(error.error.message);
   public modifyUserInfo(firstname, lastname, username, phone, other){
     // this.deleteUserInfo();
 
-    this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other' : other}).subscribe(
+    this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other':other}).subscribe(
       (response) => {console.log(response);
                       // localStorage.removeItem('username');
                       localStorage.setItem('username', username);},
