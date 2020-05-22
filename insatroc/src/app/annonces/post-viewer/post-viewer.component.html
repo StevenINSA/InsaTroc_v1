@@ -5,7 +5,7 @@
     <mat-nav-list>
       <span>Trier par</span>
       <mat-form-field appearance="standard">
-        <mat-select placeholder="Choisir" name="category" size="1" ngModel [(value)]="tri" (selectionChange)="Trier()">
+        <mat-select placeholder="Choisir" name="category" size="1" ngModel [(value)]="tri">
           <mat-option value="populaire">Popularité</mat-option>
           <mat-option value="prix-croissant">Prix croissant</mat-option>
           <mat-option value="prix-decroissant">Prix décroissant</mat-option>
@@ -17,12 +17,12 @@
       <mat-form-field appearance="standard">
         <mat-select placeholder="Catégorie" name="category" size="1" ngModel [(value)]="selected" multiple>
           <mat-select-trigger>{{selected}}</mat-select-trigger>
-          <mat-option value="Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
-          <mat-option value="Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
-          <mat-option value="Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
-          <mat-option value="Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
-          <mat-option value="Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
-          <mat-option value="Autre"><mat-icon>category</mat-icon>Autre</mat-option>
+          <mat-option value=" Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
+          <mat-option value=" Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
+          <mat-option value=" Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
+          <mat-option value=" Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
+          <mat-option value=" Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
+          <mat-option value=" Autre"><mat-icon>category</mat-icon>Autre</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="standard">
@@ -54,17 +54,18 @@
       </button>
       <h2>Toutes les annonces</h2>
       <span class="fill-remaining-space"></span>
-      <!-- <span style="font-size:medium;" *ngIf="annoncesFiltrees<=1; else elseBlock">
-        {{annoncesFiltrees}} annonce trouvée</span>
-        <ng-template #elseBlock>{{annoncesFiltrees}} annonces trouvées</ng-template> -->
-      <span style="font-size:medium;">{{annoncesFiltrees}} annonces trouvées</span>
+      <span *ngIf="annoncesFiltrees<=1" style="font-size:medium;">{{annoncesFiltrees}} annonce trouvée</span>
+      <span *ngIf="annoncesFiltrees>1" style="font-size:medium;">{{annoncesFiltrees}} annonces trouvées</span>
     </mat-toolbar>
 
     <!-- Posts -->
-    <ng-container *ngFor="let annonce of Annonces ; let i = index">
-      <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" >
-          {{Filtrage()}}
-          {{Trier()}}
+    <!-- {{Filtrer()}}
+          {{Trier()}} -->
+    <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
+      <!-- <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" > -->
+      <mat-card>
+          <!-- {{Filtrage()}} -->
+
         <mat-card-header style="float:left;">
             <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
             <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
@@ -109,9 +110,16 @@
       </mat-card>
 
     </ng-container>
-    <mat-paginator [length]="npages" [pageSize]="pPerPages" (page)="pageChanged($event)"></mat-paginator>
-    {{ResetFiltrage()}}
-    <p class="Nocontent" *ngIf="Annonces.length==0">Rien à signaler</p>
+    <mat-paginator [length]="Annonces.length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
+    <!-- {{ResetFiltrage()}} -->
+    <div *ngIf="Annonces.length==0" class="Nocontent">
+      <br>
+      <h3>Aucune annonce n'a été déposée pour l'instant.</h3>
+    </div>
+    <div *ngIf="Annonces.length==0" class="Nocontent">
+      <a href="/deposer-une-annonce/" routerLink="/deposer-une-annonce">Déposer une annonce</a>
+    </div>
+
 
   </mat-sidenav-content>
 </mat-sidenav-container>

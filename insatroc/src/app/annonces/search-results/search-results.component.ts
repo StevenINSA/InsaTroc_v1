@@ -11,6 +11,7 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class SearchResultsComponent implements OnInit {
   Annonces : PostModel[] = [];
+  AnnoncesOriginales :PostModel[]= [];
   min = 0;
   max = 300;
   selected=[];
@@ -18,9 +19,11 @@ export class SearchResultsComponent implements OnInit {
   tri = "populaire";
   annoncesFiltrees = this.Annonces.length;
   activeImage = null;
+
   para = 0;
   npages = 30;
-  pPerPages = 10;
+  NbPostsPerPage = 10;
+  pageIndex = 0;
 
   constructor(public httpService:HttpService,private router :Router, private route: ActivatedRoute) { }
 
@@ -31,6 +34,7 @@ export class SearchResultsComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.Annonces = this.httpService.getSearchResult(params.arg).posts;
+      this.AnnoncesOriginales = this.Annonces;
       console.log("this.post");
       console.log(this.Annonces);
     })
@@ -38,6 +42,8 @@ export class SearchResultsComponent implements OnInit {
 
   pageChanged (event : PageEvent){
     console.log(event);
+    this.pageIndex = event.pageIndex;
+    this.NbPostsPerPage = event.pageSize;
   }
 
   onDisplayPost(id){
@@ -49,15 +55,23 @@ export class SearchResultsComponent implements OnInit {
     }
   }
 
-  PostInFilteredCategory(annonce: PostModel){
-    return(this.selected.some((val) => annonce.category.includes(val)));
+  getAnnonces(){
+    this.Filtrer();
+    this.Trier();
+    return this.Annonces;
   }
 
-  ResetFiltrage(){
-    this.annoncesFiltrees = 0;
-  }
-  Filtrage(){
-    this.annoncesFiltrees +=1;
+  Filtrer(){
+    var annoncesFiltrees2: PostModel[] = [];
+    for(let annonce of this.AnnoncesOriginales){
+      // Filtrage par catégorie
+      if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
+       && (this.maxprice==0 || annonce.price <= this.maxprice)){
+        annoncesFiltrees2.push(annonce);
+      }
+    }
+    this.Annonces = annoncesFiltrees2;
+    this.annoncesFiltrees = this.Annonces.length;
   }
 
   Trier(){

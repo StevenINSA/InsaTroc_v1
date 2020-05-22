@@ -3,5 +3,8 @@ BD :
 
 Back :
 - modifyUserInfo : ne marche pas, trouver pourquoi
-- search : faire la requête pour la BD
 - incrémenter nombre de vues
+- rechercher : traiter les mots plus petits que 3 lettres
+
+Front :
+- enlever mot de passe oublié

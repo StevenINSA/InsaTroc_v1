@@ -63,8 +63,8 @@
     </div>
   </mat-card-content>
 
-  <mat-divider></mat-divider>
-  <br>
+  <mat-divider *ngIf="post.username==authService.getUsername()"></mat-divider>
+  <br *ngIf="post.username==authService.getUsername()">
 
   <mat-card-actions>
     <div class="container" *ngIf="post.username==authService.getUsername()">
