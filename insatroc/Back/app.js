@@ -601,37 +601,13 @@ app.post('/modifyUserInfo', (req, res, next) => {
   var encryptedToken = req.get("Authorization");  // get authorization token from http header
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
-
-  //vérification si le username n'est pas déjà utilisé ou l'email
-  con.query("SELECT * FROM Student WHERE (Username = '"+req.params.username+"' OR Email = '"+req.params.email+"') AND StudentID != '"+userID+"'", function (err, result, fields) {
+  console.log("params:",req.params);
+  con.query("UPDATE Student SET Name='"+req.params.firstname+"', TelephoneNumber='"+req.params.phone+"', Address='"+req.params.other+"', Surname='"+req.params.lastname+"' WHERE StudentID='"+userID+"'",function (err, result, fields) {
     if (err) throw err;
-    if(result.length!=0){
-      console.log("username or email already exists")
-      res.status(401).json({"message" : "username or password already exists"});
-    } else {
-      //modification avec le nouveau mot de passe crypté
-      bcrypt.genSalt(saltRounds, function (err, salt) {
-        if (err) {
-          throw err
-        } else {
-          bcrypt.hash(req.body.password, salt, function(err, hash) {
-            if (err) {
-              throw err
-            } else {
-              console.log(hash)
-              //mise à jour de la base de données
-              con.query("UPDATE Student SET Username = '"+req.params.username+"', Email ='"+req.params.email+"', Name='"+req.params.lastname+"', Surname='"+req.params.firstname+"', Password='"+hash+"' WHERE StudentID = '"+userID+"'", function (err, result, fields) {
-                if (err) {
-                  throw err;
-                }
-                res.status(200).json({"username" : req.params.username});
-              });
-            }
-          })
-        }
-      });
-    }
-  })
+    console.log(result);
+
+  });
+
 });
 
 // requête pour récupérer toutes les annonces postées par un utilisateur
