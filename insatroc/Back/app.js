@@ -582,12 +582,16 @@ app.get('/getUserInfo', (req, res, next) => {
   console.log(userID);
   con.query("SELECT * FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields) {
     if (err) throw err;
+    var tel = result[0].TelephoneNumber;
+    if(tel==null){tel = ''}
+    var contact = result[0].Address;
+    if(contact==null){contact=''}
     var user = {"first_name" : result[0].Surname,
                 "last_name" : result[0].Name,
                 "username" : result[0].Username,
                 "email" : result[0].Email,
-                "phone_number" : result[0].TelephoneNumber,
-                "contact_info" : result[0].Address
+                "phone_number" : tel,
+                "contact_info" : contact
               }
     console.log("Envoi des données au front :");
     console.log(user);
