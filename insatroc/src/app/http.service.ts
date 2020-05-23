@@ -163,6 +163,7 @@ export class HttpService {
       console.log(this.posts);
       console.log(this.users);
     })
+    console.log(this.posts);
     return({"posts": this.posts, "postUsers": this.users});
   }
 

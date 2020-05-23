@@ -75,9 +75,6 @@ export class SearchResultsComponent implements OnInit {
     var annoncesFiltrees2: PostModel[] = [];
     for(let annonce of this.AnnoncesOriginales){
       // Filtrage par catégorie
-      console.log(this.maxprice);
-      console.log(this.min);
-      console.log(annonce.price);
       if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
        && (this.maxprice==this.min || this.maxprice==0 || annonce.price <= this.maxprice)){
         annoncesFiltrees2.push(annonce);

@@ -90,7 +90,7 @@
               <mat-icon>save</mat-icon>
               Enregistrer les modifications
             </button>
-            <button mat-raised-button type="submit" [disabled]="!modified">
+            <button mat-raised-button type="button" (click)="Annuler()" [disabled]="!modified">
               <mat-icon [ngStyle]="{'color': modified ? 'red' : 'grey'}" >cancel</mat-icon>
               Annuler
             </button>

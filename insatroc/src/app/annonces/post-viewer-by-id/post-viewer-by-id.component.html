@@ -68,7 +68,9 @@
 
   <mat-card-actions>
     <div class="container" *ngIf="post.username==authService.getUsername()">
-      <button mat-raised-button (click)="openDialog()" color="warn">Supprimer mon annonce</button>
+      <button mat-raised-button (click)="openDialog()" color="warn">
+        <mat-icon>delete</mat-icon>
+        Supprimer mon annonce</button>
     </div>
   </mat-card-actions>
   <br>

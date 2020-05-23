@@ -40,7 +40,7 @@ export class UserProfileComponent implements OnInit {
   readonlyContact = true;
   modified = false;
 
-  constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog) {}
+  constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog, public router: Router) {}
 
   openDialog(): void {
     const dialogRef = this.dialog.open(DeleteAccountDialog, {
@@ -50,9 +50,6 @@ export class UserProfileComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      // if(result!=undefined){
-      //   this.authService.deleteAccount(result);
-      // }
     });
   }
 
@@ -70,18 +67,24 @@ export class UserProfileComponent implements OnInit {
 
   ModifyUserInfo(form: FormGroup){
     this.modified = false;
-    // if(this.readonly){
-    //   this.readonly = false;
-    // }
-    // else {
-      // this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password).subscribe(
-      //   (response) => {console.log(response);
-      //                 this.authService.setUserInfo({'user' : response['user']}, {'username' : response['username']});},
-      //   (error) => {console.log(error)},
-      // );
-      this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact);
-      // this.readonly = true;
-    // }
+    this.readonlyFirstName = true;
+    this.readonlyLastName = true;
+    this.readonlyEmail = true;
+    this.readonlyContact = true;
+    this.readonlyPhoneNumber = true;
+    this.readonlyUsername = true;
+    this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact);
+  }
+
+  Annuler(){
+    this.modified = false;
+    this.readonlyFirstName = true;
+    this.readonlyLastName = true;
+    this.readonlyEmail = true;
+    this.readonlyContact = true;
+    this.readonlyPhoneNumber = true;
+    this.readonlyUsername = true;
+    this.ngOnInit();
   }
 
   ngOnInit(): void {
@@ -97,14 +100,21 @@ export class UserProfileComponent implements OnInit {
 
 
     this.authService.getUserInfo().subscribe(
-      (response) => { this.form.patchValue({
+      (response) => {this.form.patchValue({
         first_name: response['first_name'],
         last_name: response['last_name'],
         username: response['username'],
         email: response['email'],
         phone_number: response['phone_number'],
         contact: response['contact_info'],
-      })},
+      });
+        this.user = {_id: null,
+                    first_name: response['first_name'],
+                    last_name: response['last_name'],
+                    email: response['email'],
+                    username: response['username'],
+                    phone_number: response['phone_numer'],
+                    other_contact_info: response['contact_info']};},
       (error) => {console.log(error)}
     );
   }

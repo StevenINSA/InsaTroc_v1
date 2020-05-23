@@ -427,7 +427,7 @@ app.get('/posts', (req, res, next) => {
                  }
       }
 
-      else{ 
+      else{
         if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
           resultat[j].categoryids.push(result[i].CategoryID)
         }
@@ -452,7 +452,7 @@ app.get('/posts', (req, res, next) => {
       }
     }
     for(let i=0; i<resultat.length; i++){
-      resultat[i].categoryids = attributeCategory(resultat[i].categoryids); 
+      resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
     }
     res.status(200).json(resultat);
     console.log("resultat :", resultat);
@@ -465,16 +465,17 @@ app.post('/search', (req, res, next) => {
   console.log("mots-clé :");
   console.log(req.body.arg);
   var arg = req.body.arg.replace('\'', ' ');
-  arg = arg.replace(',', ' ');      
+  arg = arg.replace(',', ' ');
   arg = arg.replace(', ', ' ');
   arg = arg.replace('.', ' ');
   var split_regex = new RegExp('[ +()*/:?-]', 'g');
   var req_filt_str = arg.split(split_regex)
                       .filter(kw => kw.length > 2)
-                      .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0') 
+                      .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0')
                       .join(" OR ");
   if(req_filt_str == []){
-    res.status(401).json({"message" : "Filter with words with more than 2 letters"});
+    // res.status(401).json({"message" : "Filter with words with more than 2 letters"});
+    res.status(200).json([]);
   } else {
     con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE "+req_filt_str, function(err,result){
       if(err) throw err;
@@ -511,7 +512,7 @@ app.post('/search', (req, res, next) => {
               categoryids[0]=result[i].CategoryID;
               resultat[j]={"AnnounceID" : result[i].AnnounceID,
                           "Titre" : result[i].Title,
-                          "Prix" : result[i].Price, 
+                          "Prix" : result[i].Price,
                           "Description" : result[i].Description,
                           "StudentID" : result[i].StudentID,
                           "DateDePublication" : result[i].PublicationDate,
@@ -531,7 +532,7 @@ app.post('/search', (req, res, next) => {
       res.status(200).json(resultat);
       console.log("resultat :", resultat);
     });
-  }  
+  }
   // });
 });
 

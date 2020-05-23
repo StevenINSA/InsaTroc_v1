@@ -1,39 +1,52 @@
 <!-- Posts -->
 <div *ngIf="Annonces.length!=0" class="container">
   <ng-container *ngFor="let annonce of Annonces ; let i = index">
-    <mat-card>
-      <mat-card-header style="float:left;">
-          <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
-          <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
-      </mat-card-header>
-      <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
-      <mat-card-content>
-      <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
-    </mat-card-content>
-
-      <br>
-      <mat-card-content>
-          <mat-expansion-panel>
-              <mat-expansion-panel-header>Description</mat-expansion-panel-header>
-              <p>
-                  {{annonce.description}}
-              </p>
-
-          </mat-expansion-panel>
-          <br>
-          <br>
-          <span class="date" >
-            <!-- <mat-icon>touch_app</mat-icon> -->
-            {{annonce.date | date:'dd/MM/yyyy'}}
-          </span>
-          <span class="views">
-            <!-- <mat-icon>touch_app</mat-icon> -->
-            {{annonce.views}} vues
-          </span>
-          <br>
-
+    <div>
+      <mat-card>
+        <mat-card-header style="float:left;">
+            <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
+            <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
+        </mat-card-header>
+        <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
+        <mat-card-content>
+        <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
       </mat-card-content>
-    </mat-card>
+
+        <br>
+        <mat-card-content>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>Description</mat-expansion-panel-header>
+                <p>
+                    {{annonce.description}}
+                </p>
+
+            </mat-expansion-panel>
+            <br>
+            <br>
+            <span class="date" >
+              <!-- <mat-icon>touch_app</mat-icon> -->
+              {{annonce.date | date:'dd/MM/yyyy'}}
+            </span>
+            <span class="views">
+              <!-- <mat-icon>touch_app</mat-icon> -->
+              {{annonce.views}} vues
+            </span>
+            <!-- <br> -->
+        </mat-card-content>
+
+        <mat-card-actions style="text-align: center;">
+          <button mat-button style="color: red" (click)="onDisplayPost(annonce._id)"><mat-icon>delete</mat-icon></button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <div style="float: right; vertical-align: middle;">
+
+    </div>
+
+    <!-- <mat-card> -->
+
+    <!-- </mat-card> -->
 
   </ng-container>
 

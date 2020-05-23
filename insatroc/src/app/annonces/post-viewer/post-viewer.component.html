@@ -64,55 +64,58 @@
     <!-- Posts -->
     <!-- {{Filtrer()}}
           {{Trier()}} -->
-    <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
-      <!-- <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" > -->
-      <mat-card>
-          <!-- {{Filtrage()}} -->
+    <div *ngIf="Annonces.length!=0">
+      <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
+        <!-- <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" > -->
+        <mat-card>
+            <!-- {{Filtrage()}} -->
 
-        <mat-card-header style="float:left;">
-            <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
-            <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
+          <mat-card-header style="float:left;">
+              <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
+              <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
 
-        </mat-card-header>
-        <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
-        <!-- <mat-card-content class="sliderr">
-        <img mat-card-image class='image{{i}} ' id={{i}}  src={{annonce.urls[0]}}>
-        <button class="prev" mat-stroked-button (click)="slideIt(i,2)">
-          <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-        <button class="next" mat-stroked-button color="primary" (click)="slideIt(i,1)">
-          <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-        </mat-card-content> -->
-        <mat-card-content>
-        <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
-      </mat-card-content>
-
-<br>
-        <mat-card-content>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>Description</mat-expansion-panel-header>
-                <p>
-                    {{annonce.description}}
-                </p>
-
-            </mat-expansion-panel>
-
-            <br>
-            <span class="date" >
-              <!-- <mat-icon>touch_app</mat-icon> -->
-              {{annonce.date | date:'dd/MM/yyyy'}}
-            </span>
-            <span class="views">
-              <!-- <mat-icon>touch_app</mat-icon> -->
-              {{annonce.views}} vues
-            </span>
-            <br>
-
+          </mat-card-header>
+          <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
+          <!-- <mat-card-content class="sliderr">
+          <img mat-card-image class='image{{i}} ' id={{i}}  src={{annonce.urls[0]}}>
+          <button class="prev" mat-stroked-button (click)="slideIt(i,2)">
+            <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+          <button class="next" mat-stroked-button color="primary" (click)="slideIt(i,1)">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+          </mat-card-content> -->
+          <mat-card-content>
+          <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
         </mat-card-content>
-      </mat-card>
 
-    </ng-container>
+  <br>
+          <mat-card-content>
+              <mat-expansion-panel>
+                  <mat-expansion-panel-header>Description</mat-expansion-panel-header>
+                  <p>
+                      {{annonce.description}}
+                  </p>
+
+              </mat-expansion-panel>
+
+              <br>
+              <span class="date" >
+                <!-- <mat-icon>touch_app</mat-icon> -->
+                {{annonce.date | date:'dd/MM/yyyy'}}
+              </span>
+              <span class="views">
+                <!-- <mat-icon>touch_app</mat-icon> -->
+                {{annonce.views}} vues
+              </span>
+              <br>
+
+          </mat-card-content>
+        </mat-card>
+
+      </ng-container>
+    </div>
+
     <mat-paginator [length]="Annonces.length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
     <!-- {{ResetFiltrage()}} -->
     <div *ngIf="Annonces.length==0" class="Nocontent">
