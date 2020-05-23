@@ -41,7 +41,8 @@ export class PostViewerComponent implements OnInit {
     this.httpservice.getAllPosts();
     this.httpservice.onPostsUpdate().subscribe(
       (res)=>{
-        this.Annonces=res;
+        this.AnnoncesOriginales=res;
+        this.Annonces = this.AnnoncesOriginales;
         for(let k=0 ;k<res.length;k++){
           this.httpservice.getPostsImages(res[k]._id);
         }
@@ -49,20 +50,21 @@ export class PostViewerComponent implements OnInit {
     )
     this.httpservice.onImagesUpdate().subscribe(
       (res)=>{
-        for(let k=0;k<this.Annonces.length;k++){
-          if(this.Annonces[k]._id == Object.keys(res)[0]){
-            this.Annonces[k].urls=res[this.Annonces[k]._id];
+        for(let k=0;k<this.AnnoncesOriginales.length;k++){
+          if(this.AnnoncesOriginales[k]._id == Object.keys(res)[0]){
+            this.AnnoncesOriginales[k].urls=res[this.AnnoncesOriginales[k]._id];
           }else{
             console.log("Erreur qui fait chaud au coeur")
           }
         }
+        this.Annonces = this.AnnoncesOriginales;
       }
     )
     //this.AnnoncesOriginales = this.httpservice.getAllPosts().posts;
     //this.Annonces = this.AnnoncesOriginales;
-    for(let k= 0; k<this.Annonces.length;k++){
+    for(let k= 0; k<this.AnnoncesOriginales.length;k++){
       console.log("dmdouma");
-      this.httpservice.getPostsImages(this.Annonces[k]._id);
+      this.httpservice.getPostsImages(this.AnnoncesOriginales[k]._id);
     }
     this.httpservice.getPostsImages(1);
   }
@@ -71,7 +73,6 @@ export class PostViewerComponent implements OnInit {
     console.log(status)
   }
 
-  AddAnnounce(annonce : PostModel){}
   slideIt(i,seq:number){
     //let doc = document.getElementsByClassName('image'+i);
     //for(let b = 1;b< doc.length;b++ ){
@@ -92,8 +93,9 @@ export class PostViewerComponent implements OnInit {
       (document.getElementsByClassName('image'+i)[0] as HTMLImageElement).src=this.Annonces[i].urls[0];
       console.log(this.Annonces[i].urls)
     }
-
   }
+
+
 
   pageChanged (event : PageEvent){
     console.log(event);

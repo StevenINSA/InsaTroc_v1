@@ -64,7 +64,8 @@
     <!-- Posts -->
     <!-- {{Filtrer()}}
           {{Trier()}} -->
-    <ng-container *ngFor="let annonce of Annonces ; let i = index">
+    <!-- <ng-container *ngFor="let annonce of Annonces ; let i = index"> -->
+      <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
       <!-- <mat-card *ngIf="(annonce.price<=maxprice || maxprice==0) &&  (PostInFilteredCategory(annonce) || selected.length==0)" > -->
       <mat-card>
           <!-- {{Filtrage()}} -->
@@ -75,7 +76,8 @@
 
         </mat-card-header>
         <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
-        <mat-card-content class="sliderr" *ngIf="annonce.urls">
+
+        <!-- <mat-card-content class="sliderr" *ngIf="annonce.urls">
         <img mat-card-image class='image{{i}} ' id={{i}}  src={{annonce.urls[0]}}>
         <button class="prev" mat-stroked-button (click)="slideIt(i,2)">
           <mat-icon>keyboard_arrow_left</mat-icon>
@@ -83,9 +85,10 @@
         <button class="next" mat-stroked-button color="primary" (click)="slideIt(i,1)">
           <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
-        </mat-card-content>
+        </mat-card-content> -->
+
         <mat-card-content>
-        <!--<img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls}}>-->
+        <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
       </mat-card-content>
 
 <br>
