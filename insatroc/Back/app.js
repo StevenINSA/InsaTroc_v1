@@ -558,14 +558,26 @@ app.post('/deletePost/', (req, res, next) => {
 // requête http PATCH pour incrémenter le nombre de vues d'une annonce
 app.patch('/incrview', (req, res, next) => {
   console.log("requête pour incrémenter le nombre de vues");
-  var encryptedToken = req.get("Authorization");  // get authorization token from http header
-  var decodedToken = jwt.decode(encryptedToken); // decode token
-  var userID = decodedToken.userID; // get userID from token payload
-  con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE AnnounceID = '"+req.body.id+"' AND StudentID !='"+userID+"'", function (err, result, fields) {
+  console.log(req.get("Authorization"));
+  if(req.get("Authorization")!=undefined){
+    var encryptedToken = req.get("Authorization");  // get authorization token from http header
+    var decodedToken = jwt.decode(encryptedToken); // decode token
+    var userID = decodedToken.userID; // get userID from token payload
+    con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE AnnounceID = '"+req.body.id+"' AND StudentID !='"+userID+"'", function (err, result, fields) {
       if (err) throw err;
       console.log("annonce incrémentée");
       res.status(200).json({"message":"ok"});
-  });
+    });
+  }
+  else{
+    con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE AnnounceID = '"+req.body.id+"'", function (err, result, fields) {
+      if (err) throw err;
+      console.log("annonce incrémentée");
+      res.status(200).json({"message":"ok"});
+    });
+  }
+
+
 });
 
 
