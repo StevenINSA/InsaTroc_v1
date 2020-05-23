@@ -143,8 +143,9 @@ getAllPostsPaginated(pageIndex){
     //requete get http vers backend pour récuperer les annonces depuis la BD
     //this.getPostsNumberBack()
     const q = "?pageindex="+pageIndex;
-    this.http.get<{postss:PostModel []}>('http://localhost:3000/postspaginated'+q).subscribe(
+    this.http.get<{postss: []}>('http://localhost:3000/postspaginated'+q).subscribe(
       (data)=>{
+        console.log("below is getallpostsPaginated");
         console.log(data.postss);
       }
     )

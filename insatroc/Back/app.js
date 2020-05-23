@@ -479,7 +479,12 @@ app.get('/posts', (req, res, next) => {
     res.status(200).json(resultat);
     console.log("resultat :", resultat);
   });
-});
+}); 
+app.get('/postspaginated',(req,res,next)=>{
+  var postss = [];
+  console.log(req.query.pageindex);
+  res.status(200).json(postss)
+})
 
 // requête http POST pour faire une recherche par mot-clé
 app.post('/search', (req, res, next) => {
