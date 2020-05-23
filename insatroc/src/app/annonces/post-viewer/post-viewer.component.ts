@@ -38,8 +38,33 @@ export class PostViewerComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.maxprice);
-    this.AnnoncesOriginales = this.httpservice.getAllPosts().posts;
-    this.Annonces = this.AnnoncesOriginales;
+    this.httpservice.getAllPosts();
+    this.httpservice.onPostsUpdate().subscribe(
+      (res)=>{
+        this.Annonces=res;
+        for(let k=0 ;k<res.length;k++){
+          this.httpservice.getPostsImages(res[k]._id);
+        }
+      }
+    )
+    this.httpservice.onImagesUpdate().subscribe(
+      (res)=>{
+        for(let k=0;k<this.Annonces.length;k++){
+          if(this.Annonces[k]._id == Object.keys(res)[0]){
+            this.Annonces[k].urls=res[this.Annonces[k]._id];
+          }else{
+            console.log("Erreur qui fait chaud au coeur")
+          }
+        }
+      }
+    )
+    //this.AnnoncesOriginales = this.httpservice.getAllPosts().posts;
+    //this.Annonces = this.AnnoncesOriginales;
+    for(let k= 0; k<this.Annonces.length;k++){
+      console.log("dmdouma");
+      this.httpservice.getPostsImages(this.Annonces[k]._id);
+    }
+    this.httpservice.getPostsImages(1);
   }
 
   log (status) {
