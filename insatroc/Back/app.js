@@ -560,18 +560,11 @@ app.patch('/incrview', (req, res, next) => {
   var encryptedToken = req.get("Authorization");  // get authorization token from http header
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
-  con.query("SELECT StudentID FROM Announce WHERE AnnounceID = '"+req.body.id+"'",function(err,result,fields){
-    if (err) throw err;
-    console.log("StudentID = ",result[0].StudentID);
-    if(result[0].StudentID!=userID){ //si l'annonce n'est pas la sienne
-      con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE AnnounceID = '"+req.body.id+"'", function (err, result, fields) {
-        if (err) throw err;
-        console.log("annonce incrémentée");
-        res.status(200).json({"message":"ok"});
-      });
-    }
+  con.query("UPDATE Announce SET NbViews = NbViews+1 WHERE AnnounceID = '"+req.body.id+"' AND StudentID !='"+userID+"'", function (err, result, fields) {
+      if (err) throw err;
+      console.log("annonce incrémentée");
+      res.status(200).json({"message":"ok"});
   });
-
 });
 
 
@@ -817,8 +810,7 @@ app.post('/modifyPassword', (req, res,next) =>{
 
 
 app.use((req, res, next) => {
- console.log("coucou");
- res.json({message:'coucou'});
+ res.json({message:'Insatroc'});
 });
 
 module.exports = app;
