@@ -25,6 +25,7 @@ export class HttpService {
   public themeUpdater = new Subject<String>();
   public ImagesUpdater = new Subject<any>();
   public PostsUpdater = new Subject<PostModel[]>();
+  public postsCount : number;
 
   private users = [];
 
@@ -135,6 +136,25 @@ getPostsImages(id){
       console.log("yeah");
       this.ImagesUpdater.next(rep)
       console.log(rep);
+    }
+  )
+}
+getAllPostsPaginated(pageIndex){
+    //requete get http vers backend pour récuperer les annonces depuis la BD
+    //this.getPostsNumberBack()
+    const q = "?pageindex="+pageIndex;
+    this.http.get<{postss:PostModel []}>('http://localhost:3000/postspaginated'+q).subscribe(
+      (data)=>{
+        console.log(data.postss);
+      }
+    )
+    return(this.posts);
+  }
+getPostsNumberBack(){
+  this.http.get<{response:number}>('http://localhost:3000/postscount').subscribe(
+    (res)=>{
+      this.postsCount=res.response;
+      
     }
   )
 }

@@ -113,7 +113,7 @@
       </mat-card>
 
     </ng-container>
-    <mat-paginator [length]="Annonces.length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
+    <mat-paginator [length]=79 [pageSize]="NbPostsPerPage" (page)="pageChanged($event)"></mat-paginator>
     <!-- {{ResetFiltrage()}} -->
     <div *ngIf="Annonces.length==0" class="Nocontent">
       <br>

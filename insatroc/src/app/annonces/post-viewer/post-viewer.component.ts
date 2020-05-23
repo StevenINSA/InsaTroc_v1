@@ -38,6 +38,7 @@ export class PostViewerComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.maxprice);
+    this.httpservice.getAllPostsPaginated(0);
     this.httpservice.getAllPosts();
     this.httpservice.onPostsUpdate().subscribe(
       (res)=>{
@@ -97,8 +98,7 @@ export class PostViewerComponent implements OnInit {
 
   pageChanged (event : PageEvent){
     console.log(event);
-    this.pageIndex = event.pageIndex;
-    this.NbPostsPerPage = event.pageSize;
+    this.httpservice.getAllPostsPaginated(event.pageIndex);
   }
 
 // Redirection vers une annonce quand on clique dessus
