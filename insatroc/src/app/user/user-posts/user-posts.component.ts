@@ -24,8 +24,42 @@ export class UserPostsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.Annonces = this.httpservice.getUserPosts();
-    console.log(this.Annonces);
+    // this.Annonces = this.httpservice.getUserPosts();
+    // console.log(this.Annonces);
+
+
+    this.httpservice.getUserPosts();
+    this.httpservice.onPostsUpdate().subscribe(
+      (res)=>{
+        this.Annonces=res;
+        for(let k=0 ;k<res.length;k++){
+          this.httpservice.getPostsImages(res[k]._id);
+        }
+      }
+    )
+    this.httpservice.onImagesUpdate().subscribe(
+      (res)=>{
+        for(let k=0;k<this.Annonces.length;k++){
+          if(this.Annonces[k]._id == Object.keys(res)[0]){
+            this.Annonces[k].urls=res[this.Annonces[k]._id];
+          }
+        }
+      }
+    )
+    for(let k= 0; k<this.Annonces.length;k++){
+      this.httpservice.getPostsImages(this.Annonces[k]._id);
+    }
+    this.httpservice.getPostsImages(1);
+
+
+
+
+
+
+
+
+
+
   }
 
 }
