@@ -881,23 +881,49 @@ app.post('/resetPassword', (req, res, next)=> {
       bcrypt.hash(req.body.password, salt, function(err, hash) {
         if (err) throw err;
         else {
-          con.query("INSERT INTO Student Password VALUES '"+hash+"' WHERE Email = '"+req.body.email+"'", function (err, result, fields){
-            if (err) throw err;
+          // con.query("INSERT INTO Student Password VALUES '"+hash+"' WHERE Email = '"+req.body.email+"'", function (err, result, fields){
+          //   if (err) throw err;
+          //   con.query("SELECT * FROM Student WHERE Email = '"+req.body.email+"'", function (err, result, fields) {
+          //     if (err) throw err;
+          //     username = result[0].Username;
+          //     userID = result[0].StudentID;
+          //     const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
+          //     res.status(200).json({"token" : token, "username" : username});
+          //     console.log("token, username : ", token, username);
+          //     console.log("mot de passe changé");
+          //     res.status(200).json({"message" : "mot de passe changé !"});
+          //   });
+          // });
+
+          con.query("UPDATE Student SET Password='"+hash+"' WHERE Email = '"+req.body.email+"'", function (err, result, fields) {
+            if(err) throw err;
             con.query("SELECT * FROM Student WHERE Email = '"+req.body.email+"'", function (err, result, fields) {
               if (err) throw err;
+              console.log(result);
               username = result[0].Username;
               userID = result[0].StudentID;
               const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
               res.status(200).json({"token" : token, "username" : username});
               console.log("token, username : ", token, username);
               console.log("mot de passe changé");
-              res.status(200).json({"message" : "mot de passe changé !"});
             });
           });
+
         }
       })
     }
   });
+
+
+
+
+
+
+
+
+
+
+
 });
 
 app.post('/forgotPassword', (req, res, next)=> {
