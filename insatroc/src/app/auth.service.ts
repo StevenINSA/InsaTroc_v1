@@ -196,6 +196,7 @@ console.log(error.error.message);
         this.isAuhenticated2();
         this.router.navigate(['mon-profil']);
         this.setTimer(this.timeLeft());
+        this._snackBar.open("Mot de passe changé avec succès","X", {duration: 2000});
       },
       (error)=>{
         console.log("error resetPassword:"+error);}

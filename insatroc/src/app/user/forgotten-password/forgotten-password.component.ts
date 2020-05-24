@@ -19,6 +19,7 @@ export class ForgottenPasswordComponent implements OnInit {
   questionID2: number;
   answer1: string;
   answer2: string;
+  questionsError = null;
   newPassword1: string;
   newPassword2: string;
   hide1 = true;
@@ -43,7 +44,8 @@ export class ForgottenPasswordComponent implements OnInit {
     this.authService.checkSecretQuestions(this.answer1, this.answer2, this.email).subscribe(
       (response) => {console.log(response);
                     this.index = 2;},
-      (error) => {console.log(error);}
+      (error) => {console.log(error);
+                  this.questionsError = "Réponses incorrectes. Veuillez réessayer.";}
     )
   }
 
