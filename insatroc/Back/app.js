@@ -860,6 +860,7 @@ app.post('/getUserSecretQuestions', (req, res, next)=> {
   con.query("SELECT * FROM Student WHERE Email = '"+req.body.email+"'", function (err, result, fields){
     if (err) throw err;
     if (result.length == 0){
+      console.log("email introuvable");
       res.status(400).json({"message" : "Email introuvable"});
     }else{
       var questions=[];
