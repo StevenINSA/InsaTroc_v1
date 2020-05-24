@@ -14,13 +14,24 @@ export class CreateAccountComponent implements OnInit {
   form: FormGroup;
   hide = true;
   error = false;
+  selected1;
+  selected2;
+  secretQuestions = ["Quel est le nom de jeune fille de votre mère ?",
+  "Quel était le nom de votre premier animal de companie ?",
+  "En quelle année est né votre grand-père maternel ?",
+  "Dans quel département êtes-vous né ?",
+  "Quel est le deuxième prénom de votre père ?",
+  "Quel est votre film préféré ?"];
   private authSub : Subscription;
 
 
   constructor(public httpService:HttpService, private authService: AuthService, private router: Router) { }
 
   Register(form: FormGroup){
-    this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password)/*.subscribe(
+    var questionID1 = this.secretQuestions.indexOf(form.value.question1);
+    var questionID2 = this.secretQuestions.indexOf(form.value.question2);
+    this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password, questionID1, form.value.answer1, questionID2, form.value.answer2);
+    /*.subscribe(
       (response) => {console.log(response);
                     this.authService.setUserInfo(response['token'], response['username']);
                     this.router.navigate(['mon-profil']);},
@@ -45,6 +56,10 @@ export class CreateAccountComponent implements OnInit {
       username: new FormControl(),
       email: new FormControl('', [Validators.email]),
       password: new FormControl('', []),
+      question1: new FormControl('', []),
+      answer1: new FormControl('', []),
+      question2: new FormControl('', []),
+      answer2: new FormControl('', []),
     })
     this.authSub=this.authService.onAuthUpdate().subscribe(
       (res)=>{
