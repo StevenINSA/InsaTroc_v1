@@ -854,9 +854,22 @@ app.post('/modifyPassword', (req, res,next) =>{
   });
 });
 
+app.post('getUserSecretQuestions', (req, res, next)=> {
+  console.log("requête de demande de mdp oublié reçue");
+  //on reçoit l'email utilisateur, renvoi les IDs des questions posées lors de la création du compte
+  con.query("SELECT Question1 AND Question2 FROM Student WHERE Email = '"+req.body+"'", function (err, result, fields){
+    if (err) throw err;
+    var questions=[];
+    questions.push(result[0], result[1]);
+    console.log("id des questions : ", questions);
+    res.status(200).json({"ID de la question 1" : questions[0],
+                          "ID de la question 2" : questions[1],})
+  })
+});
 
 app.use((req, res, next) => {
- res.json({message:'Insatroc'});
+ console.log("coucou");
+ res.json({message:'coucou'});
 });
 
 module.exports = app;
