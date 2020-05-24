@@ -3,10 +3,8 @@
     <mat-icon class="main" svgIcon="rhino"></mat-icon>
   </span>
   <button mat-button>
-      <!-- <mat-icon (click)="sidenav.toggle()">menu</mat-icon> -->
       <h1 routerLink="/">INSA'Troc</h1>
   </button>
-  <!-- <span class="fill-remaining-space"></span> -->
   <span class="spacer"></span>
   <button mat-button routerLink="/deposer-une-annonce">
     <mat-icon>add_circle</mat-icon>
@@ -14,15 +12,6 @@
   </button>
   <span class="spacer"></span>
 
-  <!-- <button mat-button routerLink="/deposer-une-annonce">
-      <mat-icon>add_circle</mat-icon>
-      Déposer une annonce
-  </button> -->
-  <!-- </button> -->
-  <!-- <button mat-button routerLink="/Annonces">
-    <mat-icon>pool</mat-icon>
-    Voir toutes les annonces
-  </button> -->
   <button mat-button routerLink="/toutes-les-annonces">
     <mat-icon>dns</mat-icon>
     Voir toutes les annonces
@@ -37,14 +26,9 @@
 
   <span class="spacer"></span>
 
-  <!-- <button mat-button routerLink="/deposer-une-annonce-rea">
-    <mat-icon>pool</mat-icon>
-    Déposer une annonce(rea)
-  </button> -->
   <button mat-icon-button>
     <mat-icon>search</mat-icon>
   </button>
-  <!-- <input mat-clearable-input placeholder="Rechercher une annonce" #search> -->
 
   <mat-form-field appearance="outline" (keydown.enter)="Search(search)">
     <mat-label>Rechercher une annonce</mat-label>

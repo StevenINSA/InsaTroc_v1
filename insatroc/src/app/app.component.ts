@@ -28,12 +28,8 @@ constructor(public httpservice: HttpService, public authservice: AuthService, pr
       (a) => {
         localStorage.setItem("theme",a as string);
         this.theme = a
-
-        console.log(a);
-
       }
     )
     this.authservice.autoAuth();
   }
 }
-  

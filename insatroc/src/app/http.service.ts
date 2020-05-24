@@ -30,41 +30,11 @@ export class HttpService {
 
   constructor(private http: HttpClient, private router:Router, private _snackBar: MatSnackBar) { }
 
-  myMethod(){
-    this.http.get<{response:string}>('http://localhost:3000/').subscribe(
-      (response) => { console.log(response)},
-      (error) => {console.log(error)},
-    );
-  }
-
-  // Ne marche pas si on réactualise la page
-  // getPost2(id) : PostModel{
-  //   console.log(this.posts);
-  //   if(this.posts.length!=0){
-  //     for(let k =0; k<this.posts.length; k++){
-  //       if (id == this.posts[k]._id){
-  //         return this.posts[k];
-  //       }
-  //     }
-  //   }
-  //   else{
-  //     // return(this.getPost(id));
-
-  //     this.getPost(id).subscribe(
-  //       (response) => {console.log(response);
-  //                     return response;},
-  //       (error) => {console.log(error)}
-  //     );
-  //   }
-  // }
-
   // Requête pour afficher une annonce spécifique
   getPost3(id){
-    console.log(this.posts);
     if(this.posts.length!=0){
       for(let k =0; k<this.posts.length; k++){
         if (id == this.posts[k]._id){
-          console.log("blablabla");
           return this.makeObservableFromPost(k);
         }
       }
@@ -77,8 +47,6 @@ export class HttpService {
   makeObservableFromPost(id){
     var post = [];
     post.push({"AnnounceID":this.posts[id]._id, "Titre":this.posts[id].title, "categoryids": this.posts[id].category, "Prix":this.posts[id].price, "Description": this.posts[id].description, "DateDePublication": this.posts[id].date, "NombreDeVues": this.posts[id].views, "Username": this.posts[id].username, "NumTelephone": this.users[id].numTel, "Adresse": this.users[id].contactInfo});
-    console.log("observable");
-    console.log(post);
     const myObservable = new Observable((observer) => {
       observer.next(post);
       observer.complete()
@@ -93,7 +61,6 @@ export class HttpService {
 
 // Requête pour ajouter une annonce
   addPost(post:PostModel){
-    console.log(post);
     this.http.post('http://localhost:3000/addPost',post).subscribe(
       (response) => { console.log(response)
         this.router.navigate(['/annonce'],{queryParams:{bid:response['postID'] as string}});
@@ -105,16 +72,11 @@ export class HttpService {
   }
 
 // Requête pour afficher toutes les annonces
-
   getAllPosts(){
-    //requete get http vers backend pour récuperer les annonces depuis la BD
-    // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
     this.posts = [];
     this.users = [];
     this.http.get('http://localhost:3000/posts').subscribe(
     (data)=>{
-      console.log("data");
-      console.log(data);
       var urls = []
       for(var i in data){
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: data[i].urls, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
@@ -132,9 +94,7 @@ export class HttpService {
     const q ="?bid="+id
     this.http.get<{message : []}>('http://localhost:3000/images'+q).subscribe(
       (rep)=>{
-        console.log("yeah");
         this.ImagesUpdater.next(rep)
-        console.log(rep);
       }
     )
   }
@@ -153,8 +113,6 @@ export class HttpService {
     this.posts = [];
     this.http.get('http://localhost:3000/getUserPosts').subscribe(
     (data)=>{
-      console.log("data");
-      console.log(data);
       for(var i in data){
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
@@ -174,8 +132,6 @@ export class HttpService {
     this.users = [];
     this.http.post('http://localhost:3000/search', {arg:words}).subscribe(
     (data)=>{
-      console.log("data");
-      console.log(data);
       for(var i in data){
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
@@ -188,8 +144,8 @@ export class HttpService {
     return({"posts": this.posts, "postUsers": this.users});
   }
 
+  // Requête pour supprimer une annonce
   deletePost(postID){
-    console.log(postID);
     this.http.post('http://localhost:3000/deletePost', {postID:postID}).subscribe(
       (response) => {console.log(response);
                     this.router.navigate(['mes-annonces']);

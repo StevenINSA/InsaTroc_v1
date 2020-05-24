@@ -18,7 +18,6 @@ export class UserPostsComponent implements OnInit {
   onDisplayPost(id){
     for (let k=0 ; k<this.Annonces.length;k++){
       if(id == this.Annonces[k]._id){
-        console.log("indeed");
         this.router.navigate(['/annonce'],{queryParams:{bid:id as string}});
       }
     }

@@ -55,9 +55,6 @@
       </button>
       <h2>Toutes les annonces</h2>
       <span class="fill-remaining-space"></span>
-      <!-- <span style="font-size:medium;" *ngIf="annoncesFiltrees<=1; else elseBlock">
-        {{annoncesFiltrees}} annonce trouvée</span>
-        <ng-template #elseBlock>{{annoncesFiltrees}} annonces trouvées</ng-template> -->
       <span style="font-size:medium;">{{annoncesFiltrees}} annonces trouvées</span>
     </mat-toolbar>
 
@@ -71,15 +68,6 @@
 
         </mat-card-header>
         <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
-        <!-- <mat-card-content class="sliderr">
-        <img mat-card-image class='image{{i}} ' id={{i}}  src={{annonce.urls[0]}}>
-        <button class="prev" mat-stroked-button (click)="slideIt(i,2)">
-          <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-        <button class="next" mat-stroked-button color="primary" (click)="slideIt(i,1)">
-          <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-        </mat-card-content> -->
 
         <mat-card-content *ngIf="annonce.urls!=null" >
           <div *ngIf="annonce.urls.length!=0">
@@ -100,11 +88,9 @@
 
               <br>
               <span class="date" >
-                <!-- <mat-icon>touch_app</mat-icon> -->
                 {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'hh:mm'}}
               </span>
               <span class="views">
-                <!-- <mat-icon>touch_app</mat-icon> -->
                 {{annonce.views}} vues
               </span>
               <br>

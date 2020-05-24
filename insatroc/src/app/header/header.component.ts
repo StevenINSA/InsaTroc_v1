@@ -22,10 +22,7 @@ export class HeaderComponent implements OnInit {
   }
 
   Search(words){
-    // faire une recherche
     this.router.navigate(['/search'],{queryParams:{arg:words as string}});
-    console.log("recherche :");
-    console.log(this.search);
   }
 
   Disconnect(){
@@ -45,7 +42,6 @@ export class HeaderComponent implements OnInit {
       this.slidetoggle = false;
     }else{
       this.httpService.changetheme('alternative');
-      console.log("ehemmm");
       this.slidetoggle = true;
     }
 
@@ -59,7 +55,6 @@ export class HeaderComponent implements OnInit {
     this.loggedin=this.authService.getAuthStatus();
     this.authService.onAuthUpdate().subscribe(
       (resp)=>{
-        console.log("header : "+resp);
         this.loggedin=resp;
       }
     )

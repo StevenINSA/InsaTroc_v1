@@ -52,17 +52,12 @@ export class PostViewerComponent implements OnInit {
         for(let k=0;k<this.AnnoncesOriginales.length;k++){
           if(this.AnnoncesOriginales[k]._id == Object.keys(res)[0]){
             this.AnnoncesOriginales[k].urls=res[this.AnnoncesOriginales[k]._id];
-          }else{
-            console.log("Erreur qui fait chaud au coeur")
           }
         }
         this.Annonces = this.AnnoncesOriginales;
       }
     )
-    //this.AnnoncesOriginales = this.httpservice.getAllPosts().posts;
-    //this.Annonces = this.AnnoncesOriginales;
     for(let k= 0; k<this.AnnoncesOriginales.length;k++){
-      console.log("dmdouma");
       this.httpservice.getPostsImages(this.AnnoncesOriginales[k]._id);
     }
     this.httpservice.getPostsImages(1);
@@ -72,32 +67,22 @@ export class PostViewerComponent implements OnInit {
     console.log(status)
   }
 
-  slideIt(i,seq:number){
-    //let doc = document.getElementsByClassName('image'+i);
-    //for(let b = 1;b< doc.length;b++ ){
-      //(doc[b] as HTMLElement).style.display='n'
-    //}
-    //console.log(i);
-    //console.log((document.getElementsByClassName('image'+i)[0] as HTMLElement).style.display);
-    //(document.getElementsByClassName('image'+i)[0] as HTMLElement).style.display='none';
-    let f = this.Annonces[i].urls.length;
-    if(seq == 1 ){
-      (document.getElementsByClassName('image'+i)[0] as HTMLImageElement).src=this.Annonces[i].urls[1];
-      this.Annonces[i].urls.push(this.Annonces[i].urls[0]);
-      this.Annonces[i].urls.shift();
-      console.log(this.Annonces[i].urls)
-    }else{
-      this.Annonces[i].urls.unshift(this.Annonces[i].urls[f-1]);
-      this.Annonces[i].urls.pop();
-      (document.getElementsByClassName('image'+i)[0] as HTMLImageElement).src=this.Annonces[i].urls[0];
-      console.log(this.Annonces[i].urls)
-    }
-  }
-
-
+  // slideIt(i,seq:number){
+  //   let f = this.Annonces[i].urls.length;
+  //   if(seq == 1 ){
+  //     (document.getElementsByClassName('image'+i)[0] as HTMLImageElement).src=this.Annonces[i].urls[1];
+  //     this.Annonces[i].urls.push(this.Annonces[i].urls[0]);
+  //     this.Annonces[i].urls.shift();
+  //     console.log(this.Annonces[i].urls)
+  //   }else{
+  //     this.Annonces[i].urls.unshift(this.Annonces[i].urls[f-1]);
+  //     this.Annonces[i].urls.pop();
+  //     (document.getElementsByClassName('image'+i)[0] as HTMLImageElement).src=this.Annonces[i].urls[0];
+  //     console.log(this.Annonces[i].urls)
+  //   }
+  // }
 
   pageChanged (event : PageEvent){
-    console.log(event);
     this.pageIndex = event.pageIndex;
     this.NbPostsPerPage = event.pageSize;
   }
@@ -106,7 +91,6 @@ export class PostViewerComponent implements OnInit {
   onDisplayPost(id){
     for (let k=0 ; k<this.Annonces.length;k++){
       if(id == this.Annonces[k]._id){
-        console.log("indeed");
         this.router.navigate(['/annonce'],{queryParams:{bid:id as string}});
       }
     }
@@ -127,28 +111,14 @@ export class PostViewerComponent implements OnInit {
         this.min = annonce.price;
       }
     }
-    console.log(this.max);
     this.Filtrer();
     this.Trier();
     return this.Annonces;
   }
 
-  // PostInFilteredCategory(annonce: PostModel){
-  //   console.log(this.selected);
-  //   return(this.selected.some((val) => annonce.category.includes(val)));
-  // }
-
-  // ResetFiltrage(){
-  //   this.annoncesFiltrees = 0;
-  // }
-  // Filtrage(){
-  //   this.annoncesFiltrees +=1;
-  // }
-
   Filtrer(){
     var annoncesFiltrees2: PostModel[] = [];
     for(let annonce of this.AnnoncesOriginales){
-      // Filtrage par catégorie
       if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
        && (this.maxprice==0 || annonce.price <= this.maxprice)){
         annoncesFiltrees2.push(annonce);

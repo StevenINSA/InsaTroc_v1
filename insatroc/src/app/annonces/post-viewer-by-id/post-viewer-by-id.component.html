@@ -6,7 +6,6 @@
     <h2 align="right" style= "color: crimson;" *ngIf="post.price==0">Gratuit</h2>
     <h4 style="color: darkgray;">Catégorie : {{post.category}}</h4>
 
-
     <div class="container2" *ngIf="post.urls!=null && post.urls.length>0">
       <div class="mySlides" >
         <div *ngIf="post.urls!=null && post.urls.length>0" class="numbertext">{{slideIndex+1}} / {{post.urls.length}}</div>
@@ -22,18 +21,15 @@
     </div>
 
     <br>
-    <!-- <h2>Description</h2> -->
     <h2 *ngIf="post.description">Description</h2>
     <p>{{post.description}}</p>
     <br>
 
     <br>
     <span class="date" >
-      <!-- <mat-icon>touch_app</mat-icon> -->
       {{post.date | date:'dd/MM/yyyy'}} à {{post.date | date: 'hh:mm'}}
     </span>
     <span class="views">
-      <!-- <mat-icon>touch_app</mat-icon> -->
       {{post.views}} vues
     </span>
     <br>
@@ -50,7 +46,6 @@
       <mat-icon style="transform: scale(2);">account_circle</mat-icon>
     </div>
     <mat-card-title>{{post.username}}</mat-card-title>
-    <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
   </mat-card-header>
   <br>
   <mat-card-content>

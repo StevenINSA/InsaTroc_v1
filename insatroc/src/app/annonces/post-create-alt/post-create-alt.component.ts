@@ -30,11 +30,6 @@ export class PostCreateAltComponent implements OnInit {
 
 
   ngOnInit(): void {
-    // if(!this.authService.checkUserContactInfo()){
-    //   console.log(this.authService.checkUserContactInfo());
-    //   this.openDialog();
-    // }
-
     this.authService.checkUserContactInfo().subscribe(
       (response) => {console.log(response)},
       (error) => {console.log(error);
@@ -47,7 +42,6 @@ export class PostCreateAltComponent implements OnInit {
       description: new FormControl(null,{validators:[Validators.required,Validators.minLength(10)]}),
       price: new FormControl(null,{validators:[Validators.min(0)]}),
       checkbox:new FormControl(null),
-      //image:new FormControl(null,{validators:[imageValidator]})
     });
     this.form2 = new FormGroup({
       image:new FormControl(null,{validators:[imageValidator]})
@@ -61,16 +55,12 @@ export class PostCreateAltComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      // if(result!=undefined){
-      //   this.authService.deleteAccount(result);
-      // }
     });
   }
 
   HidePrice(){
     this.free=!this.free;
     this.form.patchValue({price:0})
-    //this.form.controls['price'].disable();
   }
 
   onSelectFile(event) {
@@ -87,12 +77,8 @@ export class PostCreateAltComponent implements OnInit {
           this.form2.get('image').updateValueAndValidity();
           if (!this.form2.get('image').hasError('chocoloco')){
             reader.readAsDataURL(event.target.files[i]);
-            //uploadi l9lawi
           }else {
-
             console.log(this.form2.get('image').getError('chocoloco'));
-            console.log('7chi l mok')
-            //mat uploadich l9lawi
           }
 
         }
@@ -108,7 +94,6 @@ export class PostCreateAltComponent implements OnInit {
 
   PlusSlides(n) {
     this.slideIndex+=n;
-    console.log("plusslides");
   }
 
   currentSlide(n) {
@@ -136,9 +121,7 @@ export class PostCreateAltComponent implements OnInit {
       username: this.authService.getUsername(),
     }
     this.httpService.addPost(annonce);
-    // this.form.reset();
     this.urls = [];
-    // rediriger vers l'annonce quand on aura fait un composant pour voir une annonce selon l'ID
     this.router.navigate(['']);
     this._snackBar.open("Annonce ajoutée !","X", {duration: 2000});
 
