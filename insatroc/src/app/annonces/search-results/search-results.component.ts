@@ -33,13 +33,6 @@ export class SearchResultsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.route.queryParams.subscribe(params => {
-    //   this.Annonces = this.httpService.getSearchResult(params.arg).posts;
-    //   this.AnnoncesOriginales = this.Annonces;
-    //   console.log("this.post");
-    //   console.log(this.Annonces);
-    // })
-
     this.route.queryParams.subscribe(params => {
       this.httpService.getSearchResult(params.arg);
       this.httpService.onPostsUpdate().subscribe(
@@ -57,9 +50,6 @@ export class SearchResultsComponent implements OnInit {
             if(this.AnnoncesOriginales[k]._id == Object.keys(res)[0]){
               this.AnnoncesOriginales[k].urls = res[this.AnnoncesOriginales[k]._id];
             }
-            else{
-              console.log("Erreur qui fait chaud au coeur");
-            }
           }
           this.Annonces = this.AnnoncesOriginales;
         }
@@ -72,7 +62,6 @@ export class SearchResultsComponent implements OnInit {
   }
 
   pageChanged (event : PageEvent){
-    console.log(event);
     this.pageIndex = event.pageIndex;
     this.NbPostsPerPage = event.pageSize;
   }
@@ -80,7 +69,6 @@ export class SearchResultsComponent implements OnInit {
   onDisplayPost(id){
     for (let k=0 ; k<this.Annonces.length;k++){
       if(id == this.Annonces[k]._id){
-        console.log("indeed");
         this.router.navigate(['/annonce'],{queryParams:{bid:id as string}});
       }
     }
@@ -105,7 +93,6 @@ export class SearchResultsComponent implements OnInit {
   Filtrer(){
     var annoncesFiltrees2: PostModel[] = [];
     for(let annonce of this.AnnoncesOriginales){
-      // Filtrage par catégorie
       if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
        && (this.maxprice==this.min || this.maxprice==0 || annonce.price <= this.maxprice)){
         annoncesFiltrees2.push(annonce);

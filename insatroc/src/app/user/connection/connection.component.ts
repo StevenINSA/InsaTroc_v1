@@ -21,23 +21,12 @@ export class ConnectionComponent implements OnInit {
   constructor(public httpService:HttpService, private authService: AuthService, private router: Router) { }
 
   Login(form: FormGroup){
-
-    this.authService.validate(form.value.email, form.value.password)/*.subscribe(
-      (response) => {console.log(response);
-                    this.authService.setUserInfo(response['token'], response['username']);
-                    this.router.navigate(['']);},
-      (error) => {console.log(error);
-                  this.login_validated = false;
-                  this.form.reset();
-                },
-    );*/
-
+    this.authService.validate(form.value.email, form.value.password);
   }
 
   ngOnInit(): void {
     this.authSub=this.authService.onAuthUpdate().subscribe(
       (bool)=>{
-        console.log(bool);
         this.login_validated=bool;
         if(!bool){
           this.form.reset();
@@ -50,11 +39,7 @@ export class ConnectionComponent implements OnInit {
     })
   }
   ngOnDestroy(): void {
-    console.log("Beer")
     this.authSub.unsubscribe();
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    
   }
 
 }

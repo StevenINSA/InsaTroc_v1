@@ -43,8 +43,6 @@ export class AuthService {
     return this.authStatus;
   }
 
-  // localStorage ou sessionStorage
-
   public setUserInfo(token, username){
     localStorage.setItem('token', token);
     localStorage.setItem('username', username);
@@ -81,14 +79,6 @@ export class AuthService {
 
   // vérifier si un utilisateur a rempli ses infos de contact
   public checkUserContactInfo(){
-    // console.log("checkUserInfo");
-    // this.http.get('http://localhost:3000/checkUserContactInfo').subscribe(
-    //   (response)=>{console.log(response);
-    //               return true;},
-    //   (error)=>{console.log(error);
-    //             return false;}
-    // )
-    // // return false;
     return this.http.get('http://localhost:3000/checkUserContactInfo');
   }
 
@@ -96,7 +86,6 @@ export class AuthService {
   public validate(email, password) {
     this.http.post<{token:string,username:string}>('http://localhost:3000/authenticate', {'email' : email, 'password' : password}).subscribe(
       (response)=>{
-        console.log(atob(response.token.split('.')[1]));
         this.setUserInfo(response.token,response.username);
         this.isAuhenticated2();
         this.router.navigate(['/']);
@@ -113,7 +102,6 @@ export class AuthService {
     this.deleteUserInfo();
     this.http.post<{token:string,username:string}>('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password, 'question1': question1, 'answer1': answer1, 'question2': question2, 'answer2': answer2}).subscribe(
       (response)=>{
-        console.log(response);
         this.setUserInfo(response.token,response.username);
         this.isAuhenticated2();
         this.router.navigate(['mon-profil']);
@@ -127,36 +115,17 @@ export class AuthService {
         }
 
       }
-      /*(response) => {console.log(response);
-        this.authService.setUserInfo(response['token'], response['username']);
-        this.router.navigate(['mon-profil']);},
-(error) => {console.log(error)
-console.log(error.error.message);
-      if(error.error.message == "username or password already exists"){
-        this.error = true;
-        this.form.patchValue({
-          username: '',
-          email: '',
-          password: '',
-        })
-      }
-    },
-);*/
     );
   }
 
   // modifier les infos d'un utilisateur
   public modifyUserInfo(firstname, lastname, username, phone, other){
-    // this.deleteUserInfo();
-
     this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other':other}).subscribe(
       (response) => {console.log(response);
-                      // localStorage.removeItem('username');
                       localStorage.setItem('username', username);
                       this._snackBar.open("Votre profil a bien été modifié.","x", {duration: 4000});},
       (error) => {console.log(error);
                   if(error.error.message =="username already exists"){
-                    console.log(999);
                     this.authUpdater.next(false)
                   }},
     );
@@ -170,13 +139,6 @@ console.log(error.error.message);
   // supprimer son compte
   public deleteAccount(password){
     return (this.http.post('http://localhost:3000/deleteUserAccount', {'password' : password}));
-    // this.http.post('http://localhost:3000/deleteUserAccount', {'password' : password}).subscribe(
-    //   (response) => {console.log(response);
-    //                   this.deleteUserInfo();
-    //                   this.router.navigate(['']);
-    //                   this.dialog.closeAll()},
-    //   (error) => {console.log(error);},
-    // );
   }
 
   // modifier son mot de passe
@@ -184,18 +146,20 @@ console.log(error.error.message);
     return (this.http.post('http://localhost:3000/modifyPassword', {"oldPassword": oldPassword, "newPassword": newPassword}));
   }
 
+  // récupérer les questions secrètes d'un utilisateur à partir de son email quand il a oublié son mot de passe
   public getSecretQuestions(email){
     return this.http.post('http://localhost:3000/getUserSecretQuestions', {email: email});
   }
 
+  // vérifier si ses réponses aux questions secrètes sont correctes
   public checkSecretQuestions(answer1, answer2,email){
     return this.http.post('http://localhost:3000/forgotPassword', {answer1: answer1, answer2: answer2, email:email});
   }
 
+  // réinitialiser son mot de passe
   public resetPassword(email, password){
     this.http.post('http://localhost:3000/resetPassword', {email: email, password: password}).subscribe(
       (response)=>{
-        console.log(response);
         this.setUserInfo(response['token'],response['username']);
         this.isAuhenticated2();
         this.router.navigate(['mon-profil']);
@@ -220,19 +184,16 @@ console.log(error.error.message);
   public autoAuth(){
     try {
       const life = this.timeLeft();
-      console.log(life);
       if (life>0){
         this.setTimer(life);
-        //this.isAuthenticated();
         this.isAuhenticated2();
       }else{
-        console.log("TOKEN EXPIRED , RETURN TO THE VOOOOID");
+        console.log("Token Expired");
         this.deleteUserInfo();
         this.isAuthenticated();
       }
     }catch (err){
       this.deleteUserInfo();
-      //this.isAuthenticated();
       this.isAuhenticated2();
     }
   }
@@ -243,8 +204,6 @@ console.log(error.error.message);
   }
   private setTimer(time:number){
     setTimeout(()=>{
-      //this.token=null;
-      //this.isAuhenticated();
       this.authUpdater.next(false);
       this.authStatus = false;
       console.log("expired");

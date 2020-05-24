@@ -46,7 +46,6 @@
                 <mat-error *ngIf="form.get('price').hasError('required')">Veuillez saisir un prix</mat-error>
                 <mat-error *ngIf="form.get('price').hasError('min')">Veuillez saisir un prix valide</mat-error>
             </mat-form-field>
-            <!-- <span *ngIf="free" class="spacer2"></span> -->
             <mat-checkbox labelPosition="before" (change)="HidePrice()" style="float: right">S'agit-il d'un don ?</mat-checkbox>
 
 
