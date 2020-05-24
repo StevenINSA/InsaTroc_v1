@@ -44,7 +44,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 import {MatTooltipModule} from '@angular/material/tooltip';
-
+import { ForgottenPasswordComponent } from './user/forgotten-password/forgotten-password.component';
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     ChangePasswordDialog,
     DeletePostDialog,
     FillContactInfoDialog,
+    ForgottenPasswordComponent,
   ],
   imports: [
     BrowserModule,
@@ -92,6 +94,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatPaginatorModule,
     MatDialogModule,
     MatTooltipModule,
+    MatTabsModule,
   ],
   entryComponents: [
     DeleteAccountDialog,

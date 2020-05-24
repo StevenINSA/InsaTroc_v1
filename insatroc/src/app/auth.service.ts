@@ -180,6 +180,14 @@ console.log(error.error.message);
     return (this.http.post('http://localhost:3000/modifyPassword', {"oldPassword": oldPassword, "newPassword": newPassword}));
   }
 
+  public getSecretQuestions(email){
+    return this.http.post('http://localhost:3000/secretQuestions', {email: email});
+  }
+
+  public checkSecretQuestions(answer1, answer2){
+    return this.http.post('http://localhost:3000/forgotPassword', {answer1: answer1, answer2: answer2});
+  }
+
 
 /*********************************************************************
 *               Authentication and Token Management                  *
