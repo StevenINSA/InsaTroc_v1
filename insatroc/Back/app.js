@@ -246,7 +246,7 @@ const register = () => {
               } else {
                 console.log(hash)
                 //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
-                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"')", function (err, result, fields){
+                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,Question1,Answer1,Question2,Answer2) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','"+req.body.question1+"','"+req.body.answer1+"','"+req.body.question2+"','"+req.body.answer2+"')", function (err, result, fields){
                   if (err) {
                     throw err;
                   }
@@ -601,7 +601,7 @@ app.patch('/incrview', (req, res, next) => {
 
 
 });
-app.get('/images',(req,ress,nex)=>{
+app.get('/images',(req,res,nex)=>{
   var id = req.query.bid
   con.query("SELECT ImageString FROM Image WHERE AnnounceID = '"+id+"'",function(err,res,field){
     var urls = [];
