@@ -854,7 +854,7 @@ app.post('/modifyPassword', (req, res,next) =>{
   });
 });
 
-app.post('getUserSecretQuestions', (req, res, next)=> {
+app.post('/getUserSecretQuestions', (req, res, next)=> {
   console.log("requête de demande de mdp oublié reçue");
   //on reçoit l'email utilisateur, renvoi les IDs des questions posées lors de la création du compte
   con.query("SELECT Question1 AND Question2 FROM Student WHERE Email = '"+req.body+"'", function (err, result, fields){
@@ -864,7 +864,27 @@ app.post('getUserSecretQuestions', (req, res, next)=> {
     console.log("id des questions : ", questions);
     res.status(200).json({"ID de la question 1" : questions[0],
                           "ID de la question 2" : questions[1],})
-  })
+  });
+});
+
+app.post('/resetPassword', (req, res, next)=> {
+  console.log("demande de réinisialisation de mdp");
+  //on reçoit l'Email, on renvoi un status ok et on stocke le nouveau mdp
+  bcrypt.genSalt(saltRounds, function (err, salt) {
+    if (err) throw err;
+    else {
+      bcrypt.hash(req.body.password, salt, function(err, hash) {
+        if (err) throw err;
+        else {
+          con.query("INSERT INTO Student Password VALUES '"+hash+"' WHERE Email = '"+req.body.email+"'", function (err, result, fields){
+            if (err) throw err;
+            console.log("mot de passe changé");
+            res.status(200).json({"message" : "mot de passe changé !"});
+          });
+        }
+      })
+    }
+  });
 });
 
 app.use((req, res, next) => {
