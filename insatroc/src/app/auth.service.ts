@@ -154,7 +154,11 @@ console.log(error.error.message);
                       // localStorage.removeItem('username');
                       localStorage.setItem('username', username);
                       this._snackBar.open("Votre profil a bien été modifié.","x", {duration: 4000});},
-      (error) => {console.log(error)},
+      (error) => {console.log(error);
+                  if(error.error.message =="username already exists"){
+                    console.log(999);
+                    this.authUpdater.next(false)
+                  }},
     );
   }
 

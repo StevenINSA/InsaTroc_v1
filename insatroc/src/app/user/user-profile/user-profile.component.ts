@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {Inject} from '@angular/core';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Router} from "@angular/router";
+import { Subscription } from 'rxjs';
 
 export interface DialogData {
   password: string;
@@ -26,6 +27,7 @@ export interface PasswordDialogData {
 })
 export class UserProfileComponent implements OnInit {
   form: FormGroup;
+  error = false;
   user: UserModel;
   hide = true;
   password: string;
@@ -39,6 +41,7 @@ export class UserProfileComponent implements OnInit {
   readonlyPhoneNumber = true;
   readonlyContact = true;
   modified = false;
+  authSub : Subscription;
 
   constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog, public router: Router) {}
 
@@ -74,6 +77,14 @@ export class UserProfileComponent implements OnInit {
     this.readonlyPhoneNumber = true;
     this.readonlyUsername = true;
     this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact);
+    this.authSub=this.authService.onAuthUpdate().subscribe(
+      (res)=>{
+        if(!res){
+          this.error=true;
+          this.form.patchValue({username:''})
+        }
+      }
+    )
   }
 
   Annuler(){
