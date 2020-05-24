@@ -16,10 +16,6 @@ const con = mysql.createConnection({
 });
 const jwtKey = "privateKey";
 
-
-//const mariadb = require('mariadb');
-//const pool = mariadb.createPool({database:'insatroc', host: 'localhost', user:'toto2', password: 'pwdtoto'});
-
 const app = express();
 
 function attributeID(category){
@@ -133,11 +129,6 @@ function(username, password, done) {
         if (err) {
           throw err;
         } else {
-          /*var string = JSON.stringify(result); //convertit le result en JSON
-          console.log(string);
-          var json = JSON.parse(string); //sépare les éléments du JSON
-          console.log(json);
-          console.log("selection : ", json[0].Password);*/
           var motdepasse = result[0].Password;
           bcrypt.compare (password, motdepasse, function(err, isMatch){
             if (err) {
@@ -158,10 +149,10 @@ function(username, password, done) {
 
 // to facilitate user data storage in the session and retrieving the data on subsequent requests
 passport.serializeUser(function(user, done) {
-if(user) done(null, user);
+  if(user) done(null, user);
 });
 passport.deserializeUser(function(id, done) {
-done(null, id);
+  done(null, id);
 });
 
 app.use(passport.initialize());
@@ -196,20 +187,15 @@ return (req, res, next) => {
     else{
       res.status(401).json({"message" : "wrong authentication", info});
     }
-    // req.login(user, function(error) {
-    //   console.log("passport.authenticate");
-    //   if(error) return next(error);
-    //   next();
-    // });
   })(req, res, next);
 }}
 
 
 // requête http POST pour l'authentification
 app.post('/authenticate/', auth(), (req, res) => {
-console.log("requête d\'authentification reçue");
-console.log(req.body);
-res.status(200).json({"statusCode" : 200, "message" : "hello"});
+  console.log("requête d\'authentification reçue");
+  console.log(req.body);
+  res.status(200).json({"statusCode" : 200, "message" : "hello"});
 });
 
 
@@ -225,8 +211,6 @@ const register = () => {
     var last_name = req.body.last_name;
     var username = req.body.username;
     var email = req.body.email;
-    var password;
-    var userID;
 
     con.query("SELECT * FROM Student WHERE Username = '"+username+"' OR Email = '"+email+"'", function (err, result, fields) {
       if (err) throw err;
@@ -245,7 +229,6 @@ const register = () => {
                 throw err
               } else {
                 console.log(hash)
-                //$2a$10$FEBywZh8u9M0Cec/0mWep.1kXrwKeiWDba6tdKvDfEBjyePJnDT7K
                 con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,Question1,Answer1,Question2,Answer2) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','"+req.body.question1+"','"+req.body.answer1+"','"+req.body.question2+"','"+req.body.answer2+"')", function (err, result, fields){
                   if (err) {
                     throw err;
@@ -299,7 +282,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   var catID=[];
   for (let i=0; i< req.body.category.length; i++){
     var objet = req.body.category[i];
-    catID[i] = attributeID(objet.toString()); //convertion de l'objet en string
+    catID[i] = attributeID(objet.toString()); //conversion de l'objet en string
   }
 
   var today = new Date(); //formater la date
@@ -316,7 +299,6 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les erreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
 
-  // con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
   con.query("SELECT * FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
     if(err) throw err;
     var studentPhoneNb = result[0].TelephoneNumber;
@@ -328,15 +310,13 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
       var postID = result.insertId;
       res.status(201).json({message: 'objet créé', postID: postID, phoneNb: studentPhoneNb, contact: studentContact});
       for (let i=0; i<req.body.category.length; i++){
-        console.log(6666),
-
         con.query("INSERT INTO AnnounceCategories (CategoryID, AnnounceID) VALUES ('"+catID[i]+"','"+result.insertId+"')",
           function (err, result, fields){
             if (err) throw err;
             console.log(result);
         });
       }
-      console.log(9999999);
+      
       for(let k= 0 ; k<req.body.urls.length ; k++){
         console.log(999);
         con.query("INSERT INTO Image (ImageString, AnnounceID) VALUES ('"+req.body.urls[k]+"','"+result.insertId+"')"),
@@ -494,7 +474,7 @@ app.post('/search', (req, res, next) => {
   arg = arg.replace(',', ' ');
   arg = arg.replace(', ', ' ');
   arg = arg.replace('.', ' ');
-  var split_regex = new RegExp('[ +()*/:?-]', 'g');
+  var split_regex = new RegExp('[ \ªº!@·#$~%&¬=¿¡_<>{}+()*/:?"-]', 'g');
   var req_filt_str = arg.split(split_regex)
                       .filter(kw => kw.length > 2)
                       .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0')
@@ -550,7 +530,7 @@ app.post('/search', (req, res, next) => {
                           "categoryids" : categoryids,
                           }
           }
-        }
+        } 
       }
       for(let i=0; i<resultat.length; i++){
         resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
@@ -570,14 +550,17 @@ app.post('/deletePost/', (req, res, next) => {
   con.query("SELECT StudentID FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
     if(err) throw err;
     if(userID == result[0].StudentID){ // vérifier que le username de l'en-tête http et de l'annonce sont identiques
-      con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+      con.query("DELETE FROM Image WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
         if(err) throw err;
-          con.query("DELETE FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
-            if(err) throw err;
-            res.status(200).json({"message" : "annonce supprimée"});
-          })
+        con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+          if(err) throw err;
+            con.query("DELETE FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+              if(err) throw err;
+              res.status(200).json({"message" : "annonce supprimée"});
+            })
+        })
       })
-    }
+    }  
   });
 })
 
@@ -772,11 +755,6 @@ app.post('/deleteUserAccount', (req, res, next) => {
     if (err) {
       throw err;
     } else {
-      /*var string = JSON.stringify(result); //convertit le result en JSON
-      console.log(string);
-      var json = JSON.parse(string); //sépare les éléments du JSON
-      console.log(json);
-      console.log("selection : ", json[0].Password);*/
       var motdepasse = result[0].Password;
       bcrypt.compare (password, motdepasse, function(err, isMatch){
         if (err) {
@@ -784,7 +762,6 @@ app.post('/deleteUserAccount', (req, res, next) => {
         } else if (!isMatch){
           console.log("The password doesn't match!");
           res.status(400).json({"statusCode" : 400, "message" : "incorrect password"});
-          // return done("Incorrect Email/Password credentials", false);
         } else {
           console.log("Correct password");
 
@@ -793,6 +770,9 @@ app.post('/deleteUserAccount', (req, res, next) => {
             console.log("annonces : ", result);
             for (let i=0; i<result.length; i++){
               con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+result[i].AnnounceID+"'", function(err,result,fields){
+                if(err) throw err;
+              });
+              con.query("DELETE FROM Image WHERE AnnounceID = '"+result[i].AnnounceID+"'", function(err,result,fields){
                 if(err) throw err;
               });
             }
@@ -904,26 +884,16 @@ app.post('/resetPassword', (req, res, next)=> {
     }
   });
 
-
-
-
-
-
-
-
-
-
-
 });
 
 app.post('/forgotPassword', (req, res, next)=> {
   console.log("Requête d'oubli de mot de passe envoyée");
   con.query("SELECT Answer1,Answer2 FROM Student WHERE Email='"+req.body.email+"'", function(err,result, fields){
     if (err) throw err;
-    console.log("Answer 1 :",result[0].Answer1);
-    console.log("Answer 2 :",result[0].Answer2);
-    console.log("Answer 1 user :",req.body.answer1);
-    console.log("Answer 2 user :",req.body.answer2);
+      console.log("Answer 1 :",result[0].Answer1);
+      console.log("Answer 2 :",result[0].Answer2);
+      console.log("Answer 1 user :",req.body.answer1);
+      console.log("Answer 2 user :",req.body.answer2);
     if(result[0].Answer1==req.body.answer1 && result[0].Answer2==req.body.answer2) {
       res.status(200).json({"message":"good answers"});
     } else {
