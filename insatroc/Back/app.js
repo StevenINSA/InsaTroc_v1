@@ -601,7 +601,7 @@ app.patch('/incrview', (req, res, next) => {
 
 
 });
-app.get('/images',(req,res,nex)=>{
+app.get('/images',(req,ress,nex)=>{
   var id = req.query.bid
   con.query("SELECT ImageString FROM Image WHERE AnnounceID = '"+id+"'",function(err,res,field){
     var urls = [];
