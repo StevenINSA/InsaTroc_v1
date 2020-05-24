@@ -3,6 +3,7 @@ import { PostModel } from '../post_model';
 import {HttpService } from '../../http.service';
 import {Router, ActivatedRoute} from "@angular/router";
 import { PageEvent } from '@angular/material/paginator';
+import { keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-search-results',
@@ -32,11 +33,41 @@ export class SearchResultsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.route.queryParams.subscribe(params => {
+    //   this.Annonces = this.httpService.getSearchResult(params.arg).posts;
+    //   this.AnnoncesOriginales = this.Annonces;
+    //   console.log("this.post");
+    //   console.log(this.Annonces);
+    // })
+
     this.route.queryParams.subscribe(params => {
-      this.Annonces = this.httpService.getSearchResult(params.arg).posts;
-      this.AnnoncesOriginales = this.Annonces;
-      console.log("this.post");
-      console.log(this.Annonces);
+      this.httpService.getSearchResult(params.arg);
+      this.httpService.onPostsUpdate().subscribe(
+        (res) => {
+          this.AnnoncesOriginales = res;
+          this.Annonces = this.AnnoncesOriginales;
+          for(let k=0; k<res.length; k++){
+            this.httpService.getPostsImages(res[k]._id);
+          }
+        }
+      );
+      this.httpService.onImagesUpdate().subscribe(
+        (res) => {
+          for(let k=0; k<this.AnnoncesOriginales.length; k++){
+            if(this.AnnoncesOriginales[k]._id == Object.keys(res)[0]){
+              this.AnnoncesOriginales[k].urls = res[this.AnnoncesOriginales[k]._id];
+            }
+            else{
+              console.log("Erreur qui fait chaud au coeur");
+            }
+          }
+          this.Annonces = this.AnnoncesOriginales;
+        }
+      );
+      for(let k=0; k<this.AnnoncesOriginales.length; k++){
+        this.httpService.getPostsImages(this.AnnoncesOriginales[k]._id);
+      }
+      this.httpService.getPostsImages(1);
     })
   }
 
@@ -75,9 +106,6 @@ export class SearchResultsComponent implements OnInit {
     var annoncesFiltrees2: PostModel[] = [];
     for(let annonce of this.AnnoncesOriginales){
       // Filtrage par catégorie
-      console.log(this.maxprice);
-      console.log(this.min);
-      console.log(annonce.price);
       if((this.selected.length==0 || this.selected.some((val) => annonce.category.includes(val)))
        && (this.maxprice==this.min || this.maxprice==0 || annonce.price <= this.maxprice)){
         annoncesFiltrees2.push(annonce);

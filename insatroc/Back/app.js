@@ -425,7 +425,7 @@ app.get('/posts', (req, res, next) => {
     var categoryids=[];
     let j=0; //on travail avec deux pointeurs : i et j
     for (let i=0; i<result.length; i++){
-      
+
 
       var urls = [];
       //for (let j=0; j<result[i])
@@ -593,12 +593,12 @@ app.get('/images',(req,ress,nex)=>{
   var id = req.query.bid
   con.query("SELECT ImageString FROM Image WHERE AnnounceID = '"+id+"'",function(err,res,field){
     var urls = [];
-        for(let k =0;k<res.length;k++){
-          urls.push(res[k].ImageString)
-        }
-        console.log(urls.length);
-        ress.status(200).json({[id]:urls});
-      })
+    for(let k =0;k<res.length;k++){
+      urls.push(res[k].ImageString)
+    }
+    console.log(urls.length);
+    ress.status(200).json({[id]:urls});
+  })
 })
 
 

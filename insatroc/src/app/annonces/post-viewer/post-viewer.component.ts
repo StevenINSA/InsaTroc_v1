@@ -37,7 +37,6 @@ export class PostViewerComponent implements OnInit {
   constructor(public httpservice: HttpService, private router:Router) {}
 
   ngOnInit(): void {
-    console.log(this.maxprice);
     this.httpservice.getAllPosts();
     this.httpservice.onPostsUpdate().subscribe(
       (res)=>{

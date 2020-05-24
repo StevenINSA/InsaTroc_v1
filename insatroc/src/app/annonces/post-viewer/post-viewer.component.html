@@ -87,11 +87,15 @@
           </button>
         </mat-card-content> -->
 
-        <mat-card-content>
-        <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
+        <mat-card-content *ngIf="annonce.urls!=null" >
+          <div *ngIf="annonce.urls.length!=0">
+            <br>
+            <img mat-card-image src={{annonce.urls[0]}}>
+          </div>
+          <br *ngIf="annonce.urls.length==0">
       </mat-card-content>
 
-<br>
+
         <mat-card-content>
             <mat-expansion-panel>
                 <mat-expansion-panel-header>Description</mat-expansion-panel-header>

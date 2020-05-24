@@ -117,7 +117,6 @@ export class HttpService {
       console.log(data);
       var urls = []
       for(var i in data){
-
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: data[i].urls, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
@@ -128,16 +127,17 @@ export class HttpService {
     })
     return({"posts": this.posts, "postUsers": this.users});
   }
-getPostsImages(id){
-  const q ="?bid="+id
-  this.http.get<{message : []}>('http://localhost:3000/images'+q).subscribe(
-    (rep)=>{
-      console.log("yeah");
-      this.ImagesUpdater.next(rep)
-      console.log(rep);
-    }
-  )
-}
+
+  getPostsImages(id){
+    const q ="?bid="+id
+    this.http.get<{message : []}>('http://localhost:3000/images'+q).subscribe(
+      (rep)=>{
+        console.log("yeah");
+        this.ImagesUpdater.next(rep)
+        console.log(rep);
+      }
+    )
+  }
 
 // Incrémentation du nombre de vues d'une annonce quand un utilisateur clique dessus
   incrPostViews(bid:string){
@@ -180,6 +180,7 @@ getPostsImages(id){
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
+      this.PostsUpdater.next([...this.posts]);
       console.log(this.posts);
       console.log(this.users);
     })

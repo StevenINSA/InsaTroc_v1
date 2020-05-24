@@ -62,6 +62,14 @@ export class PostViewerByIdComponent implements OnInit {
           this.postID = this.post._id;
           this.userColor = this.getRandomColor();
           this.httpService.incrPostViews(this.post._id);
+
+          this.httpService.getPostsImages(this.post._id);
+          this.httpService.onImagesUpdate().subscribe(
+            (res) => {console.log(res);
+              this.post.urls = res[this.post._id];
+            console.log(this.post.urls)}
+          )
+
         },
         (error) => {console.log(error)}
       );
