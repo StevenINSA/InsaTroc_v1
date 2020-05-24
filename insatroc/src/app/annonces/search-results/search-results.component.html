@@ -18,12 +18,12 @@
       <mat-form-field appearance="standard">
         <mat-select placeholder="Catégorie" name="category" size="1" ngModel [(value)]="selected" multiple>
           <mat-select-trigger>{{selected}}</mat-select-trigger>
-          <mat-option value="Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
-          <mat-option value="Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
-          <mat-option value="Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
-          <mat-option value="Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
-          <mat-option value="Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
-          <mat-option value="Autre"><mat-icon>category</mat-icon>Autre</mat-option>
+          <mat-option value=" Chambre"><mat-icon>local_hotel</mat-icon>Chambre</mat-option>
+          <mat-option value=" Cuisine"><mat-icon>restaurant</mat-icon>Cuisine</mat-option>
+          <mat-option value=" Salle de bain"><mat-icon>bathtub</mat-icon>Salle de bain</mat-option>
+          <mat-option value=" Bureau"><mat-icon>menu_book</mat-icon>Bureau</mat-option>
+          <mat-option value=" Loisirs/Sport"><mat-icon>sports_esports</mat-icon>Loisirs/Sport</mat-option>
+          <mat-option value=" Autre"><mat-icon>category</mat-icon>Autre</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="standard">
@@ -61,41 +61,41 @@
     <!-- Posts -->
     <div *ngIf="getAnnonces().length!=0">
       <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
-        <mat-card>
-          <mat-card-header style="float:left;">
-              <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
-              <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
+          <mat-card style="display: flex;">
 
-        </mat-card-header>
-        <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
+            <div style="width: 25%; margin-right: 20px; margin-left: 10px; display: flex; justify-content: center; align-items: center;">
+              <img mat-card-image src={{annonce.urls[0]}} *ngIf="annonce.urls.length!=0" style="max-width: 100%; max-height: 100%;">
+              <mat-icon *ngIf="annonce.urls.length==0" fontSet="material-icons-two-tone" style="transform: scale(3);">insert_photo</mat-icon>
+            </div>
 
-        <mat-card-content *ngIf="annonce.urls!=null" >
-          <div *ngIf="annonce.urls.length!=0">
-            <br>
-            <img mat-card-image src={{annonce.urls[0]}}>
-          </div>
-          <br *ngIf="annonce.urls.length==0">
-      </mat-card-content>
+            <div style="width: 75%;">
+              <mat-card-header style="float:left;">
+                <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
+                <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
+              </mat-card-header>
+              <h2 align="right" style="color: crimson">{{annonce.price | number: '1.2-2'}} €</h2>
 
-        <mat-card-content>
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>Description</mat-expansion-panel-header>
-                <p>
-                    {{annonce.description}}
-                </p>
+              <mat-card-content>
+                <br>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>Description</mat-expansion-panel-header>
+                  <p>{{annonce.description}}</p>
+                </mat-expansion-panel>
 
-              </mat-expansion-panel>
+                <br>
+                <span class="date" >
+                  {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'HH:mm'}}
+                </span>
+                <span class="views">
+                  {{annonce.views}} vues
+                </span>
+                <br>
 
-              <br>
-              <span class="date" >
-                {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'HH:mm'}}
-              </span>
-              <span class="views">
-                {{annonce.views}} vues
-              </span>
-              <br>
+              </mat-card-content>
+            </div>
 
-          </mat-card-content>
+
+
         </mat-card>
 
       </ng-container>
@@ -106,7 +106,7 @@
     <div *ngIf="getAnnonces().length==0" class="Nocontent">
       <h3>Aucun résultat</h3>
     </div>
-    <br *ngIf="getAnnonces().length==0">
+    <br>
     <mat-paginator [length]="getAnnonces().length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
 
 

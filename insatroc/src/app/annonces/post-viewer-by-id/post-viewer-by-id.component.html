@@ -2,7 +2,7 @@
   <div>
     <br>
     <h1 style="float: left">{{post.title}}</h1>
-    <h2 align="right" style= "color: crimson;" *ngIf="post.price!=0">{{post.price}} €</h2>
+    <h2 align="right" style= "color: crimson;" *ngIf="post.price!=0">{{post.price | number: '1.2-2'}} €</h2>
     <h2 align="right" style= "color: crimson;" *ngIf="post.price==0">Gratuit</h2>
     <h4 style="color: darkgray;">Catégorie : {{post.category}}</h4>
 
