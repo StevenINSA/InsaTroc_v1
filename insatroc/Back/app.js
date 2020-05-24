@@ -901,9 +901,9 @@ app.post('/forgotPassword', (req, res, next)=> {
     console.log("Answer 1 user :",req.body.answer1);
     console.log("Answer 2 user :",req.body.answer2);
     if(result[0].Answer1==req.body.answer1 && result[0].Answer2==req.body.answer2) {
-      res.status(200).json({"valid":"ok"});
+      res.status(200).json({"message":"good answers"});
     } else {
-      res.json({"valid":"no"});
+      res.status(400).json({"message":"bad answers"});
     }
   });
 });
