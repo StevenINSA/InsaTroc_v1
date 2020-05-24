@@ -7,9 +7,9 @@
     <h4 style="color: darkgray;">Catégorie : {{post.category}}</h4>
 
 
-    <!-- <div class="container2" *ngIf="post.urls!=null || post.urls.length>0">
-      <div class="mySlides">
-        <div class="numbertext">{{slideIndex+1}} / {{post.urls.length}}</div>
+    <div class="container2" *ngIf="post.urls!=null && post.urls.length>0">
+      <div class="mySlides" >
+        <div *ngIf="post.urls!=null && post.urls.length>0" class="numbertext">{{slideIndex+1}} / {{post.urls.length}}</div>
         <img [src]="post.urls[slideIndex]" style="width:100%">
       </div>
       <a class="prev" (click)="PlusSlides(-1)" *ngIf="slideIndex>0">&#10094;</a>
@@ -19,7 +19,7 @@
           <img [className]="(i==slideIndex) ? 'demo cursor active' : 'demo cursor'" [src]="url" style="width:100%" (click)="currentSlide(i)">
         </div>
       </div>
-    </div> -->
+    </div>
 
     <br>
     <!-- <h2>Description</h2> -->

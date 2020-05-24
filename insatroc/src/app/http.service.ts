@@ -7,6 +7,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable } from "rxjs/";
 import {MatSnackBar} from '@angular/material/snack-bar';
+import { toBase64String } from '@angular/compiler/src/output/source_map';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -22,6 +23,9 @@ const httpOptions = {
 export class HttpService {
   private posts: PostModel[]= []
   public themeUpdater = new Subject<String>();
+  public ImagesUpdater = new Subject<any>();
+  public PostsUpdater = new Subject<PostModel[]>();
+
   private users = [];
 
   constructor(private http: HttpClient, private router:Router, private _snackBar: MatSnackBar) { }
@@ -101,6 +105,7 @@ export class HttpService {
   }
 
 // Requête pour afficher toutes les annonces
+
   getAllPosts(){
     //requete get http vers backend pour récuperer les annonces depuis la BD
     // this.http.get<{response:string, posts:PostModel []}>('http://localhost:3000/posts').subscribe(
@@ -110,14 +115,28 @@ export class HttpService {
     (data)=>{
       console.log("data");
       console.log(data);
+      var urls = []
       for(var i in data){
-        this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
+        this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: data[i].urls, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
+      this.PostsUpdater.next([...this.posts]);
+
       console.log(this.posts);
       console.log(this.users);
     })
     return({"posts": this.posts, "postUsers": this.users});
+  }
+
+  getPostsImages(id){
+    const q ="?bid="+id
+    this.http.get<{message : []}>('http://localhost:3000/images'+q).subscribe(
+      (rep)=>{
+        console.log("yeah");
+        this.ImagesUpdater.next(rep)
+        console.log(rep);
+      }
+    )
   }
 
 // Incrémentation du nombre de vues d'une annonce quand un utilisateur clique dessus
@@ -140,6 +159,7 @@ export class HttpService {
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
+      this.PostsUpdater.next([...this.posts])
       console.log(this.posts);
       console.log(this.users);
     })
@@ -160,6 +180,7 @@ export class HttpService {
         this.posts.push({_id:data[i].AnnounceID, title: data[i].Titre, category: data[i].categoryids, price: data[i].Prix, description: data[i].Description, urls: null, date: data[i].DateDePublication, views: data[i].NombreDeVues, username: data[i].Username});
         this.users.push({"contactInfo": data[i].Adresse, "numTel": data[i].NumTelephone});
       }
+      this.PostsUpdater.next([...this.posts]);
       console.log(this.posts);
       console.log(this.users);
     })
@@ -179,6 +200,12 @@ export class HttpService {
 
   onThemeUpdate(){
     return(this.themeUpdater.asObservable())
+  }
+  onImagesUpdate(){
+    return(this.ImagesUpdater.asObservable())
+  }
+  onPostsUpdate(){
+    return(this.PostsUpdater.asObservable())
   }
   changetheme(theme?:String){
     this.themeUpdater.next(theme)

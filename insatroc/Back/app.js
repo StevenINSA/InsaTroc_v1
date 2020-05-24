@@ -107,7 +107,7 @@ app.use((req, res, next) => { //header permettant de communiquer entre les deux 
   next();
 });
 
-app.use(bodyParser.json());//formate en JSON les données pour n'importe quelle route
+app.use(bodyParser.json({limit:'10mb'}));//formate en JSON les données pour n'importe quelle route
 
 
 
@@ -294,7 +294,7 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 // requête http POST pour ajouter une nouvelle annonce dans la DB
 app.post('/addPost',tokenValidator,(req, res, next) => {
   console.log("requête de création d'annonce reçue :")
-	console.log(req.body);  //affiche les éléments de la requête
+  //console.log(req.body);  //affiche les éléments de la requête
 
   var catID=[];
   for (let i=0; i< req.body.category.length; i++){
@@ -324,6 +324,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
       var postID = result.insertId;
       res.status(201).json({message: 'objet créé', postID: postID, phoneNb: studentPhoneNb, contact: studentContact});
       for (let i=0; i<req.body.category.length; i++){
+        console.log(6666),
 
         con.query("INSERT INTO AnnounceCategories (CategoryID, AnnounceID) VALUES ('"+catID[i]+"','"+result.insertId+"')",
           function (err, result, fields){
@@ -331,7 +332,21 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
             console.log(result);
         });
       }
+      console.log(9999999);
+      for(let k= 0 ; k<req.body.urls.length ; k++){
+        console.log(999);
+        con.query("INSERT INTO Image (ImageString, AnnounceID) VALUES ('"+req.body.urls[k]+"','"+result.insertId+"')"),
+          function(err,result, blabla){
+            if(err){
+              throw err;
+            }else{
+              console.log("HELLLLLLL");
+              console.log(result);
+            }
+          }
+      }
     });
+    console.log(88);
   });
 })
 
@@ -400,6 +415,7 @@ app.get('/getPost/:id', (req, res, next) => {
 app.get('/posts', (req, res, next) => {
   console.log("requête d'affichage de toutes les annonces reçue :")
   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID ORDER BY Announce.AnnounceID", function (err, result, fields) {
+
     if (err) throw err;
 
     /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
@@ -410,6 +426,11 @@ app.get('/posts', (req, res, next) => {
     let j=0; //on travail avec deux pointeurs : i et j
     for (let i=0; i<result.length; i++){
 
+
+      var urls = [];
+      //for (let j=0; j<result[i])
+      console.log(result[i].ImageString)
+
       if (i==0){
         categoryids[0]=result[i].CategoryID;
         resultat[j]={"AnnounceID" : result[i].AnnounceID,
@@ -419,6 +440,7 @@ app.get('/posts', (req, res, next) => {
                    "StudentID" : result[i].StudentID,
                    "DateDePublication" : result[i].PublicationDate,
                    "NombreDeVues" : result[i].NbViews,
+                   "urls":result[i].ImageString,
                    "Username" : result[i].Username,
                    "NumTelephone" : result[i].TelephoneNumber,
                    "Image" : result[i].Image,
@@ -579,6 +601,17 @@ app.patch('/incrview', (req, res, next) => {
 
 
 });
+app.get('/images',(req,ress,nex)=>{
+  var id = req.query.bid
+  con.query("SELECT ImageString FROM Image WHERE AnnounceID = '"+id+"'",function(err,res,field){
+    var urls = [];
+    for(let k =0;k<res.length;k++){
+      urls.push(res[k].ImageString)
+    }
+    console.log(urls.length);
+    ress.status(200).json({[id]:urls});
+  })
+})
 
 
 /***************************************************************************************************
