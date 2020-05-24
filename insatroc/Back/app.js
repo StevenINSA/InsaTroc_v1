@@ -859,12 +859,15 @@ app.post('/getUserSecretQuestions', (req, res, next)=> {
   //on reçoit l'email utilisateur, renvoi les IDs des questions posées lors de la création du compte
   con.query("SELECT * FROM Student WHERE Email = '"+req.body.email+"'", function (err, result, fields){
     if (err) throw err;
-    console.log(result[0]);
-    var questions=[];
-    questions.push(result[0].Question1, result[0].Question2);
-    console.log("id des questions : ", questions);
-    res.status(200).json({"ID1" : questions[0],
-                          "ID2" : questions[1],})
+    if (result.length == 0){
+      res.status(400).json({"message" : "Email introuvable"});
+    }else{
+      var questions=[];
+      questions.push(result[0].Question1, result[0].Question2);
+      console.log("id des questions : ", questions);
+      res.status(200).json({"ID1" : questions[0],
+                            "ID2" : questions[1],})
+    }
   });
 });
 
