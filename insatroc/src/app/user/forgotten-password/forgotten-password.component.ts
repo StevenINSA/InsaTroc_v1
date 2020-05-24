@@ -19,6 +19,10 @@ export class ForgottenPasswordComponent implements OnInit {
   questionID2: number;
   answer1: string;
   answer2: string;
+  newPassword1: string;
+  newPassword2: string;
+  hide1 = true;
+  hide2 = true;
 
   constructor(public authService: AuthService) { }
 
@@ -41,6 +45,35 @@ export class ForgottenPasswordComponent implements OnInit {
                     this.index = 2;},
       (error) => {console.log(error);}
     )
+  }
+
+  resetPassword(){
+    this.authService.resetPassword(this.email, this.newPassword1);
+  }
+
+  passwordValidator(password: string){
+    if(password==undefined || password==''){
+      return null;
+    }
+    else if(password.length<5){
+      return "Doit contenir au moins 5 caractères";
+    }
+    else if(password.length>25){
+      return "Ne doit pas contenir plus de 25 caractères";
+    }
+    else{
+      return null;
+    }
+  }
+
+  disabled(){
+    if(this.newPassword1==undefined || this.newPassword1==''
+    || this.newPassword2==undefined || this.newPassword2==''
+    || this.newPassword1!=this.newPassword2
+    || this.passwordValidator(this.newPassword1) || this.passwordValidator(this.newPassword2)){
+      return true;
+    }
+    return false;
   }
 
 }

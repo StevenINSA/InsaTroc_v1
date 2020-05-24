@@ -188,6 +188,19 @@ console.log(error.error.message);
     return this.http.post('http://localhost:3000/forgotPassword', {answer1: answer1, answer2: answer2});
   }
 
+  public resetPassword(email, password){
+    this.http.post('http://localhost:3000/resetPassword', {email: email, password: password}).subscribe(
+      (response)=>{
+        console.log(response);
+        this.setUserInfo(response['token'],response['username']);
+        this.isAuhenticated2();
+        this.router.navigate(['mon-profil']);
+        this.setTimer(this.timeLeft());
+      },
+      (error)=>{
+        console.log("error resetPassword:"+error);}
+  )}
+
 
 /*********************************************************************
 *               Authentication and Token Management                  *
