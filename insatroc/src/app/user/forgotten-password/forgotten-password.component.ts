@@ -25,8 +25,8 @@ export class ForgottenPasswordComponent implements OnInit {
   getSecretQuestions(){
     this.authService.getSecretQuestions(this.email).subscribe(
       (response) => {console.log(response);
-                    this.questionID1 = response[0];
-                    this.questionID2 = response[1];},
+                    this.questionID1 = response['ID1'];
+                    this.questionID2 = response['ID2'];},
       (error) => {console.log(error);}
     )
   }

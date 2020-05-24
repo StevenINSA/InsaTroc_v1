@@ -181,7 +181,7 @@ console.log(error.error.message);
   }
 
   public getSecretQuestions(email){
-    return this.http.post('http://localhost:3000/secretQuestions', {email: email});
+    return this.http.post('http://localhost:3000/getUserSecretQuestions', {email: email});
   }
 
   public checkSecretQuestions(answer1, answer2){
