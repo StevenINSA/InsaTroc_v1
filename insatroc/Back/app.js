@@ -292,7 +292,7 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 
 
 // requête http POST pour ajouter une nouvelle annonce dans la DB
-app.post('/addPost',tokenValidator,(req, res, next) => {
+app.post('/addPost',tokenValidator,(req, res, next) => { 
   console.log("requête de création d'annonce reçue :")
   //console.log(req.body);  //affiche les éléments de la requête
 
@@ -303,11 +303,15 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   }
 
   var today = new Date(); //formater la date
+  var seconds = String(today.getSeconds()).padStart(2, '0'); 
+  var minutes = String(today.getMinutes()).padStart(2, '0');
+  var hour = String(today.getHours()).padStart(2, '0');
   var dd = String(today.getDate()).padStart(2, '0');
   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  var yyyy = today.getFullYear();
+  var yyyy = String(today.getFullYear());
 
-  today = yyyy + '-' + mm + '-' + dd;
+
+  today = yyyy + '-' + mm + '-' + dd + '/' + hour + ':' + minutes + ':' + seconds; 
 
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les erreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
