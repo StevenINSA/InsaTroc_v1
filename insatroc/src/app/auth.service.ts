@@ -184,8 +184,8 @@ console.log(error.error.message);
     return this.http.post('http://localhost:3000/getUserSecretQuestions', {email: email});
   }
 
-  public checkSecretQuestions(answer1, answer2){
-    return this.http.post('http://localhost:3000/forgotPassword', {answer1: answer1, answer2: answer2});
+  public checkSecretQuestions(answer1, answer2,email){
+    return this.http.post('http://localhost:3000/forgotPassword', {answer1: answer1, answer2: answer2, email:email});
   }
 
 

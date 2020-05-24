@@ -36,7 +36,7 @@ export class ForgottenPasswordComponent implements OnInit {
   }
 
   checkSecretQuestions(){
-    this.authService.checkSecretQuestions(this.answer1, this.answer2).subscribe(
+    this.authService.checkSecretQuestions(this.answer1, this.answer2, this.email).subscribe(
       (response) => {console.log(response);
                     this.index = 2;},
       (error) => {console.log(error);}
