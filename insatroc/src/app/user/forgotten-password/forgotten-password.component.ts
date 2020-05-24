@@ -13,9 +13,12 @@ export class ForgottenPasswordComponent implements OnInit {
   "Dans quel département êtes-vous né ?",
   "Quel est le deuxième prénom de votre père ?",
   "Quel est votre film préféré ?"];
+  index = 0;
   email: string;
   questionID1: number;
   questionID2: number;
+  answer1: string;
+  answer2: string;
 
   constructor(public authService: AuthService) { }
 
@@ -26,7 +29,16 @@ export class ForgottenPasswordComponent implements OnInit {
     this.authService.getSecretQuestions(this.email).subscribe(
       (response) => {console.log(response);
                     this.questionID1 = response['ID1'];
-                    this.questionID2 = response['ID2'];},
+                    this.questionID2 = response['ID2'];
+                    this.index = 1;},
+      (error) => {console.log(error);}
+    )
+  }
+
+  checkSecretQuestions(){
+    this.authService.checkSecretQuestions(this.answer1, this.answer2).subscribe(
+      (response) => {console.log(response);
+                    this.index = 2;},
       (error) => {console.log(error);}
     )
   }
