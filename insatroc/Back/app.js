@@ -887,6 +887,19 @@ app.post('/resetPassword', (req, res, next)=> {
   });
 });
 
+app.post('/forgotPassword', (req, res, next)=> {
+  console.log("Requête d'oubli de mot de passe envoyée");
+  con.query("SELECT Answer1,Answer2 FROM Student WHERE Email='"+req.body.email+"'", function(err,result, fields){
+    if (err) throw err;
+    if(result[0].Answer1==req.body.answer1 && result[0].Answer2==req.body.answer2) {
+      res.status(200).json({"valid":"ok"});
+    } else {
+      res.json({"valid":"no"});
+    }
+  });
+});
+
+
 app.use((req, res, next) => {
  console.log("coucou");
  res.json({message:'coucou'});
