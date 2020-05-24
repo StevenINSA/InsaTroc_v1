@@ -41,7 +41,6 @@ export class PostViewerComponent implements OnInit {
     this.httpservice.onPostsUpdate().subscribe(
       (res)=>{
         this.AnnoncesOriginales=res;
-        this.Annonces = this.AnnoncesOriginales;
         for(let k=0 ;k<res.length;k++){
           this.httpservice.getPostsImages(res[k]._id);
         }
@@ -55,6 +54,8 @@ export class PostViewerComponent implements OnInit {
           }
         }
         this.Annonces = this.AnnoncesOriginales;
+        this.min = this.AnnoncesOriginales[0].price;
+        this.max = this.min;
       }
     )
     for(let k= 0; k<this.AnnoncesOriginales.length;k++){
@@ -101,8 +102,6 @@ export class PostViewerComponent implements OnInit {
 // Filtrage et Tri
 
   getAnnonces(){
-    this.min = this.AnnoncesOriginales[0].price;
-    this.max = this.min;
     for(let annonce of this.AnnoncesOriginales){
       if(annonce.price > this.max){
         this.max = annonce.price;

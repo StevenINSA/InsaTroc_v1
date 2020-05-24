@@ -62,9 +62,9 @@
     </mat-toolbar>
 
     <!-- Posts -->
-    <div *ngIf="Annonces.length!=0">
+    <div *ngIf="getAnnonces().length!=0">
       <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
-        <mat-card>
+          <mat-card>
           <mat-card-header style="float:left;">
               <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
               <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
@@ -75,7 +75,7 @@
         <mat-card-content *ngIf="annonce.urls!=null" >
           <div *ngIf="annonce.urls.length!=0">
             <br>
-            <img mat-card-image src={{annonce.urls[0]}}>
+            <img mat-card-image src={{annonce.urls[0]}} >
           </div>
           <br *ngIf="annonce.urls.length==0">
       </mat-card-content>
@@ -92,7 +92,7 @@
 
               <br>
               <span class="date" >
-                {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'hh:mm'}}
+                {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'HH:mm'}}
               </span>
               <span class="views">
                 {{annonce.views}} vues
@@ -105,12 +105,12 @@
       </ng-container>
     </div>
 
-    <mat-paginator [length]="Annonces.length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
-    <div *ngIf="Annonces.length==0" class="Nocontent">
+    <mat-paginator [length]="getAnnonces().length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
+    <div *ngIf="getAnnonces().length==0" class="Nocontent">
       <br>
       <h3>Aucune annonce n'a été déposée pour l'instant.</h3>
     </div>
-    <div *ngIf="Annonces.length==0" class="Nocontent">
+    <div *ngIf="getAnnonces().length==0" class="Nocontent">
       <a href="/deposer-une-annonce/" routerLink="/deposer-une-annonce">Déposer une annonce</a>
     </div>
 

@@ -59,7 +59,7 @@
     </mat-toolbar>
 
     <!-- Posts -->
-    <div *ngIf="Annonces.length!=0">
+    <div *ngIf="getAnnonces().length!=0">
       <ng-container *ngFor="let annonce of getAnnonces().slice(this.pageIndex*this.NbPostsPerPage, this.pageIndex*this.NbPostsPerPage+this.NbPostsPerPage) ; let i = index">
         <mat-card>
           <mat-card-header style="float:left;">
@@ -88,7 +88,7 @@
 
               <br>
               <span class="date" >
-                {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'hh:mm'}}
+                {{annonce.date | date:'dd/MM/yyyy'}} à {{annonce.date | date: 'HH:mm'}}
               </span>
               <span class="views">
                 {{annonce.views}} vues
@@ -102,12 +102,12 @@
     </div>
 
 
-    <br *ngIf="Annonces.length==0">
-    <div *ngIf="Annonces.length==0" class="Nocontent">
+    <br *ngIf="getAnnonces().length==0">
+    <div *ngIf="getAnnonces().length==0" class="Nocontent">
       <h3>Aucun résultat</h3>
     </div>
-    <br *ngIf="Annonces.length==0">
-    <mat-paginator [length]="Annonces.length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
+    <br *ngIf="getAnnonces().length==0">
+    <mat-paginator [length]="getAnnonces().length" [pageSize]="NbPostsPerPage" [pageSizeOptions]="[5,10,25,100]" (page)="pageChanged($event)"></mat-paginator>
 
 
   </mat-sidenav-content>
