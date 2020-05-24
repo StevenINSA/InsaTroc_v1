@@ -46,9 +46,47 @@
           <mat-error *ngIf="form.get('password').hasError('maxlength')">Ne doit pas contenir plus de 25 caractères</mat-error>
         </mat-form-field>
 
+        <mat-divider></mat-divider>
+        <br>
+
+        <h2>Question secrètes :</h2>
+        <p style="color: grey">Dans le cas où vous auriez oublié votre mot de passe, nous vous poserons deux questions auxquelles vous seul·e connaissez la réponse, afin de vérifier votre identité et vous permettre d'accéder à votre compte.</p>
+        <p style="color: grey">Choississez ci-dessous vos deux questions secrètes, et entrez la réponse à chacune d'elles :</p>
+        <br>
+
+        <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+          <mat-label>Question n°1</mat-label>
+          <mat-select matInput required  formControlName="question1" [(value)]="selected1">
+            <mat-select-trigger>{{selected1}}</mat-select-trigger>
+            <mat-option *ngFor="let question of secretQuestions, let i=index" [value]="question" [disabled]="secretQuestions.indexOf(form.value.question2)==i">{{question}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('question1').hasError('required')">Veuillez choisir une question</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+          <mat-label>Réponse à la question 1</mat-label>
+          <input matInput formControlName="answer1"  required>
+          <mat-error *ngIf="form.get('answer1').hasError('required')">Veuillez remplir ce champ</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+          <mat-label>Question n°2</mat-label>
+          <mat-select matInput required  formControlName="question2" [(value)]="selected2">
+            <mat-select-trigger>{{selected2}}</mat-select-trigger>
+            <mat-option *ngFor="let question of secretQuestions, let i=index" [value]="question" [disabled]="secretQuestions.indexOf(form.value.question1)==i">{{question}}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="form.get('question2').hasError('required')">Veuillez choisir une question</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+          <mat-label>Réponse à la question 2</mat-label>
+          <input matInput formControlName="answer2"  required>
+          <mat-error *ngIf="form.get('answer2').hasError('required')">Veuillez remplir ce champ</mat-error>
+        </mat-form-field>
+
         <mat-card-actions>
           <div class="container">
-            <button mat-raised-button color="accent" type="submit">Créer mon compte</button>
+            <button mat-raised-button color="accent" type="submit" [disabled]="form.invalid" >Créer mon compte</button>
           </div>
           <br>
           <div>

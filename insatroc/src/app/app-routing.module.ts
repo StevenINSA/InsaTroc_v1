@@ -11,6 +11,7 @@ import { PostViewerByIdComponent } from './annonces/post-viewer-by-id/post-viewe
 import { UserPostsComponent } from './user/user-posts/user-posts.component';
 import { UserProfileComponent } from './user/user-profile/user-profile.component';
 import { SearchResultsComponent } from './annonces/search-results/search-results.component';
+import { ForgottenPasswordComponent } from './user/forgotten-password/forgotten-password.component';
 
 import { AuthGuardService as AuthGuard} from './auth-guard.service';
 
@@ -26,6 +27,7 @@ const routes: Routes = [
   {path: 'mes-annonces', component: UserPostsComponent},
   {path: 'mon-profil', component: UserProfileComponent},
   {path: 'search', component: SearchResultsComponent},
+  {path: 'mot-de-passe-oublie', component: ForgottenPasswordComponent}
 ];
 
 @NgModule({

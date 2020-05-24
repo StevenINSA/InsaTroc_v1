@@ -109,9 +109,9 @@ export class AuthService {
   }
 
   // se créer un compte
-  public register(firstname, lastname, username, email, password){
+  public register(firstname, lastname, username, email, password, question1, answer1, question2, answer2){
     this.deleteUserInfo();
-    this.http.post<{token:string,username:string}>('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password}).subscribe(
+    this.http.post<{token:string,username:string}>('http://localhost:3000/register', {'first_name' : firstname, 'last_name' : lastname, 'username' : username, 'email' : email, 'password' : password, 'question1': question1, 'answer1': answer1, 'question2': question2, 'answer2': answer2}).subscribe(
       (response)=>{
         console.log(response);
         this.setUserInfo(response.token,response.username);
@@ -178,6 +178,14 @@ console.log(error.error.message);
   // modifier son mot de passe
   public changePassword(oldPassword, newPassword){
     return (this.http.post('http://localhost:3000/modifyPassword', {"oldPassword": oldPassword, "newPassword": newPassword}));
+  }
+
+  public getSecretQuestions(email){
+    return this.http.post('http://localhost:3000/secretQuestions', {email: email});
+  }
+
+  public checkSecretQuestions(answer1, answer2){
+    return this.http.post('http://localhost:3000/forgotPassword', {answer1: answer1, answer2: answer2});
   }
 
 
