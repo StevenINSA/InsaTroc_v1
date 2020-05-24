@@ -31,22 +31,6 @@ export class CreateAccountComponent implements OnInit {
     var questionID1 = this.secretQuestions.indexOf(form.value.question1);
     var questionID2 = this.secretQuestions.indexOf(form.value.question2);
     this.authService.register(form.value.first_name, form.value.last_name, form.value.username, form.value.email, form.value.password, questionID1, form.value.answer1, questionID2, form.value.answer2);
-    /*.subscribe(
-      (response) => {console.log(response);
-                    this.authService.setUserInfo(response['token'], response['username']);
-                    this.router.navigate(['mon-profil']);},
-      (error) => {console.log(error)
-        console.log(error.error.message);
-                  if(error.error.message == "username or password already exists"){
-                    this.error = true;
-                    this.form.patchValue({
-                      username: '',
-                      email: '',
-                      password: '',
-                    })
-                  }
-                },
-    );*/
   }
 
   ngOnInit(): void {
