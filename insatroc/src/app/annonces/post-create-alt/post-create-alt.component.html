@@ -74,9 +74,9 @@
           <div class="container">
             <!-- <mat-form-field> -->
               <input style="display: none" type='file' (change)="onSelectFile($event)" multiple #fileInput>
-              <button type="button" mat-raised-button (click)="fileInput.click()">
-                <mat-icon>vertical_align_top</mat-icon>
-                Choisir
+              <button type="button" mat-fab color="primary" (click)="fileInput.click()">
+                <mat-icon>add_photo_alternate</mat-icon>
+
               </button>
 
             <!-- </mat-form-field> -->
@@ -108,7 +108,7 @@
       <div>
         <br>
         <h1 style="float: left">{{form.value.title}}</h1>
-        <h2 align="right" style= "color: crimson;" *ngIf="!free && form.value.price!=''">{{form.value.price}} €</h2>
+        <h2 align="right" style= "color: crimson;" *ngIf="!free && form.value.price!=''">{{form.value.price | number: '1.2-2'}} €</h2>
         <h2 align="right" style= "color: crimson;" *ngIf="free && form.value.title!=''">Gratuit</h2>
         <h4 style="color: darkgray;" *ngIf="form.value.category!=''">Catégorie : {{form.value.category}}</h4>
 
@@ -138,7 +138,7 @@
 
       <mat-card-actions>
         <div class="container">
-          <button mat-raised-button type="submit" color="warn" [class.spinner]="loading" [disabled]="loading">Sauvegarder l'annonce !</button>
+          <button mat-raised-button type="submit" color="warn" [class.spinner]="loading" [disabled]="loading || form.invalid">Sauvegarder l'annonce !</button>
         </div>
       </mat-card-actions>
       <div>

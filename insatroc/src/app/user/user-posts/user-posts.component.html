@@ -7,7 +7,7 @@
             <mat-card-title class="cardlink" (click)="onDisplayPost(annonce._id)">{{annonce.title}}</mat-card-title>
             <mat-card-subtitle>{{annonce.category}}</mat-card-subtitle>
         </mat-card-header>
-        <h2 align="right" style="color: crimson">{{annonce.price}} €</h2>
+        <h2 align="right" style="color: crimson">{{annonce.price | number: '1.2-2'}} €</h2>
         <mat-card-content>
         <img mat-card-image *ngIf="annonce.urls!=null" src={{annonce.urls[0]}}>
       </mat-card-content>

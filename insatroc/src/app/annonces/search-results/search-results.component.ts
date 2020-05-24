@@ -38,7 +38,6 @@ export class SearchResultsComponent implements OnInit {
       this.httpService.onPostsUpdate().subscribe(
         (res) => {
           this.AnnoncesOriginales = res;
-          this.Annonces = this.AnnoncesOriginales;
           for(let k=0; k<res.length; k++){
             this.httpService.getPostsImages(res[k]._id);
           }
@@ -52,6 +51,8 @@ export class SearchResultsComponent implements OnInit {
             }
           }
           this.Annonces = this.AnnoncesOriginales;
+          this.min = this.AnnoncesOriginales[0].price;
+          this.max = this.min;
         }
       );
       for(let k=0; k<this.AnnoncesOriginales.length; k++){
@@ -75,8 +76,6 @@ export class SearchResultsComponent implements OnInit {
   }
 
   getAnnonces(){
-    this.min = this.AnnoncesOriginales[0].price;
-    this.max = this.min;
     for(let annonce of this.AnnoncesOriginales){
       if(annonce.price > this.max){
         this.max = annonce.price;

@@ -292,7 +292,7 @@ return res.status(400).json({"statusCode" : 400, "message" : "not authenticated"
 
 
 // requête http POST pour ajouter une nouvelle annonce dans la DB
-app.post('/addPost',tokenValidator,(req, res, next) => { 
+app.post('/addPost',tokenValidator,(req, res, next) => {
   console.log("requête de création d'annonce reçue :")
   //console.log(req.body);  //affiche les éléments de la requête
 
@@ -303,7 +303,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   }
 
   var today = new Date(); //formater la date
-  var seconds = String(today.getSeconds()).padStart(2, '0'); 
+  var seconds = String(today.getSeconds()).padStart(2, '0');
   var minutes = String(today.getMinutes()).padStart(2, '0');
   var hour = String(today.getHours()).padStart(2, '0');
   var dd = String(today.getDate()).padStart(2, '0');
@@ -311,7 +311,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   var yyyy = String(today.getFullYear());
 
 
-  today = yyyy + '-' + mm + '-' + dd + '/' + hour + ':' + minutes + ':' + seconds; 
+  today = yyyy + '-' + mm + '-' + dd + '/' + hour + ':' + minutes + ':' + seconds;
 
   var titreEchape = addslashes(req.body.title); //échappe les caractères spéciaux, évite les erreurs dans la BD
   var descriptionEchape = addslashes(req.body.description);
@@ -319,8 +319,8 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
   // con.query("SELECT StudentID FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
   con.query("SELECT * FROM Student WHERE Username = '"+req.body.username+"'", function(err, result, fields){
     if(err) throw err;
-    var studentPhoneNb = result.TelephoneNumber;
-    var studentContact = result.Address;
+    var studentPhoneNb = result[0].TelephoneNumber;
+    var studentContact = result[0].Address;
     con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate, NbViews) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"', '"+0+"')",
     function (err, result, fields){
       if (err) throw err;
