@@ -439,7 +439,8 @@ app.get('/posts', (req, res, next) => {
 
 
       var urls = [];
-      console.log(result[i].ImageString)
+      //console.log(result[i].ImageString) //undefined parce que la requête est faite en deux fois : les annonces puis les images. Lors de la demande
+      //des annonces ce champ est donc undefined
 
       if (i==0){
         categoryids[0]=result[i].CategoryID;
@@ -691,11 +692,27 @@ app.post('/modifyUserInfo', (req, res, next) => {
     if (result.length !=0 && result[0].StudentID!=userID){ //si déjà présent, erreur
       console.log("username already exists")
       res.status(401).json({"message" : "username already exists"});
-    } else { //sinon, mise à jour de la base de données
-      con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"' WHERE StudentID='"+userID+"'",function (err, result, fields) {
-        if (err) throw err;
-        console.log("done");
-        res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
+    } else { //sinon, mise à jour de la base de
+      //cryptage des réponses aux questions secrètes
+      bcrypt.genSalt(saltRounds, function (err, salt) {
+        if (err) {
+          throw err
+        } else {
+          bcrypt.hash(req.body.answer1, salt, function(err, hash1) {
+            if (err) throw err;
+            bcrypt.hash(req.body.answer2, salt, function(err,hash2) {
+              if (err) throw err;
+              //Mise à jour BD
+              //console.log("id question 1 :",req.body.question1);
+              //console.log("id question 2 :",req.body.question2);
+              con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"', Question1='"+req.body.question1+"', Question2='"+req.body.question2+"', Answer1='"+hash1+"', Answer2='"+hash2+"'  WHERE StudentID='"+userID+"'",function (err, result, fields) {
+                if (err) throw err;
+                console.log("done");
+                res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
+              });
+            })
+          });
+        }
       });
     }
   });
@@ -891,6 +908,30 @@ app.post('/forgotPassword', (req, res, next)=> {
   console.log("Requête d'oubli de mot de passe envoyée");
   con.query("SELECT Answer1,Answer2 FROM Student WHERE Email='"+req.body.email+"'", function(err,result, fields){
     if (err) throw err;
+    else {
+      bcrypt.compare (req.body.answer1, result[0].Answer1, function(err, isMatch){
+        if (err) {
+          throw err;
+        } else if (!isMatch){
+          console.log("The answer 1 doesn't match!");
+          res.status(400).json({"message":"bad answer 1"});
+        } else {
+          console.log("Correct answer 1");
+          bcrypt.compare (req.body.answer2, result[0].Answer2, function(err, isMatch){
+            if (err) {
+              throw err;
+            } else if (!isMatch){
+              console.log("The answer 2 doesn't match!");
+              res.status(400).json({"message":"bad answer 2"});
+            } else {
+              console.log("Correct answer 2");
+              res.status(200).json({"message":"good answers"});
+            }
+          })
+        }
+      })
+
+    }/*
       console.log("Answer 1 :",result[0].Answer1);
       console.log("Answer 2 :",result[0].Answer2);
       console.log("Answer 1 user :",req.body.answer1);
@@ -899,7 +940,7 @@ app.post('/forgotPassword', (req, res, next)=> {
       res.status(200).json({"message":"good answers"});
     } else {
       res.status(400).json({"message":"bad answers"});
-    }
+    }*/
   });
 });
 
@@ -927,7 +968,6 @@ app.post('/resetPassword', (req, res, next)=> {
               console.log("mot de passe changé");
             });
           });
-
         }
       })
     }

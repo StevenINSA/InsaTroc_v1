@@ -3,6 +3,7 @@ import { PostModel } from '../post_model';
 import {HttpService } from '../../http.service'
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -16,6 +17,8 @@ export class PostViewerComponent implements OnInit {
                            {_id: null, title: "Vends un sac de couchage ", description: "je vends un sac de couchage , trs inconfortable mais c'est mieux que rien", category: ["Loisirs/Sport", "Bureau"], price: 10, urls: ['../../../assets/images/sac.jpg','../../../assets/images/coloredpencils.jpg'], date: new Date(), views: 15, username: "user1"}];
   AnnoncesOriginales :PostModel[]= [];
   Annonces: PostModel[] = [];
+  private postsSub : Subscription;
+  private imagesSub : Subscription;
 
   sidetoggle = false;
   min: number;
@@ -38,7 +41,7 @@ export class PostViewerComponent implements OnInit {
 
   ngOnInit(): void {
     this.httpservice.getAllPosts();
-    this.httpservice.onPostsUpdate().subscribe(
+    this.postsSub = this.httpservice.onPostsUpdate().subscribe(
       (res)=>{
         this.AnnoncesOriginales=res;
         for(let k=0 ;k<res.length;k++){
@@ -46,7 +49,7 @@ export class PostViewerComponent implements OnInit {
         }
       }
     )
-    this.httpservice.onImagesUpdate().subscribe(
+    this.imagesSub = this.httpservice.onImagesUpdate().subscribe(
       (res)=>{
         for(let k=0;k<this.AnnoncesOriginales.length;k++){
           if(this.AnnoncesOriginales[k]._id == Object.keys(res)[0]){
@@ -192,5 +195,12 @@ export class PostViewerComponent implements OnInit {
       return 0;
     });
     this.Annonces = annoncesTriees;
+  }
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    console.log("component postviewer destroyed");
+    this.postsSub.unsubscribe();
+    this.imagesSub.unsubscribe();
   }
 }
