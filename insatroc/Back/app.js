@@ -668,11 +668,27 @@ app.post('/modifyUserInfo', (req, res, next) => {
     if (result.length !=0 && result[0].StudentID!=userID){ //si déjà présent, erreur
       console.log("username already exists")
       res.status(401).json({"message" : "username already exists"});
-    } else { //sinon, mise à jour de la base de données
-      con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"' WHERE StudentID='"+userID+"'",function (err, result, fields) {
-        if (err) throw err;
-        console.log("done");
-        res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
+    } else { //sinon, mise à jour de la base de
+      //cryptage des réponses aux questions secrètes
+      bcrypt.genSalt(saltRounds, function (err, salt) {
+        if (err) {
+          throw err
+        } else {
+          bcrypt.hash(req.body.answer1, salt, function(err, hash1) {
+            if (err) throw err;
+            bcrypt.hash(req.body.answer2, salt, function(err,hash2) {
+              if (err) throw err;
+              //Mise à jour BD
+              //console.log("id question 1 :",req.body.question1);
+              //console.log("id question 2 :",req.body.question2);
+              con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"', Question1='"+req.body.question1+"', Question2='"+req.body.question2+"', Answer1='"+hash1+"', Answer2='"+hash2+"'  WHERE StudentID='"+userID+"'",function (err, result, fields) {
+                if (err) throw err;
+                console.log("done");
+                res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
+              });
+            })
+          });
+        }
       });
     }
   });
