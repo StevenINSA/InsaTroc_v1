@@ -683,7 +683,8 @@ app.post('/modifyUserInfo', (req, res, next) => {
   console.log("requête de modification des infos d'utilisateur reçue :");
   var encryptedToken = req.get("Authorization");
   var decodedToken = jwt.decode(encryptedToken);
-  var userID = decodedToken.userID;
+  var userID = decodedToken.userID
+  console.log(req.body);
 
   //vérification que le username n'existe pas déjà
   con.query("SELECT * FROM Student WHERE Username='"+req.body.username+"'",function(err,result,fields){
@@ -693,6 +694,7 @@ app.post('/modifyUserInfo', (req, res, next) => {
       res.status(401).json({"message" : "username already exists"});
     } else { //sinon, mise à jour de la base de
       //cryptage des réponses aux questions secrètes
+      /*console.log(req.body.answer1);
       bcrypt.genSalt(saltRounds, function (err, salt1) {
         if (err) {
           throw err
@@ -704,7 +706,7 @@ app.post('/modifyUserInfo', (req, res, next) => {
                 throw err
               } else {
                 bcrypt.hash(req.body.answer2, salt2, function(err,hash2) {
-                  if (err) throw err;
+                  if (err) throw err;*/
               //Mise à jour BD
               //console.log("id question 1 :",req.body.question1);
               //console.log("id question 2 :",req.body.question2);
@@ -713,15 +715,15 @@ app.post('/modifyUserInfo', (req, res, next) => {
                   console.log("done");
                   res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
                 });
-              });
+              //});
             }
           });
-        });
-      }
+      //  });
+    //  }
     });
-  }
-});
-});
+//  }
+//});
+//});
 
 // requête pour récupérer toutes les annonces postées par un utilisateur
 app.get('/getUserPosts', (req, res, next) => {
