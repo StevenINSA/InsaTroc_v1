@@ -661,8 +661,7 @@ app.post('/modifyUserInfo', (req, res, next) => {
   var encryptedToken = req.get("Authorization");
   var decodedToken = jwt.decode(encryptedToken);
   var userID = decodedToken.userID;
-  console.log("params:",req.body);
-
+  
   //vérification que le username n'existe pas déjà
   con.query("SELECT * FROM Student WHERE Username='"+req.body.username+"'",function(err,result,fields){
     if(err) throw err;
