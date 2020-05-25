@@ -693,17 +693,17 @@ app.post('/modifyUserInfo', (req, res, next) => {
       res.status(401).json({"message" : "username already exists"});
     } else { //sinon, mise à jour de la base de
       //cryptage des réponses aux questions secrètes
-      bcrypt.genSalt(saltRounds, function (err, salt) {
+      bcrypt.genSalt(saltRounds, function (err, salt1) {
         if (err) {
           throw err
         } else {
-          bcrypt.hash(req.body.answer1, salt, function(err, hash1) {
+          bcrypt.hash(req.body.answer1, salt1, function(err, hash1) {
             if (err) throw err;
-            bcrypt.genSalt(saltRounds, function (err, salt) {
+            bcrypt.genSalt(saltRounds, function (err, salt2) {
               if (err) {
                 throw err
               } else {
-                bcrypt.hash(req.body.answer2, salt, function(err,hash2) {
+                bcrypt.hash(req.body.answer2, salt2, function(err,hash2) {
                   if (err) throw err;
               //Mise à jour BD
               //console.log("id question 1 :",req.body.question1);
