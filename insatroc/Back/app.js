@@ -864,6 +864,61 @@ app.post('/modifyPassword', (req, res,next) =>{
   });
 });
 
+//requête pour modifier les questions secrètes
+app.post('/modifySecretQuestions', (req, res,next) =>{
+  console.log("requête pour changer les questions secrètes d'un utilisateur reçue :");
+  var encryptedToken = req.get("Authorization");
+  var decodedToken = jwt.decode(encryptedToken);
+  var userID = decodedToken.userID;
+
+  con.query("SELECT Password FROM Student where StudentID = '"+userID+ "'",function (err, result, fields) {
+      if (err) {
+          throw err;
+      } else {
+          var password = result[0].Password;
+          bcrypt.compare (req.body.oldPassword, password, function(err, isMatch){
+              if (err) {
+                  throw err;
+              } else if (!isMatch){
+                  console.log("The password doesn't match!");
+                  res.status(401).json({"message" : "Incorrect Password"});
+              } else {
+                  console.log("Correct password");
+                  bcrypt.genSalt(saltRounds, function (err, salt1) {
+                      if (err) {
+                          throw err
+                      } else {
+                          bcrypt.hash(req.body.answer1, salt1, function(err, hash1) {
+                              if (err) {
+                                  throw err
+                              } else {
+                                bcrypt.genSalt(saltRounds, function(err, salt2) {
+                                  if(err) throw err;
+                                  else{
+                                    bcrypt.hash(req.body.answer2, salt2, function(err, hash2) {
+                                      if(err) throw err;
+                                      else{
+                                        con.query("UPDATE Student SET Question1='"+req.body.question1+"', Answer1='"+hash1+"', Question2='"+req.body.question2+"', Answer2='"+hash2+"' WHERE StudentID = '"+userID+"'", function (err, result, fields) {
+                                            if(err){
+                                                throw err;
+                                            }
+                                            res.status(200).json({"message": "Secret questions successfully changed"});
+                                        });
+
+                                      }
+                                    })
+                                  }
+                                })
+                              }
+                          })
+                      }
+                  });
+              }
+          });
+      }
+  });
+});
+
 //requête pour mdp oublié
 //cette requête est en 3 étapes séparées en 3 fonctions : l'user rentrer son email -> on vérifie l'email et on redirige vers ses questions
 //l'user rentre ses réponse -> on les vérifie et l'incite à saisir un nouveau mdp si elles sont bonnes

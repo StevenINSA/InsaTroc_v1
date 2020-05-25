@@ -148,6 +148,7 @@ export class AuthService {
 
   // modifier ses questions secrètes
   public changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2){
+    console.log(oldPassword);
     return (this.http.post('http://localhost:3000/modifySecretQuestions', {"oldPassword": oldPassword, "question1": questionID1, "answer1": answer1, "question2": questionID2, "answer2": answer2}));
   }
 
@@ -169,7 +170,7 @@ export class AuthService {
         this.isAuhenticated2();
         this.router.navigate(['mon-profil']);
         this.setTimer(this.timeLeft());
-        this._snackBar.open("Mot de passe changé avec succès","X", {duration: 2000});
+        this._snackBar.open("Mot de passe réinitialisé avec succès","X", {duration: 2000});
       },
       (error)=>{
         console.log("error resetPassword:"+error);}
