@@ -259,9 +259,9 @@ const register = () => {
                             });
                           }
                         });
-                        
-                      }    
-                
+
+                      }
+
                     });
                   }
                 })
@@ -273,7 +273,7 @@ const register = () => {
 
     });
   }
-}    
+}
 
 // requête http POST pour se créer un compte
 app.post('/register/', register(), (req, res) => {
@@ -504,7 +504,7 @@ app.post('/search', (req, res, next) => {
   var split_regex = new RegExp('[ \ªº!@·#$~%&¬=¿¡_<>{}+()*/:?"-]', 'g');   //on applique un premier filtrage pour enlever ces caractères spéciaux
   var req_filt_str = arg.split(split_regex)
                       .filter(kw => kw.length > 2) //filtre pour enlever les mots de moins de 3 lettres
-                      .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0')  
+                      .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0')
                       .join(" OR ");
   if(req_filt_str == []){  //si on a rien comme résultat on ne renvoit rien
     res.status(200).json([]);
@@ -684,7 +684,7 @@ app.post('/modifyUserInfo', (req, res, next) => {
   var encryptedToken = req.get("Authorization");
   var decodedToken = jwt.decode(encryptedToken);
   var userID = decodedToken.userID;
-  
+
   //vérification que le username n'existe pas déjà
   con.query("SELECT * FROM Student WHERE Username='"+req.body.username+"'",function(err,result,fields){
     if(err) throw err;
@@ -699,20 +699,28 @@ app.post('/modifyUserInfo', (req, res, next) => {
         } else {
           bcrypt.hash(req.body.answer1, salt, function(err, hash1) {
             if (err) throw err;
-            bcrypt.hash(req.body.answer2, salt, function(err,hash2) {
-              if (err) throw err;
+            bcrypt.genSalt(saltRounds, function (err, salt) {
+              if (err) {
+                throw err
+              } else {
+                bcrypt.hash(req.body.answer2, salt, function(err,hash2) {
+                  if (err) throw err;
               //Mise à jour BD
-              con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"', Question1='"+req.body.question1+"', Question2='"+req.body.question2+"', Answer1='"+hash1+"', Answer2='"+hash2+"'  WHERE StudentID='"+userID+"'",function (err, result, fields) {
-                if (err) throw err;
-                console.log("done");
-                res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
+              //console.log("id question 1 :",req.body.question1);
+              //console.log("id question 2 :",req.body.question2);
+                con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"', Question1='"+req.body.question1+"', Question2='"+req.body.question2+"', Answer1='"+hash1+"', Answer2='"+hash2+"'  WHERE StudentID='"+userID+"'",function (err, result, fields) {
+                  if (err) throw err;
+                  console.log("done");
+                  res.status(200).json({"Firstname":req.body.firstname,"Lastname":req.body.lastname,"Username":req.body.username,"Phone":req.body.phone,"Other":req.body.other});
+                });
               });
-            })
+            }
           });
-        }
-      });
-    }
-  });
+        });
+      }
+    });
+  }
+});
 });
 
 // requête pour récupérer toutes les annonces postées par un utilisateur
