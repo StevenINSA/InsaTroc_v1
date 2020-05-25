@@ -40,7 +40,19 @@ export class UserProfileComponent implements OnInit {
   readonlyEmail = true;
   readonlyPhoneNumber = true;
   readonlyContact = true;
+  readonlyanswer1 = true;
+  readonlyanswer2 = true;
+  readonlyquestion1 = true;
+  readonlyquestion2 = true;
   modified = false;
+  selected1;
+  selected2;
+  secretQuestions = ["Quel est le nom de jeune fille de votre mère ?",
+  "Quel était le nom de votre premier animal de companie ?",
+  "En quelle année est né votre grand-père maternel ?",
+  "Dans quel département êtes-vous né ?",
+  "Quel est le deuxième prénom de votre père ?",
+  "Quel est votre film préféré ?"];
   authSub : Subscription;
 
   constructor(public httpService:HttpService, private authService: AuthService, public dialog: MatDialog, public router: Router) {}
@@ -76,7 +88,13 @@ export class UserProfileComponent implements OnInit {
     this.readonlyContact = true;
     this.readonlyPhoneNumber = true;
     this.readonlyUsername = true;
-    this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact);
+    this.readonlyanswer1 = true;
+    this.readonlyanswer2 = true;
+    this.readonlyquestion1 = true;
+    this.readonlyquestion2 = true;
+    var questionID1 = this.secretQuestions.indexOf(form.value.question1);
+    var questionID2 = this.secretQuestions.indexOf(form.value.question2);
+    this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact, questionID1, form.value.answer1, questionID2, form.value.answer2);
     this.authSub=this.authService.onAuthUpdate().subscribe(
       (res)=>{
         if(!res){
@@ -95,6 +113,10 @@ export class UserProfileComponent implements OnInit {
     this.readonlyContact = true;
     this.readonlyPhoneNumber = true;
     this.readonlyUsername = true;
+    this.readonlyquestion1 = true;
+    this.readonlyquestion2 = true;
+    this.readonlyanswer1 = true;
+    this.readonlyanswer2 = true;
     this.ngOnInit();
   }
 
@@ -107,6 +129,10 @@ export class UserProfileComponent implements OnInit {
       phone_number: new FormControl(),
       contact: new FormControl(),
       password: new FormControl('', []),
+      question1: new FormControl('', []),
+      answer1: new FormControl('', []),
+      question2: new FormControl('', []),
+      answer2: new FormControl('', []),
     });
 
 
@@ -118,6 +144,10 @@ export class UserProfileComponent implements OnInit {
         email: response['email'],
         phone_number: response['phone_number'],
         contact: response['contact_info'],
+        question1: this.secretQuestions[response['question1']],
+        answer1: response['answer1'],
+        question2: this.secretQuestions[response['question2']],
+        answer2: response['answer2'],
       });
         this.user = {_id: null,
                     first_name: response['first_name'],

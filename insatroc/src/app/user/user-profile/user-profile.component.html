@@ -11,31 +11,95 @@
         <p style="text-align: center; color: grey; font-size: 13px;"><mat-icon style="color: mediumblue; font-size: large;">info</mat-icon> Les informations suivantes ne sont visibles que par vous. <br> Elles n'apparaitront pas sur vos annonces.</p>
         <br>
 
-        <mat-form-field appearance="outline" class="container">
-          <mat-label>Prénom</mat-label>
-          <input matInput required formControlName="first_name" readonly = {{readonlyFirstName}}>
-          <mat-error *ngIf="form.get('first_name').hasError('required') && !readonlyFirstName">Veuillez remplir ce champ</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre prénom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyFirstName=!readonlyFirstName; modified=true;" [ngStyle]="{'color': !readonlyFirstName ? '#01579B' : 'black'}">
-            <mat-icon>create</mat-icon>
-          </button>
-        </mat-form-field>
 
-        <mat-form-field appearance="outline" class="container">
-          <mat-label>Nom</mat-label>
-          <input matInput formControlName="last_name" required readonly = {{readonlyLastName}}>
-          <mat-error *ngIf="form.get('last_name').hasError('required')">Veuillez remplir ce champ</mat-error>
-          <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyLastName=!readonlyLastName; modified=true;" [ngStyle]="{'color': !readonlyLastName ? '#01579B' : 'black'}">
-            <mat-icon>create</mat-icon>
-          </button>
-        </mat-form-field>
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Informations personnelles</mat-panel-title>
+            </mat-expansion-panel-header>
 
-        <mat-form-field appearance="outline" class="container">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" required readonly>
-          <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
-          <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
-        </mat-form-field>
+            <mat-form-field appearance="outline" class="container">
+              <mat-label>Prénom</mat-label>
+              <input matInput required formControlName="first_name" readonly = {{readonlyFirstName}}>
+              <mat-error *ngIf="form.get('first_name').hasError('required') && !readonlyFirstName">Veuillez remplir ce champ</mat-error>
+              <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre prénom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyFirstName=!readonlyFirstName; modified=true;" [ngStyle]="{'color': !readonlyFirstName ? '#01579B' : 'black'}">
+                <mat-icon>create</mat-icon>
+              </button>
+            </mat-form-field>
 
+            <mat-form-field appearance="outline" class="container">
+              <mat-label>Nom</mat-label>
+              <input matInput formControlName="last_name" required readonly = {{readonlyLastName}}>
+              <mat-error *ngIf="form.get('last_name').hasError('required')">Veuillez remplir ce champ</mat-error>
+              <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre nom" matTooltipPosition = 'after' type="button" mat-icon-button matSuffix (click)="readonlyLastName=!readonlyLastName; modified=true;" [ngStyle]="{'color': !readonlyLastName ? '#01579B' : 'black'}">
+                <mat-icon>create</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="container">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" required readonly>
+              <mat-error *ngIf="form.get('email').hasError('required')">Veuillez remplir ce champ</mat-error>
+              <mat-error *ngIf="form.get('email').hasError('email')">Email non valide</mat-error>
+            </mat-form-field>
+
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>Questions secrètes</mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <p style="color: grey">Dans le cas où vous auriez oublié votre mot de passe, nous vous poserons deux questions auxquelles vous seul·e connaissez la réponse, afin de vérifier votre identité et vous permettre d'accéder à votre compte.</p>
+            <p style="color: grey">Choississez ci-dessous vos deux questions secrètes, et entrez la réponse à chacune d'elles :</p>
+            <br>
+
+            <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+              <mat-label>Question n°1</mat-label>
+              <mat-select matInput required  formControlName="question1" [(value)]="selected1" disabled={{readonlyquestion1}}>
+                <mat-select-trigger>{{selected1}}</mat-select-trigger>
+                <mat-option *ngFor="let question of secretQuestions, let i=index" [value]="question" [disabled]="secretQuestions.indexOf(form.value.question2)==i">{{question}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('question1').hasError('required')">Veuillez choisir une question</mat-error>
+              <button mat-mat-icon-button matTooltip="Cliquer pour choisir une autre question" matTooltipPosition = 'below' type="button" mat-icon-button matSuffix (click)="readonlyquestion1=!readonlyquestion1; modified=true;" [ngStyle]="{'color': !readonlyquestion1 ? '#01579B' : 'black'}">
+                <mat-icon>create</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+              <mat-label>Réponse à la question 1</mat-label>
+              <input matInput formControlName="answer1" required readonly={{readonlyanswer1}}>
+              <mat-error *ngIf="form.get('answer1').hasError('required')">Veuillez remplir ce champ</mat-error>
+              <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre réponse" matTooltipPosition = 'below' type="button" mat-icon-button matSuffix (click)="readonlyanswer1=!readonlyanswer1; modified=true;" [ngStyle]="{'color': !readonlyanswer1 ? '#01579B' : 'black'}">
+                <mat-icon>create</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+              <mat-label>Question n°2</mat-label>
+              <mat-select matInput required  formControlName="question2" [(value)]="selected2" disabled={{readonlyquestion2}}>
+                <mat-select-trigger>{{selected2}}</mat-select-trigger>
+                <mat-option *ngFor="let question of secretQuestions, let i=index" [value]="question" [disabled]="secretQuestions.indexOf(form.value.question1)==i">{{question}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('question2').hasError('required')">Veuillez choisir une question</mat-error>
+              <button mat-mat-icon-button matTooltip="Cliquer pour choisir une autre question" matTooltipPosition = 'below' type="button" mat-icon-button matSuffix (click)="readonlyquestion2=!readonlyquestion2; modified=true;" [ngStyle]="{'color': !readonlyquestion2 ? '#01579B' : 'black'}">
+                <mat-icon>create</mat-icon>
+              </button>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" style="display: block; width: 400px !important;">
+              <mat-label>Réponse à la question 2</mat-label>
+              <input matInput formControlName="answer2"  required>
+              <mat-error *ngIf="form.get('answer2').hasError('required')">Veuillez remplir ce champ</mat-error>
+              <button mat-mat-icon-button matTooltip="Cliquer pour modifier votre réponse" matTooltipPosition = 'below' type="button" mat-icon-button matSuffix (click)="readonlyanswer2=!readonlyanswer2; modified=true;" [ngStyle]="{'color': !readonlyanswer2 ? '#01579B' : 'black'}">
+                <mat-icon>create</mat-icon>
+              </button>
+            </mat-form-field>
+
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <br>
         <mat-divider></mat-divider>
         <br>
 
@@ -69,6 +133,16 @@
 
         <mat-error style="color:red" *ngIf="error">Ce nom d'utilisateur ou email existe déjà, veuillez réessayer.</mat-error>
         <br>
+
+        <mat-divider></mat-divider>
+        <br>
+
+
+
+
+
+
+
 
         <mat-card-actions>
           <div class="container">
