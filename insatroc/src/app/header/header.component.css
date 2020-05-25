@@ -13,6 +13,9 @@ mat-sidenav {
 }
 mat-toolbar {
 }
+.searchbar{
+  margin-top: auto;
+}
 .spacer {
     flex: 1 1 auto;
 }
