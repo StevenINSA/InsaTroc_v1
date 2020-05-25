@@ -415,7 +415,8 @@ app.get('/posts', (req, res, next) => {
 
 
       var urls = [];
-      console.log(result[i].ImageString)
+      //console.log(result[i].ImageString) //undefined parce que la requête est faite en deux fois : les annonces puis les images. Lors de la demande
+      //des annonces ce champ est donc undefined
 
       if (i==0){
         categoryids[0]=result[i].CategoryID;
@@ -868,6 +869,30 @@ app.post('/forgotPassword', (req, res, next)=> {
   console.log("Requête d'oubli de mot de passe envoyée");
   con.query("SELECT Answer1,Answer2 FROM Student WHERE Email='"+req.body.email+"'", function(err,result, fields){
     if (err) throw err;
+    else {
+      bcrypt.compare (req.body.answer1, result[0].Answer1, function(err, isMatch){
+        if (err) {
+          throw err;
+        } else if (!isMatch){
+          console.log("The answer 1 doesn't match!");
+          res.status(400).json({"message":"bad answer 1"});
+        } else {
+          console.log("Correct answer 1");
+          bcrypt.compare (req.body.answer2, result[0].Answer2, function(err, isMatch){
+            if (err) {
+              throw err;
+            } else if (!isMatch){
+              console.log("The answer 2 doesn't match!");
+              res.status(400).json({"message":"bad answer 2"});
+            } else {
+              console.log("Correct answer 2");
+              res.status(200).json({"message":"good answers"});
+            }
+          })
+        }
+      })
+
+    }/*
       console.log("Answer 1 :",result[0].Answer1);
       console.log("Answer 2 :",result[0].Answer2);
       console.log("Answer 1 user :",req.body.answer1);
@@ -876,7 +901,7 @@ app.post('/forgotPassword', (req, res, next)=> {
       res.status(200).json({"message":"good answers"});
     } else {
       res.status(400).json({"message":"bad answers"});
-    }
+    }*/
   });
 });
 
@@ -904,7 +929,6 @@ app.post('/resetPassword', (req, res, next)=> {
               console.log("mot de passe changé");
             });
           });
-
         }
       })
     }
