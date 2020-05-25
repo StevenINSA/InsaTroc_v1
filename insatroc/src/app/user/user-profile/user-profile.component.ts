@@ -22,9 +22,9 @@ export interface PasswordDialogData {
 
 export interface SecretQuestionsDialogData {
   oldPassword: string;
-  questionID1: number;
+  question1: string;
   answer1: string;
-  questionID2: number;
+  question2: string;
   answer2: string;
 }
 
@@ -40,6 +40,7 @@ export class UserProfileComponent implements OnInit {
   hide = true;
   password: string;
   oldPassword: string;
+  oldPasswordQuestions: string;
   newPassword1: string;
   newPassword2: string;
   readonlyFirstName = true;
@@ -48,13 +49,7 @@ export class UserProfileComponent implements OnInit {
   readonlyEmail = true;
   readonlyPhoneNumber = true;
   readonlyContact = true;
-  readonlyanswer1 = true;
-  readonlyanswer2 = true;
-  readonlyquestion1 = true;
-  readonlyquestion2 = true;
   modified = false;
-  selected1;
-  selected2;
   secretQuestions = ["Quel est le nom de jeune fille de votre mère ?",
   "Quel était le nom de votre premier animal de companie ?",
   "En quelle année est né votre grand-père maternel ?",
@@ -90,8 +85,8 @@ export class UserProfileComponent implements OnInit {
 
   openSecretQuestionsDialog(): void {
     const dialogRef = this.dialog.open(SecretQuestionsDialog, {
-      width: '350px',
-      data: {oldPassword: this.oldPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2},
+      width: '500px',
+      data: {oldPassword: this.oldPasswordQuestions},
       panelClass: 'change-password-dialog'
     });
 
@@ -108,13 +103,7 @@ export class UserProfileComponent implements OnInit {
     this.readonlyContact = true;
     this.readonlyPhoneNumber = true;
     this.readonlyUsername = true;
-    this.readonlyanswer1 = true;
-    this.readonlyanswer2 = true;
-    this.readonlyquestion1 = true;
-    this.readonlyquestion2 = true;
-    var questionID1 = this.secretQuestions.indexOf(form.value.question1);
-    var questionID2 = this.secretQuestions.indexOf(form.value.question2);
-    this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact, questionID1, form.value.answer1, questionID2, form.value.answer2);
+    this.authService.modifyUserInfo(form.value.first_name, form.value.last_name, form.value.username, form.value.phone_number, form.value.contact);
     this.authSub=this.authService.onAuthUpdate().subscribe(
       (res)=>{
         if(!res){
@@ -133,10 +122,6 @@ export class UserProfileComponent implements OnInit {
     this.readonlyContact = true;
     this.readonlyPhoneNumber = true;
     this.readonlyUsername = true;
-    this.readonlyquestion1 = true;
-    this.readonlyquestion2 = true;
-    this.readonlyanswer1 = true;
-    this.readonlyanswer2 = true;
     this.ngOnInit();
   }
 
@@ -149,10 +134,6 @@ export class UserProfileComponent implements OnInit {
       phone_number: new FormControl(),
       contact: new FormControl(),
       password: new FormControl('', []),
-      question1: new FormControl('', []),
-      answer1: new FormControl('', []),
-      question2: new FormControl('', []),
-      answer2: new FormControl('', []),
     });
 
 
@@ -164,10 +145,6 @@ export class UserProfileComponent implements OnInit {
         email: response['email'],
         phone_number: response['phone_number'],
         contact: response['contact_info'],
-        question1: this.secretQuestions[response['question1']],
-        answer1: response['answer1'],
-        question2: this.secretQuestions[response['question2']],
-        answer2: response['answer2'],
       });
         this.user = {_id: null,
                     first_name: response['first_name'],
@@ -342,6 +319,11 @@ export class SecretQuestionsDialog {
   "Quel est votre film préféré ?"];
   hide1 = true;
   wrongPassword = false;
+  oldPassword;
+  question1;
+  question2;
+  answer1;
+  answer2;
 
   constructor(
     public dialogRef: MatDialogRef<SecretQuestionsDialog>,
@@ -353,12 +335,18 @@ export class SecretQuestionsDialog {
     this.dialogRef.close();
   }
 
-  changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2){
+  changeSecretQuestions(oldPassword, question1, answer1, question2, answer2){
+    var questionID1 = this.secretQuestions.indexOf(question1);
+    var questionID2 = this.secretQuestions.indexOf(question2);
     console.log(oldPassword);
+    console.log(questionID1);
+    console.log(questionID2);
+    console.log(answer1);
+    console.log(answer2);
     this.authService.changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2).subscribe(
       (response) => {console.log(response);
                     this.dialogRef.close();
-                    this._snackBar.open("Questions secrètes changées avec succès","X", {duration: 2000});
+                    this._snackBar.open("Vos questions secrètes ont bien été changées","X", {duration: 2000});
                   },
       (error) => {console.log(error);
                   if(error.error.message=="Incorrect Password"){
@@ -373,28 +361,12 @@ export class SecretQuestionsDialog {
 
   disabled(){
     if(this.data.oldPassword==undefined || this.data.oldPassword==''
-    || this.data.newPassword1==undefined || this.data.newPassword1==''
-    || this.data.newPassword2==undefined || this.data.newPassword2==''
-    || this.data.newPassword1!=this.data.newPassword2
-    || this.passwordValidator(this.data.newPassword1) || this.passwordValidator(this.data.newPassword2)){
+    || this.data.question1==undefined || this.data.question2==undefined
+    || this.data.answer1==undefined || this.data.answer1==''
+    || this.data.answer2==undefined || this.data.answer2==''){
       return true;
     }
     return false;
-  }
-
-  passwordValidator(password: string){
-    if(password==undefined || password==''){
-      return null;
-    }
-    else if(password.length<5){
-      return "Doit contenir au moins 5 caractères";
-    }
-    else if(password.length>25){
-      return "Ne doit pas contenir plus de 25 caractères";
-    }
-    else{
-      return null;
-    }
   }
 
 }
