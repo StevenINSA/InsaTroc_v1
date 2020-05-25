@@ -309,7 +309,7 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
     con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate, NbViews) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"', '"+0+"')",
     function (err, result, fields){
       if (err) throw err;
-      console.log(result.insertId);
+      //console.log(result.insertId);
       var postID = result.insertId;
       res.status(201).json({message: 'objet créé', postID: postID, phoneNb: studentPhoneNb, contact: studentContact});
       for (let i=0; i<req.body.category.length; i++){
