@@ -108,9 +108,9 @@
       <div>
         <br>
         <h1 style="float: left">{{form.value.title}}</h1>
-        <h2 align="right" style= "color: crimson;" *ngIf="!free && form.value.price!=''">{{form.value.price | number: '1.2-2'}} €</h2>
-        <h2 align="right" style= "color: crimson;" *ngIf="free && form.value.title!=''">Gratuit</h2>
-        <h4 style="color: darkgray;" *ngIf="form.value.category!=''">Catégorie : {{form.value.category}}</h4>
+        <h2 align="right" style= "color: crimson;" *ngIf="!free && form.value.price">{{form.value.price | number: '1.2-2'}} €</h2>
+        <h2 align="right" style= "color: crimson;" *ngIf="free && form.value.title">Gratuit</h2>
+        <h4 style="color: darkgray;" *ngIf="form.value.category">Catégorie : {{form.value.category}}</h4>
 
         <div class="container2" *ngIf="urls.length>0">
            <!-- Full-width images with number text -->
@@ -130,7 +130,7 @@
         </div>
 
         <br>
-        <h2 *ngIf="form.value.description!=''">Description</h2>
+        <h2 *ngIf="form.value.description">Description</h2>
         <p>{{form.value.description}}</p>
         <br>
       </div>
