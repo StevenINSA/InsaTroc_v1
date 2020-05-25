@@ -17,6 +17,7 @@ import { HttpAuthInterceptor } from './http-auth.interceptor';
 import { SearchResultsComponent } from './annonces/search-results/search-results.component';
 import { DeletePostDialog } from './annonces/post-viewer-by-id/post-viewer-by-id.component';
 import { FillContactInfoDialog } from './annonces/post-create-alt/post-create-alt.component';
+import { SecretQuestionsDialog } from './user/user-profile/user-profile.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -65,6 +66,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     DeletePostDialog,
     FillContactInfoDialog,
     ForgottenPasswordComponent,
+    SecretQuestionsDialog,
   ],
   imports: [
     BrowserModule,
@@ -101,6 +103,7 @@ import {MatTabsModule} from '@angular/material/tabs';
     ChangePasswordDialog,
     DeletePostDialog,
     FillContactInfoDialog,
+    SecretQuestionsDialog,
   ],
   providers: [
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},

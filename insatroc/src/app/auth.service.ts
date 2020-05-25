@@ -119,8 +119,8 @@ export class AuthService {
   }
 
   // modifier les infos d'un utilisateur
-  public modifyUserInfo(firstname, lastname, username, phone, other, questionID1, answer1, questionID2, answer2){
-    this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other':other,  'question1': questionID1, 'answer1': answer1, 'question2': questionID2, 'answer2': answer2}).subscribe(
+  public modifyUserInfo(firstname, lastname, username, phone, other){
+    this.http.post('http://localhost:3000/modifyUserInfo', {'firstname' : firstname, 'lastname' : lastname, 'username' : username, 'phone':phone, 'other':other}).subscribe(
       (response) => {console.log(response);
                       localStorage.setItem('username', username);
                       this._snackBar.open("Votre profil a bien été modifié.","x", {duration: 4000});},
@@ -144,6 +144,11 @@ export class AuthService {
   // modifier son mot de passe
   public changePassword(oldPassword, newPassword){
     return (this.http.post('http://localhost:3000/modifyPassword', {"oldPassword": oldPassword, "newPassword": newPassword}));
+  }
+
+  // modifier ses questions secrètes
+  public changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2){
+    return (this.http.post('http://localhost:3000/modifySecretQuestions', {"oldPassword": oldPassword, "question1": questionID1, "answer1": answer1, "question2": questionID2, "answer2": answer2}));
   }
 
   // récupérer les questions secrètes d'un utilisateur à partir de son email quand il a oublié son mot de passe
