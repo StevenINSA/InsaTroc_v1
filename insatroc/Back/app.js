@@ -18,6 +18,7 @@ const jwtKey = "privateKey";
 
 const app = express();
 
+/*Cette fonction attribue à chaque catégorie son identifiant*/
 function attributeID(category){
   var categoryID;
 
@@ -81,6 +82,7 @@ function attributeCategory(categoryID){
   return category;
 }
 
+/*Récupération du nom d'utilisateur à partir du StudentID*/
 function getUsernameFromID(studentID){
   con.query("SELECT Username FROM Student WHERE StudentID = '"+studentID+"'", function(err, result, fields){
     if(err) throw err;
@@ -88,15 +90,16 @@ function getUsernameFromID(studentID){
   })
 }
 
-
-function addslashes(ch) { //fonction pour échapper les apostrophes et autres qui créaient des erreurs
+/*fonction pour échapper les apostrophes qui créaient des erreurs lors de la saisie côté front*/
+function addslashes(ch) {
   ch = ch.replace(/\\/g,"\\\\");
   ch = ch.replace(/\'/g,"\\'");
   ch = ch.replace(/\"/g,"\\\"");
   return ch;
 }
 
-app.use((req, res, next) => { //header permettant de communiquer entre les deux serveurs
+/*ajout de header permettant la communication entre les deux serveurs*/
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
@@ -111,7 +114,7 @@ app.use(bodyParser.json({limit:'10mb'}));//formate en JSON les données pour n'i
  * Passport
  * ******************************/
 
-// define strategy used by passport
+/*Définition de la stratégie passport*/
 passport.use(new LocalStrategy({
   usernameField: 'email'
 },
@@ -251,7 +254,7 @@ const register = () => {
 app.post('/register/', register(), (req, res) => {
   console.log("requête de création de compte reçue");
   console.log(req.body);
-  res.status(200).json({"statusCode" : 200, "message" : "hello"});
+  res.status(200).json({"statusCode" : 200, "message" : "requête reçue"});
 });
 
 // requête http GET pour se déconnecter
@@ -316,21 +319,18 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
             console.log(result);
         });
       }
-      
+
       for(let k= 0 ; k<req.body.urls.length ; k++){
-        console.log(999);
         con.query("INSERT INTO Image (ImageString, AnnounceID) VALUES ('"+req.body.urls[k]+"','"+result.insertId+"')"),
           function(err,result, blabla){
             if(err){
               throw err;
             }else{
-              console.log("HELLLLLLL");
               console.log(result);
             }
           }
       }
     });
-    console.log(88);
   });
 })
 
@@ -530,7 +530,7 @@ app.post('/search', (req, res, next) => {
                           "categoryids" : categoryids,
                           }
           }
-        } 
+        }
       }
       for(let i=0; i<resultat.length; i++){
         resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
@@ -560,7 +560,7 @@ app.post('/deletePost/', (req, res, next) => {
             })
         })
       })
-    }  
+    }
   });
 })
 
@@ -588,6 +588,8 @@ app.patch('/incrview', (req, res, next) => {
 
 
 });
+
+// requête pour obtenir les images des annonces
 app.get('/images',(req,ress,nex)=>{
   var id = req.query.bid
   con.query("SELECT ImageString FROM Image WHERE AnnounceID = '"+id+"'",function(err,res,field){
@@ -611,7 +613,6 @@ app.get('/getUserInfo', (req, res, next) => {
   var decodedToken = jwt.decode(encryptedToken); // decode token
   var userID = decodedToken.userID; // get userID from token payload
   console.log("Requête des infos d'utilisateur reçue.");
-  console.log(userID);
   con.query("SELECT * FROM Student WHERE StudentID = '"+userID+"'", function (err, result, fields) {
     if (err) throw err;
     var tel = result[0].TelephoneNumber;
@@ -625,7 +626,7 @@ app.get('/getUserInfo', (req, res, next) => {
                 "phone_number" : tel,
                 "contact_info" : contact
               }
-    console.log("Envoi des données au front :");
+    console.log("L'utilisateur suivant a été créé :");
     console.log(user);
     res.status(200).json(user);
   });
@@ -904,8 +905,7 @@ app.post('/forgotPassword', (req, res, next)=> {
 
 
 app.use((req, res, next) => {
- console.log("coucou");
- res.json({message:'coucou'});
+ res.json({message:'insatroc'});
 });
 
 module.exports = app;
