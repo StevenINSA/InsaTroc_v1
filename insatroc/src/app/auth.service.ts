@@ -146,6 +146,11 @@ export class AuthService {
     return (this.http.post('http://localhost:3000/modifyPassword', {"oldPassword": oldPassword, "newPassword": newPassword}));
   }
 
+  // modifier ses questions secrètes
+  public changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2){
+    return (this.http.post('http://localhost:3000/modifySecretQuestions', {"oldPassword": oldPassword, "question1": questionID1, "answer1": answer1, "question2": questionID2, "answer2": answer2}));
+  }
+
   // récupérer les questions secrètes d'un utilisateur à partir de son email quand il a oublié son mot de passe
   public getSecretQuestions(email){
     return this.http.post('http://localhost:3000/getUserSecretQuestions', {email: email});

@@ -20,6 +20,14 @@ export interface PasswordDialogData {
   newPassword2: string;
 }
 
+export interface SecretQuestionsDialogData {
+  oldPassword: string;
+  questionID1: number;
+  answer1: string;
+  questionID2: number;
+  answer2: string;
+}
+
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -70,6 +78,18 @@ export class UserProfileComponent implements OnInit {
 
   openPasswordDialog(): void {
     const dialogRef = this.dialog.open(ChangePasswordDialog, {
+      width: '350px',
+      data: {oldPassword: this.oldPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2},
+      panelClass: 'change-password-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
+
+  openSecretQuestionsDialog(): void {
+    const dialogRef = this.dialog.open(SecretQuestionsDialog, {
       width: '350px',
       data: {oldPassword: this.oldPassword, newPassword1: this.newPassword1, newPassword2: this.newPassword2},
       panelClass: 'change-password-dialog'
@@ -254,6 +274,91 @@ export class ChangePasswordDialog {
       (response) => {console.log(response);
                     this.dialogRef.close();
                     this._snackBar.open("Mot de passe changé avec succès","X", {duration: 2000});
+                  },
+      (error) => {console.log(error);
+                  if(error.error.message=="Incorrect Password"){
+                    this.wrongPassword = true;
+                  }},
+    );
+  }
+
+  closeDialog(){
+    this.dialogRef.close();
+  }
+
+  disabled(){
+    if(this.data.oldPassword==undefined || this.data.oldPassword==''
+    || this.data.newPassword1==undefined || this.data.newPassword1==''
+    || this.data.newPassword2==undefined || this.data.newPassword2==''
+    || this.data.newPassword1!=this.data.newPassword2
+    || this.passwordValidator(this.data.newPassword1) || this.passwordValidator(this.data.newPassword2)){
+      return true;
+    }
+    return false;
+  }
+
+  passwordValidator(password: string){
+    if(password==undefined || password==''){
+      return null;
+    }
+    else if(password.length<5){
+      return "Doit contenir au moins 5 caractères";
+    }
+    else if(password.length>25){
+      return "Ne doit pas contenir plus de 25 caractères";
+    }
+    else{
+      return null;
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@Component({
+  selector: 'secret-questions-dialog',
+  templateUrl: 'secret-questions-dialog.html',
+})
+export class SecretQuestionsDialog {
+  secretQuestions = ["Quel est le nom de jeune fille de votre mère ?",
+  "Quel était le nom de votre premier animal de companie ?",
+  "En quelle année est né votre grand-père maternel ?",
+  "Dans quel département êtes-vous né ?",
+  "Quel est le deuxième prénom de votre père ?",
+  "Quel est votre film préféré ?"];
+  hide1 = true;
+  wrongPassword = false;
+
+  constructor(
+    public dialogRef: MatDialogRef<SecretQuestionsDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: SecretQuestionsDialog,
+    public authService: AuthService,
+    private _snackBar: MatSnackBar) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2){
+    console.log(oldPassword);
+    this.authService.changeSecretQuestions(oldPassword, questionID1, answer1, questionID2, answer2).subscribe(
+      (response) => {console.log(response);
+                    this.dialogRef.close();
+                    this._snackBar.open("Questions secrètes changées avec succès","X", {duration: 2000});
                   },
       (error) => {console.log(error);
                   if(error.error.message=="Incorrect Password"){
