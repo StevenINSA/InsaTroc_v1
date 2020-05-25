@@ -61,6 +61,8 @@ export class HttpService {
 
 // Requête pour ajouter une annonce
   addPost(post:PostModel){
+    this.posts = [];
+    this.users = [];
     this.http.post('http://localhost:3000/addPost',post).subscribe(
       (response) => { console.log(response)
         this.router.navigate(['/annonce'],{queryParams:{bid:response['postID'] as string}});
