@@ -337,13 +337,16 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
 
 // requête http GET pour afficher une annonce spécifique
 app.get('/getPost/:id', (req, res, next) => {
+  //on reçoit un id d'annonce et on l'envoi au front
   console.log("id de l'annonce demandée : ", req.params.id);
   console.log("req.params :",req.params);
+  //on join toutes les tables utiles, ce qui créer un result assez conséquent. On tri pour envoyer les infos utiles au front
   con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.AnnounceID = '"+req.params.id+"'", function (err, result, fields) {
     if (err) throw err;
+    //explication des boucles sur getAllPosts
     var resultat=[];
     var categoryids=[];
-    let j=0; //on travail avec deux pointeurs : i et j
+    let j=0;
     for (let i=0; i<result.length; i++){
 
       if (i==0){
@@ -364,7 +367,7 @@ app.get('/getPost/:id', (req, res, next) => {
       }
 
       else{
-        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+        if (result[i].AnnounceID == result[i-1].AnnounceID){
           resultat[j].categoryids.push(result[i].CategoryID)
         }
         else{
@@ -387,7 +390,7 @@ app.get('/getPost/:id', (req, res, next) => {
         }
       }
     }
-    for(let i=0; i<resultat.length; i++){
+    for(let i=0; i<resultat.length; i++){ //permet d'envoyer au front les noms des catégories, ça leur évite de convertir dans le front
       resultat[i].categoryids = attributeCategory(resultat[i].categoryids);
     }
     res.status(200).json(resultat);
@@ -404,7 +407,7 @@ app.get('/posts', (req, res, next) => {
 
     /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
     si l'announce suivante a le meme numéro(mais elle aura un CatID différent), on ne rajoute pas l'annonce dans resultat mais on push dans le tableau
-    de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en double et un tableau de catID correct*/
+    de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en "double" et un tableau de catID correct*/
     var resultat=[];
     var categoryids=[];
     let j=0; //on travail avec deux pointeurs : i et j
@@ -412,7 +415,6 @@ app.get('/posts', (req, res, next) => {
 
 
       var urls = [];
-      //for (let j=0; j<result[i])
       console.log(result[i].ImageString)
 
       if (i==0){
@@ -434,10 +436,10 @@ app.get('/posts', (req, res, next) => {
       }
 
       else{
-        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie, on push sa catégorie dans l'annonce précedente
           resultat[j].categoryids.push(result[i].CategoryID)
         }
-        else{
+        else{//si les numéros d'annonces ne sont pas les mêmes, c'est une autre annonce. On passe donc à l'annonce suivante que l'on rajoute dans resultat
           j+=1;
           categoryids=[];
           categoryids[0]=result[i].CategoryID;
@@ -485,12 +487,10 @@ app.post('/search', (req, res, next) => {
   } else {
     con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE "+req_filt_str, function(err,result){
       if(err) throw err;
-      /*l'idée est de mettre l'info utilisable dans resultat si l'annonce d'avant n'a pas le meme announceID (ORDER BY important)
-      si l'announce suivante a le meme numéro(mais elle aura un CatID différent), on ne rajoute pas l'annonce dans resultat mais on push dans le tableau
-      de sa categorie le catID de l'annonce suivante. On a ainsi pas d'annonces en double et un tableau de catID correct*/
+
       var resultat=[];
       var categoryids=[];
-      let j=0; //on travaille avec deux pointeurs : i et j
+      let j=0;
       for (let i=0; i<result.length; i++){
         if (i==0){
             categoryids[0]=result[i].CategoryID;
@@ -509,7 +509,7 @@ app.post('/search', (req, res, next) => {
             }
           }
         else {
-          if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+          if (result[i].AnnounceID == result[i-1].AnnounceID){
               resultat[j].categoryids.push(result[i].CategoryID)
           }
           else {
@@ -539,10 +539,10 @@ app.post('/search', (req, res, next) => {
       console.log("resultat :", resultat);
     });
   }
-  // });
 });
 
 app.post('/deletePost/', (req, res, next) => {
+  //supprime une annonce
   console.log("requête pour supprimer une annonce reçue");
   var encryptedToken = req.get("Authorization");  // get authorization token from http header
   var decodedToken = jwt.decode(encryptedToken); // decode token
@@ -550,7 +550,7 @@ app.post('/deletePost/', (req, res, next) => {
   con.query("SELECT StudentID FROM Announce WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
     if(err) throw err;
     if(userID == result[0].StudentID){ // vérifier que le username de l'en-tête http et de l'annonce sont identiques
-      con.query("DELETE FROM Image WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
+      con.query("DELETE FROM Image WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {//par soucis de clef primaire, il faut d'abord supprimer l'image, puis les catégories et enfin l'annonce
         if(err) throw err;
         con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+req.body.postID+"'", function(err, result, fields) {
           if(err) throw err;
@@ -589,7 +589,8 @@ app.patch('/incrview', (req, res, next) => {
 
 });
 
-// requête pour obtenir les images des annonces
+// requête pour obtenir les images des annonces, elle est appelée en parallèle lors des getPost, getAllPosts, etc... pour aller chercher les images des annonces.
+//ces images sont envoyées une par une en identifiant l'announceID qui est envoyé du front et envoie toutes les images de l'annonce correspondante
 app.get('/images',(req,ress,nex)=>{
   var id = req.query.bid
   con.query("SELECT ImageString FROM Image WHERE AnnounceID = '"+id+"'",function(err,res,field){
@@ -656,9 +657,9 @@ app.get('/checkUserContactInfo', (req, res, next) => {
 // requête pour modifier des infos d'un utilisateur
 app.post('/modifyUserInfo', (req, res, next) => {
   console.log("requête de modification des infos d'utilisateur reçue :");
-  var encryptedToken = req.get("Authorization");  // get authorization token from http header
-  var decodedToken = jwt.decode(encryptedToken); // decode token
-  var userID = decodedToken.userID; // get userID from token payload
+  var encryptedToken = req.get("Authorization");
+  var decodedToken = jwt.decode(encryptedToken);
+  var userID = decodedToken.userID;
   console.log("params:",req.body);
 
   //vérification que le username n'existe pas déjà
@@ -680,16 +681,16 @@ app.post('/modifyUserInfo', (req, res, next) => {
 // requête pour récupérer toutes les annonces postées par un utilisateur
 app.get('/getUserPosts', (req, res, next) => {
   console.log("requête pour les annonces d'un utilisateur reçue :");
-   var encryptedToken = req.get("Authorization");  // get authorization token from http header
-   var decodedToken = jwt.decode(encryptedToken); // decode token
-   var userID = decodedToken.userID; // get userID from token payload
+   var encryptedToken = req.get("Authorization");
+   var decodedToken = jwt.decode(encryptedToken);
+   var userID = decodedToken.userID;
 
    con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE Announce.StudentID='"+userID+"' ORDER BY Announce.AnnounceID", function (err, result, fields) {
     if (err) throw err;
-    //var data = JSON.stringify(result);
+
     var resultat=[];
     var categoryids=[];
-    let j=0; //on travail avec deux pointeurs : i et j
+    let j=0;
     for (let i=0; i<result.length; i++){
 
       if (i==0){
@@ -710,7 +711,7 @@ app.get('/getUserPosts', (req, res, next) => {
       }
 
       else{
-        if (result[i].AnnounceID == result[i-1].AnnounceID){//si on a une deuxième même annonce pour une autre categorie
+        if (result[i].AnnounceID == result[i-1].AnnounceID){
           resultat[j].categoryids.push(result[i].CategoryID)
         }
         else{
@@ -745,10 +746,10 @@ app.get('/getUserPosts', (req, res, next) => {
 app.post('/deleteUserAccount', (req, res, next) => {
   console.log("requête pour supprimer un compte utilisateur reçue");
   console.log(req.headers);
-  var encryptedToken = req.get("Authorization");  // get authorization token from http header
-  var decodedToken = jwt.decode(encryptedToken); // decode token
+  var encryptedToken = req.get("Authorization");
+  var decodedToken = jwt.decode(encryptedToken);
   console.log(decodedToken);
-  var userID = decodedToken.userID; // get userID from token payload
+  var userID = decodedToken.userID;
   var password = req.body.password;
   console.log(userID);
   console.log(password);
@@ -769,7 +770,7 @@ app.post('/deleteUserAccount', (req, res, next) => {
           con.query("SELECT AnnounceID FROM Announce WHERE StudentID = '"+userID+"'", function(err,result,fields){
             if(err) throw err;
             console.log("annonces : ", result);
-            for (let i=0; i<result.length; i++){
+            for (let i=0; i<result.length; i++){ //idem, on doit d'abord supprimer les catégories, puis les image et enfin les annonces avant de supprimer le compte
               con.query("DELETE FROM AnnounceCategories WHERE AnnounceID = '"+result[i].AnnounceID+"'", function(err,result,fields){
                 if(err) throw err;
               });
@@ -797,9 +798,9 @@ app.post('/deleteUserAccount', (req, res, next) => {
 //requête pour modifier le mot de passe
 app.post('/modifyPassword', (req, res,next) =>{
   console.log("requête pour changer le password d'un utilisateur reçue :");
-  var encryptedToken = req.get("Authorization");  // get authorization token from http header
-  var decodedToken = jwt.decode(encryptedToken); // decode token
-  var userID = decodedToken.userID; // get userID from token payload
+  var encryptedToken = req.get("Authorization");
+  var decodedToken = jwt.decode(encryptedToken);
+  var userID = decodedToken.userID;
 
   con.query("SELECT Password FROM Student where StudentID = '"+userID+ "'",function (err, result, fields) {
       if (err) {
@@ -839,6 +840,11 @@ app.post('/modifyPassword', (req, res,next) =>{
   });
 });
 
+//requête pour mdp oublié
+//cette requête est en 3 étapes séparées en 3 fonctions : l'user rentrer son email -> on vérifie l'email et on redirige vers ses questions
+//l'user rentre ses réponse -> on les vérifie et l'incite à saisir un nouveau mdp si elles sont bonnes
+//l'user rentrer son nouveau mdp -> on l'enregistre dans la BD
+
 app.post('/getUserSecretQuestions', (req, res, next)=> {
   console.log("requête de demande de mdp oublié reçue");
   //on reçoit l'email utilisateur, renvoi les IDs des questions posées lors de la création du compte
@@ -857,9 +863,27 @@ app.post('/getUserSecretQuestions', (req, res, next)=> {
   });
 });
 
+app.post('/forgotPassword', (req, res, next)=> {
+  //on vérifie les réponses
+  console.log("Requête d'oubli de mot de passe envoyée");
+  con.query("SELECT Answer1,Answer2 FROM Student WHERE Email='"+req.body.email+"'", function(err,result, fields){
+    if (err) throw err;
+      console.log("Answer 1 :",result[0].Answer1);
+      console.log("Answer 2 :",result[0].Answer2);
+      console.log("Answer 1 user :",req.body.answer1);
+      console.log("Answer 2 user :",req.body.answer2);
+    if(result[0].Answer1==req.body.answer1 && result[0].Answer2==req.body.answer2) {
+      res.status(200).json({"message":"good answers"});
+    } else {
+      res.status(400).json({"message":"bad answers"});
+    }
+  });
+});
+
+//met à jour le mdp suite à un oubli
 app.post('/resetPassword', (req, res, next)=> {
   console.log("demande de réinisialisation de mdp");
-  //on reçoit l'Email, on renvoi un status ok et on stocke le nouveau mdp
+  //on reçoit l'Email du compte à modifier, on renvoi un status ok et on stocke le nouveau mdp
   bcrypt.genSalt(saltRounds, function (err, salt) {
     if (err) throw err;
     else {
@@ -875,7 +899,8 @@ app.post('/resetPassword', (req, res, next)=> {
               userID = result[0].StudentID;
               const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
               res.status(200).json({"token" : token, "username" : username});
-              console.log("token, username : ", token, username);
+              console.log("token :", token);
+              console.log("username :", username);
               console.log("mot de passe changé");
             });
           });
@@ -884,24 +909,8 @@ app.post('/resetPassword', (req, res, next)=> {
       })
     }
   });
-
 });
 
-app.post('/forgotPassword', (req, res, next)=> {
-  console.log("Requête d'oubli de mot de passe envoyée");
-  con.query("SELECT Answer1,Answer2 FROM Student WHERE Email='"+req.body.email+"'", function(err,result, fields){
-    if (err) throw err;
-      console.log("Answer 1 :",result[0].Answer1);
-      console.log("Answer 2 :",result[0].Answer2);
-      console.log("Answer 1 user :",req.body.answer1);
-      console.log("Answer 2 user :",req.body.answer2);
-    if(result[0].Answer1==req.body.answer1 && result[0].Answer2==req.body.answer2) {
-      res.status(200).json({"message":"good answers"});
-    } else {
-      res.status(400).json({"message":"bad answers"});
-    }
-  });
-});
 
 
 app.use((req, res, next) => {
