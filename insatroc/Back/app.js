@@ -702,8 +702,6 @@ app.post('/modifyUserInfo', (req, res, next) => {
             bcrypt.hash(req.body.answer2, salt, function(err,hash2) {
               if (err) throw err;
               //Mise à jour BD
-              //console.log("id question 1 :",req.body.question1);
-              //console.log("id question 2 :",req.body.question2);
               con.query("UPDATE Student SET Username='"+req.body.username+"', Name='"+req.body.firstname+"', TelephoneNumber='"+req.body.phone+"', Address='"+req.body.other+"', Surname='"+req.body.lastname+"', Question1='"+req.body.question1+"', Question2='"+req.body.question2+"', Answer1='"+hash1+"', Answer2='"+hash2+"'  WHERE StudentID='"+userID+"'",function (err, result, fields) {
                 if (err) throw err;
                 console.log("done");
@@ -930,16 +928,7 @@ app.post('/forgotPassword', (req, res, next)=> {
         }
       })
 
-    }/*
-      console.log("Answer 1 :",result[0].Answer1);
-      console.log("Answer 2 :",result[0].Answer2);
-      console.log("Answer 1 user :",req.body.answer1);
-      console.log("Answer 2 user :",req.body.answer2);
-    if(result[0].Answer1==req.body.answer1 && result[0].Answer2==req.body.answer2) {
-      res.status(200).json({"message":"good answers"});
-    } else {
-      res.status(400).json({"message":"bad answers"});
-    }*/
+    }
   });
 });
 
