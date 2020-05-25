@@ -227,28 +227,53 @@ const register = () => {
           if (err) {
             throw err
           } else {
-            bcrypt.hash(req.body.password, salt, function(err, hash) {
+            bcrypt.hash(req.body.password, salt, function(err, hashp) {
               if (err) {
                 throw err
               } else {
-                console.log(hash)
-                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,Question1,Answer1,Question2,Answer2) VALUES ('"+username+"','"+hash+"','"+email+"','"+last_name+"','"+first_name+"','"+req.body.question1+"','"+req.body.answer1+"','"+req.body.question2+"','"+req.body.answer2+"')", function (err, result, fields){
+                bcrypt.genSalt(saltRounds, function (err, salt1) {
                   if (err) {
-                    throw err;
+                    throw err
+                  } else {
+                    bcrypt.hash(req.body.answer1, salt1, function(err, hash1) {
+                      if (err) {
+                        throw err
+                      } else {
+                        bcrypt.genSalt(saltRounds, function (err, salt2) {
+                          if (err) {
+                            throw err
+                          } else {
+                            bcrypt.hash(req.body.answer2, salt2, function(err, hash2) {
+                              if (err) {
+                                throw err
+                              } else {
+                                con.query("INSERT INTO Student (Username,Password,Email,Name,Surname,Question1,Answer1,Question2,Answer2) VALUES ('"+username+"','"+hashp+"','"+email+"','"+last_name+"','"+first_name+"','"+req.body.question1+"','"+hash1+"','"+req.body.question2+"','"+hash2+"')", function (err, result, fields){
+                                  if (err) {
+                                    throw err;
+                                  }
+                                  var userID = result.insertId;
+                                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
+                                  res.status(200).json({"token" : token, "username" : username});
+                                });
+                              }
+                            });
+                          }
+                        });
+                        
+                      }    
+                
+                    });
                   }
-                  var userID = result.insertId;
-                  const token = jwt.sign({ userID }, jwtKey, {algorithm: "HS256",expiresIn:'1h'});
-                  res.status(200).json({"token" : token, "username" : username});
-                });
+                })
               }
-            })
+            });
           }
         });
       }
+
     });
-
-
-  }}
+  }
+}    
 
 // requête http POST pour se créer un compte
 app.post('/register/', register(), (req, res) => {
@@ -309,7 +334,6 @@ app.post('/addPost',tokenValidator,(req, res, next) => {
     con.query("INSERT INTO Announce (Title, Price, Description, StudentID, PublicationDate, NbViews) VALUES ('"+titreEchape+"','"+req.body.price+"','"+descriptionEchape+"','"+result[0].StudentID+"','"+today+"', '"+0+"')",
     function (err, result, fields){
       if (err) throw err;
-      //console.log(result.insertId);
       var postID = result.insertId;
       res.status(201).json({message: 'objet créé', postID: postID, phoneNb: studentPhoneNb, contact: studentContact});
       for (let i=0; i<req.body.category.length; i++){
@@ -476,13 +500,12 @@ app.post('/search', (req, res, next) => {
   arg = arg.replace(',', ' ');
   arg = arg.replace(', ', ' ');
   arg = arg.replace('.', ' ');
-  var split_regex = new RegExp('[ \ªº!@·#$~%&¬=¿¡_<>{}+()*/:?"-]', 'g');
+  var split_regex = new RegExp('[ \ªº!@·#$~%&¬=¿¡_<>{}+()*/:?"-]', 'g');   //on applique un premier filtrage pour enlever ces caractères spéciaux
   var req_filt_str = arg.split(split_regex)
-                      .filter(kw => kw.length > 2)
-                      .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0')
+                      .filter(kw => kw.length > 2) //filtre pour enlever les mots de moins de 3 lettres
+                      .map(kw => 'INSTR(Announce.Title,"' + kw + '") > 0 OR INSTR(Announce.Description,"' + kw + '") > 0')  
                       .join(" OR ");
-  if(req_filt_str == []){
-    // res.status(401).json({"message" : "Filter with words with more than 2 letters"});
+  if(req_filt_str == []){  //si on a rien comme résultat on ne renvoit rien
     res.status(200).json([]);
   } else {
     con.query("SELECT * FROM Announce INNER JOIN Student ON Announce.StudentID = Student.StudentID INNER JOIN AnnounceCategories ON Announce.AnnounceID = AnnounceCategories.AnnounceID WHERE "+req_filt_str, function(err,result){
