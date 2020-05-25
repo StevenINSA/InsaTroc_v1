@@ -20,7 +20,6 @@
   <span class="spacer"></span>
 
   <mat-icon >brightness_3</mat-icon>
-  <span class="spacer"></span>
   <mat-slide-toggle (change)='changetheme()' checked={{slidetoggle}}>
   </mat-slide-toggle>
 
@@ -30,7 +29,7 @@
     <mat-icon>search</mat-icon>
   </button>
 
-  <mat-form-field appearance="outline" (keydown.enter)="Search(search)">
+  <mat-form-field class="searchbar" appearance="outline" (keydown.enter)="Search(search)">
     <mat-label>Rechercher une annonce</mat-label>
     <input matInput type="text" [(ngModel)]="search">
     <button mat-button *ngIf="search" matSuffix mat-icon-button aria-label="Clear" (click)="search=''">
