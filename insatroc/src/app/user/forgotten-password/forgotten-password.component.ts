@@ -20,6 +20,7 @@ export class ForgottenPasswordComponent implements OnInit {
   answer1: string;
   answer2: string;
   questionsError = null;
+  emailError = null;
   newPassword1: string;
   newPassword2: string;
   hide1 = true;
@@ -36,7 +37,8 @@ export class ForgottenPasswordComponent implements OnInit {
                     this.questionID1 = response['ID1'];
                     this.questionID2 = response['ID2'];
                     this.index = 1;},
-      (error) => {console.log(error);}
+      (error) => {console.log(error);
+                  this.emailError = "Cet e-mail n'existe pas. Veuillez réessayer."}
     )
   }
 
