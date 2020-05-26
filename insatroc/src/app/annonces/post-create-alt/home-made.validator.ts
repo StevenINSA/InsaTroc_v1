@@ -23,6 +23,7 @@ export function imageValidator (control : AbstractControl) {
     case "FFD8FFE2":
     case "FFD8DDE8":
     case "FFD8FFE1":
+    case "FFD8FFDB":
       Validity = true;
       console.log(16);
       break;
