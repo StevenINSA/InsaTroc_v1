@@ -622,7 +622,7 @@ app.get('/images',(req,ress,nex)=>{
     for(let k =0;k<res.length;k++){
       urls.push(res[k].ImageString)
     }
-    console.log(urls.length);
+    //console.log(urls.length);
     ress.status(200).json({[id]:urls});
   })
 })
